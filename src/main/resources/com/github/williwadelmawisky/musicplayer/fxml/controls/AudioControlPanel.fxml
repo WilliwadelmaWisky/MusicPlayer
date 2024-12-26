@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<fx:root type="com.github.williwadelmawisky.musicplayer.scene.controls.AudioControlPanel"
+         xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+         spacing="10" styleClass="content-box"
+>
+    <padding>
+        <Insets topRightBottomLeft="10"/>
+    </padding>
+    <HBox spacing="5" alignment="BOTTOM_LEFT">
+        <Label fx:id="_playbackPositionLabel" minWidth="40" maxWidth="40" alignment="CENTER_RIGHT"/>
+        <ProgressBar fx:id="_progressBar" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+        <Label fx:id="_durationLabel" minWidth="40" maxWidth="40" alignment="CENTER_RIGHT"/>
+    </HBox>
+    <HBox spacing="10">
+        <Region minWidth="40" maxWidth="40"/>
+        <VBox spacing="2" minWidth="200" maxWidth="200">
+            <Label fx:id="_titleLabel"/>
+            <Label fx:id="_artistLabel"/>
+        </VBox>
+        <HBox spacing="5" alignment="CENTER" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+            <Button onAction="#onPreviousButtonClicked">
+                <graphic>
+                    <ImageView fitWidth="15" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@../../img/previous_icon.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button onAction="#onPlayButtonClicked">
+                <graphic>
+                    <ImageView fx:id="_statusImageView" fitWidth="15" pickOnBounds="true" preserveRatio="true"/>
+                </graphic>
+            </Button>
+            <Button onAction="#onNextButtonClicked">
+                <graphic>
+                    <ImageView fitWidth="15" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@../../img/next_icon.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+        </HBox>
+        <HBox spacing="5" alignment="CENTER_LEFT" minWidth="200" maxWidth="200">
+            <ImageView fitWidth="30" pickOnBounds="true" preserveRatio="true">
+                <Image url="@../../img/volume_icon.png"/>
+            </ImageView>
+            <Slider fx:id="_volumeSlider" max="1" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            <Label fx:id="_volumeLabel" minWidth="40" maxWidth="40" alignment="CENTER_RIGHT"/>
+        </HBox>
+        <Region minWidth="40" maxWidth="40"/>
+    </HBox>
+</fx:root>

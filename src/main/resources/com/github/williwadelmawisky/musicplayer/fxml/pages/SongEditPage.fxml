@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<?import org.controlsfx.control.SearchableComboBox?>
+<?import com.github.williwadelmawisky.musicplayer.scene.controls.ArtistSelector?>
+<fx:root type="com.github.williwadelmawisky.musicplayer.scene.pages.SongEditPage"
+         xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+         spacing="10"
+>
+    <padding>
+        <Insets topRightBottomLeft="10"/>
+    </padding>
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" maxHeight="1000">
+        <VBox>
+            <padding>
+                <Insets topRightBottomLeft="5"/>
+            </padding>
+            <VBox spacing="5">
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Name" minWidth="80" maxWidth="80"/>
+                    <TextField promptText="Enter the song name..." HBox.hgrow="ALWAYS" maxWidth="Infinity" fx:id="_nameTextField"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Genre" minWidth="80" maxWidth="80"/>
+                    <SearchableComboBox HBox.hgrow="ALWAYS" maxWidth="Infinity" fx:id="_genreComboBox"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Artist" minWidth="80" maxWidth="80"/>
+                    <ArtistSelector HBox.hgrow="ALWAYS" maxWidth="Infinity" fx:id="_artistSelector"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </ScrollPane>
+    <HBox spacing="5">
+        <Button text="Apply" onAction="#onApply"/>
+        <Button text="Cancel" onAction="#onCancel"/>
+    </HBox>
+</fx:root>
