@@ -91,6 +91,8 @@ public class DashboardPage extends VBox implements Page {
             final AudioClip audioClip = new AudioClip(song, audioFile);
             _audioSequencePlayer.add(audioClip);
         }
+
+        _audioSequencePlayer.selectFirst();
     }
 
     /**
@@ -101,6 +103,7 @@ public class DashboardPage extends VBox implements Page {
 
         final AudioClip audioClip = new AudioClip(UUID.randomUUID(), file.getName(), null, file.getAbsolutePath(), null);
         _audioSequencePlayer.add(audioClip);
+        _audioSequencePlayer.selectFirst();
     }
 
     /**
@@ -113,6 +116,8 @@ public class DashboardPage extends VBox implements Page {
             final AudioClip audioClip = new AudioClip(UUID.randomUUID(), file.getName(), null, file.getAbsolutePath(), null);
             _audioSequencePlayer.add(audioClip);
         }
+
+        _audioSequencePlayer.selectFirst();
     }
 
 
@@ -135,8 +140,12 @@ public class DashboardPage extends VBox implements Page {
     private void onOpenFileButtonClicked(ActionEvent e) {
         final FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open a media file");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(".mp3"));
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(".wav"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("MP3 files (.mp3)", "*.mp3"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("WAV files (.wav)", "*.wav"));
+
+        final File initialDirectory = new File(System.getProperty("user.home"), "Music");
+        if (initialDirectory.exists() && initialDirectory.isDirectory())
+            fileChooser.setInitialDirectory(initialDirectory);
 
         final File file = fileChooser.showOpenDialog(this.getScene().getWindow());
         if (file == null || !file.exists())
@@ -153,6 +162,10 @@ public class DashboardPage extends VBox implements Page {
         final DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Open a media directory");
 
+        final File initialDirectory = new File(System.getProperty("user.home"), "Music");
+        if (initialDirectory.exists() && initialDirectory.isDirectory())
+            directoryChooser.setInitialDirectory(initialDirectory);
+
         final File directory = directoryChooser.showDialog(this.getScene().getWindow());
         if (directory == null || !directory.exists() || !directory.isDirectory())
             return;
@@ -168,6 +181,39 @@ public class DashboardPage extends VBox implements Page {
         final Page page = new PlaylistOpenPage(_fetchHandler, this::loadPlaylist);
         final ModalWindow window = new ModalWindow("Open a playlist", page);
         window.show();
+    }
+
+
+    /**
+     * @param e
+     */
+    @FXML
+    private void onIncreaseVolumeButtonClicked(ActionEvent e) {
+        final double incrementPercent = 5;
+        final double volume = ((int)(_audioSequencePlayer.getAudioClipPlayer().getVolume() * 100 / incrementPercent) + 1) * incrementPercent / 100;
+        _audioSequencePlayer.getAudioClipPlayer().setVolume(volume);
+        _audioControlPanel.updateVolume();
+    }
+
+    /**
+     * @param e
+     */
+    @FXML
+    private void onDecreaseVolumeButtonClicked(ActionEvent e) {
+        final double decrementPercent = 5;
+        final double volume = ((int)(_audioSequencePlayer.getAudioClipPlayer().getVolume() * 100 / decrementPercent) - 1) * decrementPercent / 100;
+        _audioSequencePlayer.getAudioClipPlayer().setVolume(volume);
+        _audioControlPanel.updateVolume();
+    }
+
+    /**
+     * @param e
+     */
+    @FXML
+    private void onMuteVolumeButtonClicked(ActionEvent e) {
+        final double volume = 0;
+        _audioSequencePlayer.getAudioClipPlayer().setVolume(volume);
+        _audioControlPanel.updateVolume();
     }
 
 

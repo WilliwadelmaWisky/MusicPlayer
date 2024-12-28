@@ -93,6 +93,14 @@ public class AudioSequencePlayer {
         _audioClipPlayer.setAudioClip(audioClip);
     }
 
+    /**
+     *
+     */
+    public void selectFirst() {
+        final AudioClip audioClip = _audioClipList.getFirst();
+        _audioClipPlayer.setAudioClip(audioClip);
+    }
+
 
     /**
      *

@@ -26,9 +26,9 @@
             <MenuItem text="Pause"/>
         </Menu>
         <Menu text="Audio">
-            <MenuItem text="Increase Volume"/>
-            <MenuItem text="Decrease Volume"/>
-            <MenuItem text="Mute Volume"/>
+            <MenuItem text="Increase Volume" onAction="#onIncreaseVolumeButtonClicked"/>
+            <MenuItem text="Decrease Volume" onAction="#onDecreaseVolumeButtonClicked"/>
+            <MenuItem text="Mute Volume" onAction="#onMuteVolumeButtonClicked"/>
         </Menu>
         <Menu text="Help">
             <MenuItem text="Help..." accelerator="F1"/>

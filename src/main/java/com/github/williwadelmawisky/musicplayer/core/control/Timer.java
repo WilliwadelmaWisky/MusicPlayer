@@ -54,7 +54,7 @@ public class Timer {
      * @return
      */
     public static String durationToString(final Duration duration) {
-        final int seconds = (int)(duration.toSeconds() - duration.toMinutes() * MINUTE_TO_SECOND);
+        final int seconds = (int)(duration.toSeconds() - (int)duration.toMinutes() * MINUTE_TO_SECOND);
         return (int)duration.toMinutes() + ":" + Util.padLeft(String.valueOf(seconds), 2, '0');
     }
 }

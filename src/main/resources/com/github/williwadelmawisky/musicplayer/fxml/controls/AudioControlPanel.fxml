@@ -17,7 +17,7 @@
         <Insets topRightBottomLeft="10"/>
     </padding>
     <HBox spacing="5" alignment="BOTTOM_LEFT">
-        <Label fx:id="_playbackPositionLabel" minWidth="40" maxWidth="40" alignment="CENTER_RIGHT"/>
+        <Label fx:id="_playbackPositionLabel" minWidth="40" maxWidth="40"/>
         <ProgressBar fx:id="_progressBar" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
         <Label fx:id="_durationLabel" minWidth="40" maxWidth="40" alignment="CENTER_RIGHT"/>
     </HBox>

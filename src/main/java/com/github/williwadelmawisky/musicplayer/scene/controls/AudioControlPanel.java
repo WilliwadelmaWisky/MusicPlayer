@@ -71,8 +71,7 @@ public class AudioControlPanel extends VBox {
     public void setAudioClipPlayer(final AudioClipPlayer audioClipPlayer) {
         _audioClipPlayer = audioClipPlayer;
 
-        _volumeSlider.setValue(_audioClipPlayer.getVolume());
-        updateVolumeLabel(_audioClipPlayer.getVolume());
+        updateVolume();
 
         _audioClipPlayer.setOnUpdate(this::onUpdate);
         _audioClipPlayer.setOnAudioClipReady(this::onAudioClipReady);
@@ -137,7 +136,7 @@ public class AudioControlPanel extends VBox {
      * @param isPlaying
      */
     private void updatePlayIcon(boolean isPlaying) {
-        String iconPath = isPlaying ? PLAY_ICON : PAUSE_ICON;
+        String iconPath = isPlaying ? PAUSE_ICON : PLAY_ICON;
         _statusImageView.setImage(ResourceLoader.loadImage(iconPath));
     }
 
@@ -146,6 +145,14 @@ public class AudioControlPanel extends VBox {
      */
     private void updateVolumeLabel(final double volume) {
         _volumeLabel.setText((int)(volume * 100) + "%");
+    }
+
+    /**
+     *
+     */
+    public void updateVolume() {
+        _volumeSlider.setValue(_audioClipPlayer.getVolume());
+        updateVolumeLabel(_audioClipPlayer.getVolume());
     }
 
 
