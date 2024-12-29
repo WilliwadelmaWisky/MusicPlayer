@@ -1,6 +1,6 @@
 package com.github.williwadelmawisky.musicplayer.core.control.audio;
 
-import com.github.williwadelmawisky.musicplayer.util.Util;
+import com.github.williwadelmawisky.musicplayer.util.Lists;
 
 import java.util.*;
 
@@ -86,11 +86,19 @@ public class AudioSequencePlayer implements Iterable<AudioClip> {
     }
 
     /**
+     * @param index
+     */
+    public void select(final int index) {
+        final AudioClip audioClip = _audioClipList.get(index);
+        _audioClipPlayer.setAudioClip(audioClip);
+    }
+
+    /**
      * @param id
      */
     public void select(final UUID id) {
-        final AudioClip audioClip = Util.find(_audioClipList, a -> a.equalsID(id));
-        _audioClipPlayer.setAudioClip(audioClip);
+        final int index = Lists.indexFunc(_audioClipList, audioClip -> audioClip.equalsID(id));
+        select(index);
     }
 
     /**

@@ -44,12 +44,11 @@
         </padding>
         <HBox spacing="10" VBox.vgrow="ALWAYS" maxHeight="Infinity">
             <VBox spacing="5">
-                <Button text="Shuffle" onAction="#onListButtonClicked" minWidth="80" maxWidth="80"/>
-                <Button text="..."/>
-                <Button text="..."/>
+                <Button text="Shuffle" onAction="#onShuffleButtonClicked" minWidth="80" maxWidth="80"/>
+                <ComboBox minWidth="80" maxWidth="80"/>
             </VBox>
             <VBox spacing="5" HBox.hgrow="ALWAYS" maxWidth="Infinity">
-                <SearchBar/>
+                <SearchBar onSearch="#onSearch"/>
                 <HBox alignment="CENTER_LEFT"  spacing="5">
                     <padding>
                         <Insets top="10" left="5" right="5"/>

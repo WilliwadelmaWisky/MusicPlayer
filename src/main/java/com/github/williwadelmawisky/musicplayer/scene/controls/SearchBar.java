@@ -67,9 +67,6 @@ public class SearchBar extends HBox {
      */
     @FXML
     private void onButtonClicked(ActionEvent e) {
-        if (_searchField.getText().isEmpty() || _searchField.getText().isBlank())
-            return;
-
         final SearchEvent searchEvent = new SearchEvent(Event.ANY, _searchField.getText().trim());
         _searchEventHandler.handle(searchEvent);
     }

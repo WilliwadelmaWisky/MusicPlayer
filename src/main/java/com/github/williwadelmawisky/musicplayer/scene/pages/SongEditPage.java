@@ -8,7 +8,7 @@ import com.github.williwadelmawisky.musicplayer.core.db.FetchGetHandler;
 import com.github.williwadelmawisky.musicplayer.core.db.URL;
 import com.github.williwadelmawisky.musicplayer.routing.Page;
 import com.github.williwadelmawisky.musicplayer.scene.controls.ArtistSelector;
-import com.github.williwadelmawisky.musicplayer.util.Action;
+import com.github.williwadelmawisky.musicplayer.util.event.Action;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;

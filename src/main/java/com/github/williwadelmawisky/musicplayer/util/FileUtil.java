@@ -1,6 +1,9 @@
 package com.github.williwadelmawisky.musicplayer.util;
 
+import com.github.williwadelmawisky.musicplayer.util.event.EventHandler;
+
 import java.io.*;
+import java.util.Objects;
 
 /**
  *
@@ -69,5 +72,24 @@ public final class FileUtil {
     public static boolean write(String path, String data) {
         File file = new File(path);
         return write(file, data);
+    }
+
+
+    /**
+     * @param directory
+     * @param extensions
+     * @param recursive
+     * @param proc
+     */
+    public static void listFiles(final File directory, final String[] extensions, final boolean recursive, final EventHandler<File> proc) {
+        for (File file : Objects.requireNonNull(directory.listFiles())) {
+            if (file.isDirectory() && recursive) {
+                listFiles(file, extensions, true, proc);
+                continue;
+            }
+
+            if (Arrays.containsFunc(extensions, extension -> file.getName().endsWith(extension)))
+                proc.invoke(file);
+        }
     }
 }

@@ -7,7 +7,7 @@ import com.github.williwadelmawisky.musicplayer.core.control.Timer;
 import com.github.williwadelmawisky.musicplayer.core.data.Artist;
 import com.github.williwadelmawisky.musicplayer.core.db.FetchGetHandler;
 import com.github.williwadelmawisky.musicplayer.core.db.URL;
-import com.github.williwadelmawisky.musicplayer.util.Action;
+import com.github.williwadelmawisky.musicplayer.util.event.Action;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

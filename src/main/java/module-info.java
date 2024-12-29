@@ -25,4 +25,6 @@ module com.github.williwadelmawisky.musicplayer {
     opens com.github.williwadelmawisky.musicplayer.util to javafx.fxml;
     exports com.github.williwadelmawisky.musicplayer.core.control.audio;
     opens com.github.williwadelmawisky.musicplayer.core.control.audio to javafx.fxml;
+    exports com.github.williwadelmawisky.musicplayer.util.event;
+    opens com.github.williwadelmawisky.musicplayer.util.event to javafx.fxml;
 }

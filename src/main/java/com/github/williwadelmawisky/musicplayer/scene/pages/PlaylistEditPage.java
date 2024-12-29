@@ -3,7 +3,7 @@ package com.github.williwadelmawisky.musicplayer.scene.pages;
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
 import com.github.williwadelmawisky.musicplayer.core.data.Playlist;
 import com.github.williwadelmawisky.musicplayer.routing.Page;
-import com.github.williwadelmawisky.musicplayer.util.Action;
+import com.github.williwadelmawisky.musicplayer.util.event.Action;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;

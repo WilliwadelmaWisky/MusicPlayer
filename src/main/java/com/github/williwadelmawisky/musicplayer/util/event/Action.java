@@ -1,4 +1,4 @@
-package com.github.williwadelmawisky.musicplayer.util;
+package com.github.williwadelmawisky.musicplayer.util.event;
 
 /**
  *
