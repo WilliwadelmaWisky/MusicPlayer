@@ -45,7 +45,7 @@ public class PlaylistSongPage extends VBox implements Page {
         for (UUID songID : _playlist) {
             final Song song = _fetchHandler.fetchGET(URL.SONG, songID);
             final Artist artist = _fetchHandler.fetchGET(URL.ARTIST, song.getArtistID());
-            final SongNode songNode = new SongNode(song.getName(), artist.getName(), () -> onSongSelected(song));
+            final SongNode songNode = new SongNode(song.getName(), artist.getName(), (ev) -> onSongSelected(song));
             _songVBox.getChildren().add(songNode);
         }
     }
@@ -55,7 +55,7 @@ public class PlaylistSongPage extends VBox implements Page {
      * @param song
      */
     private void onSongSelected(final Song song) {
-        _songVBox.getChildren().forEach(node -> ((SongNode)node).highlight(false));
+        //_songVBox.getChildren().forEach(node -> ((SongNode)node).highlight(false));
     }
 
 
@@ -74,7 +74,7 @@ public class PlaylistSongPage extends VBox implements Page {
             final boolean matchArtist = artist.getName().toLowerCase().contains(searchString);
 
             if (matchName || matchArtist) {
-                final SongNode songNode = new SongNode(song.getName(), artist.getName(), () -> onSongSelected(song));
+                final SongNode songNode = new SongNode(song.getName(), artist.getName(), (ev) -> onSongSelected(song));
                 _songVBox.getChildren().add(songNode);
             }
         }

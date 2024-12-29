@@ -7,7 +7,7 @@ import java.util.*;
 /**
  *
  */
-public class AudioSequencePlayer {
+public class AudioSequencePlayer implements Iterable<AudioClip> {
 
     private final List<AudioClip> _audioClipList;
     private final AudioClipPlayer _audioClipPlayer;
@@ -107,5 +107,14 @@ public class AudioSequencePlayer {
      */
     private void onAudioClipFinished() {
         next();
+    }
+
+
+    /**
+     * @return
+     */
+    @Override
+    public Iterator<AudioClip> iterator() {
+        return _audioClipList.iterator();
     }
 }

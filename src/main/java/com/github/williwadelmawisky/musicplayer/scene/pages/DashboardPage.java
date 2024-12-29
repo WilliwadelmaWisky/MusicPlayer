@@ -4,6 +4,7 @@ import com.github.williwadelmawisky.musicplayer.ResourceLoader;
 import com.github.williwadelmawisky.musicplayer.core.control.audio.AudioClip;
 import com.github.williwadelmawisky.musicplayer.core.control.audio.AudioSequencePlayer;
 import com.github.williwadelmawisky.musicplayer.core.control.audio.Sequencer;
+import com.github.williwadelmawisky.musicplayer.core.data.Artist;
 import com.github.williwadelmawisky.musicplayer.core.data.AudioFile;
 import com.github.williwadelmawisky.musicplayer.core.data.Playlist;
 import com.github.williwadelmawisky.musicplayer.core.data.Song;
@@ -12,12 +13,14 @@ import com.github.williwadelmawisky.musicplayer.core.db.URL;
 import com.github.williwadelmawisky.musicplayer.routing.Page;
 import com.github.williwadelmawisky.musicplayer.routing.Router;
 import com.github.williwadelmawisky.musicplayer.scene.controls.AudioControlPanel;
+import com.github.williwadelmawisky.musicplayer.scene.controls.SongNode;
 import com.github.williwadelmawisky.musicplayer.stage.ModalWindow;
 import com.github.williwadelmawisky.musicplayer.stage.Window;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -32,7 +35,7 @@ import java.util.UUID;
  */
 public class DashboardPage extends VBox implements Page {
 
-    @FXML private Label _playlistLabel;
+    @FXML private VBox _songVBox;
     @FXML private AudioControlPanel _audioControlPanel;
 
     private FetchHandler _fetchHandler;
@@ -55,27 +58,11 @@ public class DashboardPage extends VBox implements Page {
 
         _audioSequencePlayer = new AudioSequencePlayer(sequencer);
         _fetchHandler = fetchHandler;
-        _playlistLabel.setText("");
 
         _audioControlPanel.setAudioClipPlayer(_audioSequencePlayer.getAudioClipPlayer());
         _audioControlPanel.setFetchHandler(_fetchHandler);
         _audioControlPanel.setOnPrevious(this::onPrevious);
         _audioControlPanel.setOnNext(this::onNext);
-    }
-
-
-    /**
-     *
-     */
-    private void onPrevious() {
-        _audioSequencePlayer.previous();
-    }
-
-    /**
-     *
-     */
-    private void onNext() {
-       _audioSequencePlayer.next();
     }
 
 
@@ -93,6 +80,7 @@ public class DashboardPage extends VBox implements Page {
         }
 
         _audioSequencePlayer.selectFirst();
+        updateSongList();
     }
 
     /**
@@ -104,6 +92,7 @@ public class DashboardPage extends VBox implements Page {
         final AudioClip audioClip = new AudioClip(UUID.randomUUID(), file.getName(), null, file.getAbsolutePath(), null);
         _audioSequencePlayer.add(audioClip);
         _audioSequencePlayer.selectFirst();
+        updateSongList();
     }
 
     /**
@@ -118,6 +107,55 @@ public class DashboardPage extends VBox implements Page {
         }
 
         _audioSequencePlayer.selectFirst();
+        updateSongList();
+    }
+
+
+    /**
+     *
+     */
+    public void shuffle() {
+        _audioSequencePlayer.shuffle();
+        updateSongList();
+    }
+
+
+    /**
+     *
+     */
+    private void updateSongList() {
+        _songVBox.getChildren().clear();
+        for (AudioClip audioClip : _audioSequencePlayer) {
+            final Artist artist = _fetchHandler.fetchGET(URL.ARTIST, audioClip.getArtistID());
+            final String artistName = (artist != null) ? artist.getName() : "";
+            final SongNode songNode = new SongNode(audioClip.getName(), artistName, this::onSongNodeClicked);
+            _songVBox.getChildren().add(songNode);
+        }
+    }
+
+    /**
+     * @param e
+     */
+    private void onSongNodeClicked(final MouseEvent e) {
+        //final SongNode songNode = (SongNode)e.getTarget();
+        System.out.println(e.getTarget());
+        if (e.getButton() != MouseButton.PRIMARY)
+            return;
+    }
+
+
+    /**
+     *
+     */
+    private void onPrevious() {
+        _audioSequencePlayer.previous();
+    }
+
+    /**
+     *
+     */
+    private void onNext() {
+        _audioSequencePlayer.next();
     }
 
 

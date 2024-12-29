@@ -5,11 +5,22 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 
 <fx:root type="com.github.williwadelmawisky.musicplayer.scene.controls.SongNode"
          xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-         padding="10" onMouseClicked="#onClicked"
+         onMouseClicked="#onClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited"
+         alignment="CENTER_LEFT" spacing="5"
 >
-    <Label fx:id="_nameLabel"/>
-    <Label fx:id="_artistLabel"/>
+    <padding>
+        <Insets top="2" bottom="2" left="5" right="5"/>
+    </padding>
+    <ImageView pickOnBounds="true" preserveRatio="true" fitWidth="15">
+        <Image url="@../../img/logo.png"/>
+    </ImageView>
+    <Label text="Song Name" minWidth="300" maxWidth="300" fx:id="_nameLabel"/>
+    <Label text="Artist Name" minWidth="250" maxWidth="250" fx:id="_artistLabel"/>
+    <Label text="3:54" minWidth="65" maxWidth="65" fx:id="_durationLabel"/>
 </fx:root>

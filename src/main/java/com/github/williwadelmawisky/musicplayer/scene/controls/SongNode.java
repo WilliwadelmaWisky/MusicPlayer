@@ -2,30 +2,26 @@ package com.github.williwadelmawisky.musicplayer.scene.controls;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
 import com.github.williwadelmawisky.musicplayer.util.Action;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
-import javafx.scene.effect.BlurType;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 
 /**
  *
  */
-public class SongNode extends VBox {
+public class SongNode extends HBox {
 
     @FXML private Label _nameLabel;
     @FXML private Label _artistLabel;
+    @FXML private Label _durationLabel;
 
-    private Action _onClick;
-    private boolean _isHighlighted;
+    private EventHandler<MouseEvent> _onClick;
+    private boolean _isSelected, _isMouseOver;
 
 
     /**
@@ -38,20 +34,38 @@ public class SongNode extends VBox {
      * @param artistName
      * @param onClick
      */
-    public SongNode(final String songName, final String artistName, final Action onClick) {
+    public SongNode(final String songName, final String artistName, final EventHandler<MouseEvent> onClick) {
         this();
 
-        ResourceLoader.loadFxml("fxml/controls/PlaylistNode.fxml", this);
+        ResourceLoader.loadFxml("fxml/controls/SongNode.fxml", this);
 
         _onClick = onClick;
-        DropShadow dropShadow = new DropShadow(BlurType.THREE_PASS_BOX, Color.color(0, 0, 0, 0.8), 5, 0, 2, 2);
-        setEffect(dropShadow);
-
-        _isHighlighted = true;
-        highlight(false);
-
         _nameLabel.setText(songName);
         _artistLabel.setText(artistName);
+        _durationLabel.setText("0:00");
+
+        _isMouseOver = false;
+        deselect();
+    }
+
+
+    /**
+     *
+     */
+    public void select() {
+        _isSelected = true;
+        final String hex = "94baf7";
+        final BackgroundFill backgroundFill = new BackgroundFill(Paint.valueOf(hex), CornerRadii.EMPTY, Insets.EMPTY);
+        final Background background = new Background(backgroundFill);
+        setBackground(background);
+    }
+
+    /**
+     *
+     */
+    public void deselect() {
+        _isSelected = false;
+        setBackground(null);
     }
 
 
@@ -60,25 +74,34 @@ public class SongNode extends VBox {
      */
     @FXML
     private void onClicked(MouseEvent e) {
-        if (e.getButton() != MouseButton.PRIMARY)
-            return;
-
-        _onClick.invoke();
-        highlight(true);
+        _onClick.handle(e);
+        select();
     }
 
-
     /**
-     * @param highlight
+     * @param e
      */
-    public void highlight(boolean highlight) {
-        if (_isHighlighted == highlight)
+    @FXML
+    private void onMouseEntered(MouseEvent e) {
+        _isMouseOver = true;
+        if (_isSelected)
             return;
 
-        _isHighlighted = highlight;
-        String hex = highlight ? "94baf7" : "dcdcdc";
-        BackgroundFill backgroundFill = new BackgroundFill(Paint.valueOf(hex), new CornerRadii(10), Insets.EMPTY);
-        Background background = new Background(backgroundFill);
+        final String hex = "b8d3ff";
+        final BackgroundFill backgroundFill = new BackgroundFill(Paint.valueOf(hex), CornerRadii.EMPTY, Insets.EMPTY);
+        final Background background = new Background(backgroundFill);
         setBackground(background);
+    }
+
+    /**
+     * @param e
+     */
+    @FXML
+    private void onMouseExited(MouseEvent e) {
+        _isMouseOver = false;
+        if (_isSelected)
+            return;
+
+        setBackground(null);
     }
 }
