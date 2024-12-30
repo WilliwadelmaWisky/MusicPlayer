@@ -5,7 +5,7 @@ import com.github.williwadelmawisky.musicplayer.core.data.AudioFile;
 import com.github.williwadelmawisky.musicplayer.core.data.Playlist;
 import com.github.williwadelmawisky.musicplayer.core.data.Song;
 import com.github.williwadelmawisky.musicplayer.core.serialization.*;
-import com.github.williwadelmawisky.musicplayer.util.FileUtil;
+import com.github.williwadelmawisky.musicplayer.util.Files;
 import com.github.williwadelmawisky.musicplayer.util.Tuple;
 
 import java.nio.file.Paths;
@@ -31,7 +31,7 @@ public class Database {
         for (URL url : URL.values()) {
             final Table table = new Table();
             final String filePath = Paths.get(HOME_PATH, url.name()).toString();
-            final String content = FileUtil.read(filePath);
+            final String content = Files.read(filePath);
 
             if (content != null) {
                 for (String value : content.split("\n")) {

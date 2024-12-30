@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  *
  */
-public final class FileUtil {
+public final class Files {
 
     /**
      * Read all contents of the file
@@ -83,12 +83,16 @@ public final class FileUtil {
      */
     public static void listFiles(final File directory, final String[] extensions, final boolean recursive, final EventHandler<File> proc) {
         for (File file : Objects.requireNonNull(directory.listFiles())) {
-            if (file.isDirectory() && recursive) {
+            if (file.isDirectory()) {
+                if (!recursive)
+                    continue;
+
                 listFiles(file, extensions, true, proc);
                 continue;
             }
 
-            if (Arrays.containsFunc(extensions, extension -> file.getName().endsWith(extension)))
+            boolean includeAll = extensions == null || extensions.length == 0 || Arrays.contains(extensions, "*");
+            if (includeAll || Arrays.containsFunc(extensions, extension -> file.getName().endsWith(extension)))
                 proc.invoke(file);
         }
     }

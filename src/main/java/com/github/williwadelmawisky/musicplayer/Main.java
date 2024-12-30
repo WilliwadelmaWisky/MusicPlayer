@@ -22,8 +22,8 @@ public class Main extends Application {
     @Override
     public void start(final Stage stage) {
         stage.setTitle("Music Player");
-        stage.setWidth(800);
-        stage.setMinWidth(800);
+        stage.setWidth(720);
+        stage.setMinWidth(720);
         stage.setHeight(500);
         stage.setMinHeight(300);
 

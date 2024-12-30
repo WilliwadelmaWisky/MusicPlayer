@@ -1,9 +1,7 @@
 package com.github.williwadelmawisky.musicplayer.scene.pages;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
-import com.github.williwadelmawisky.musicplayer.core.control.audio.AudioClip;
-import com.github.williwadelmawisky.musicplayer.core.control.audio.AudioSequencePlayer;
-import com.github.williwadelmawisky.musicplayer.core.control.audio.Sequencer;
+import com.github.williwadelmawisky.musicplayer.core.control.audio.*;
 import com.github.williwadelmawisky.musicplayer.core.data.Artist;
 import com.github.williwadelmawisky.musicplayer.core.data.AudioFile;
 import com.github.williwadelmawisky.musicplayer.core.data.Playlist;
@@ -13,17 +11,16 @@ import com.github.williwadelmawisky.musicplayer.core.db.URL;
 import com.github.williwadelmawisky.musicplayer.routing.Page;
 import com.github.williwadelmawisky.musicplayer.scene.controls.AudioControlPanel;
 import com.github.williwadelmawisky.musicplayer.scene.controls.SearchBar;
+import com.github.williwadelmawisky.musicplayer.scene.controls.AudioSequencerSelector;
 import com.github.williwadelmawisky.musicplayer.scene.controls.SongNode;
 import com.github.williwadelmawisky.musicplayer.stage.ModalWindow;
-import com.github.williwadelmawisky.musicplayer.util.FileUtil;
+import com.github.williwadelmawisky.musicplayer.util.Files;
 import com.github.williwadelmawisky.musicplayer.util.Lists;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
@@ -102,7 +99,7 @@ public class DashboardPage extends VBox implements Page {
         _audioSequencePlayer.clear();
 
         final String[] extensions = new String[] { ".mp3", ".wav" };
-        FileUtil.listFiles(directory, extensions, true, file -> {
+        Files.listFiles(directory, extensions, true, file -> {
             final AudioClip audioClip = new AudioClip(UUID.randomUUID(), file.getName(), null, file.getAbsolutePath(), null);
             _audioSequencePlayer.add(audioClip);
         });
@@ -315,31 +312,20 @@ public class DashboardPage extends VBox implements Page {
         shuffle();
     }
 
+    /**
+     * @param e
+     */
+    @FXML
+    private void onSequencerChanged(AudioSequencerSelector.SelectEvent e) {
+        _audioSequencePlayer.setSequencer(e.getSequencer());
+    }
 
     /**
      * @param e
      */
     @FXML
     private void onSearch(SearchBar.SearchEvent e) {
-        System.out.println(e.getSearchString());
         searchSongList(e.getSearchString().toLowerCase());
-
-        /*
-        _songVBox.getChildren().clear();
-        final String searchString = e.getSearchString().toLowerCase();
-
-        for (UUID songID : _playlist) {
-            final Song song = _fetchHandler.fetchGET(URL.SONG, songID);
-            final Artist artist = _fetchHandler.fetchGET(URL.ARTIST, song.getArtistID());
-            final boolean matchName = song.getName().toLowerCase().contains(searchString);
-            final boolean matchArtist = artist.getName().toLowerCase().contains(searchString);
-
-            if (matchName || matchArtist) {
-                final SongNode songNode = new SongNode(song.getName(), artist.getName(), null, (ev) -> onSongSelected(song));
-                _songVBox.getChildren().add(songNode);
-            }
-        }
-         */
     }
 
 

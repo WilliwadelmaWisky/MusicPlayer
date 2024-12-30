@@ -18,4 +18,14 @@ public interface Sequencer<T> {
      * @return
      */
     T previous(final List<T> sequence);
+
+    /**
+     * @return
+     */
+    int getCurrentIndex();
+
+    /**
+     * @param index
+     */
+    void setCurrentIndex(final int index);
 }

@@ -11,6 +11,7 @@
 <?import com.github.williwadelmawisky.musicplayer.scene.controls.SearchBar?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+<?import com.github.williwadelmawisky.musicplayer.scene.controls.AudioSequencerSelector?>
 <fx:root type="com.github.williwadelmawisky.musicplayer.scene.pages.DashboardPage"
          xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
 >
@@ -33,6 +34,10 @@
             <MenuItem text="Decrease Volume" onAction="#onDecreaseVolumeButtonClicked"/>
             <MenuItem text="Mute Volume" onAction="#onMuteVolumeButtonClicked"/>
         </Menu>
+        <Menu text="Window">
+            <MenuItem text="Dashboard" accelerator="Shortcut+1"/>
+            <MenuItem text="Library" accelerator="Shortcut+2"/>
+        </Menu>
         <Menu text="Help">
             <MenuItem text="Help..." accelerator="F1"/>
             <MenuItem text="About..." accelerator="Shift+F1"/>
@@ -42,26 +47,24 @@
         <padding>
             <Insets topRightBottomLeft="10"/>
         </padding>
-        <HBox spacing="10" VBox.vgrow="ALWAYS" maxHeight="Infinity">
-            <VBox spacing="5">
-                <Button text="Shuffle" onAction="#onShuffleButtonClicked" minWidth="80" maxWidth="80"/>
-                <ComboBox minWidth="80" maxWidth="80"/>
-            </VBox>
-            <VBox spacing="5" HBox.hgrow="ALWAYS" maxWidth="Infinity">
-                <SearchBar onSearch="#onSearch"/>
-                <HBox alignment="CENTER_LEFT"  spacing="5">
-                    <padding>
-                        <Insets top="10" left="5" right="5"/>
-                    </padding>
-                    <Label text="Song" minWidth="320" maxWidth="320"/>
-                    <Label text="Artist" minWidth="250" maxWidth="250"/>
-                    <Label text="Duration" minWidth="65" maxWidth="65"/>
-                </HBox>
-                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" maxHeight="Infinity">
-                    <VBox fx:id="_songVBox"/>
-                </ScrollPane>
-            </VBox>
-        </HBox>
+        <VBox spacing="5" VBox.vgrow="ALWAYS" maxHeight="Infinity">
+            <SearchBar onSearch="#onSearch"/>
+            <HBox spacing="5" alignment="CENTER_LEFT">
+                <AudioSequencerSelector onSelect="#onSequencerChanged" minWidth="150" maxWidth="150"/>
+                <Button text="Shuffle" onAction="#onShuffleButtonClicked"/>
+            </HBox>
+            <HBox alignment="CENTER_LEFT"  spacing="5">
+                <padding>
+                    <Insets top="10" left="5" right="5"/>
+                </padding>
+                <Label text="Song" minWidth="320" maxWidth="320"/>
+                <Label text="Artist" minWidth="250" maxWidth="250"/>
+                <Label text="Duration" minWidth="65" maxWidth="65"/>
+            </HBox>
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" maxHeight="Infinity">
+                <VBox fx:id="_songVBox"/>
+            </ScrollPane>
+        </VBox>
         <AudioControlPanel fx:id="_audioControlPanel"/>
     </VBox>
 </fx:root>

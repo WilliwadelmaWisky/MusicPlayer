@@ -36,6 +36,9 @@ public class AudioSequencePlayer implements Iterable<AudioClip> {
      * @param sequencer
      */
     public void setSequencer(final Sequencer<AudioClip> sequencer) {
+        final int currentIndex = _sequencer.getCurrentIndex();
+        sequencer.setCurrentIndex(currentIndex);
+
         _sequencer = sequencer;
     }
 
@@ -91,6 +94,7 @@ public class AudioSequencePlayer implements Iterable<AudioClip> {
     public void select(final int index) {
         final AudioClip audioClip = _audioClipList.get(index);
         _audioClipPlayer.setAudioClip(audioClip);
+        _sequencer.setCurrentIndex(index);
     }
 
     /**
@@ -104,10 +108,7 @@ public class AudioSequencePlayer implements Iterable<AudioClip> {
     /**
      *
      */
-    public void selectFirst() {
-        final AudioClip audioClip = _audioClipList.getFirst();
-        _audioClipPlayer.setAudioClip(audioClip);
-    }
+    public void selectFirst() { select(0); }
 
 
     /**
