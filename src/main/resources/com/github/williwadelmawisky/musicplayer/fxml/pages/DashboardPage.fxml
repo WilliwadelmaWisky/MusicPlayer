@@ -35,8 +35,8 @@
             <MenuItem text="Mute Volume" onAction="#onMuteVolumeButtonClicked"/>
         </Menu>
         <Menu text="Window">
-            <MenuItem text="Dashboard" accelerator="Shortcut+1"/>
-            <MenuItem text="Library" accelerator="Shortcut+2"/>
+            <MenuItem text="Dashboard" disable="true" accelerator="Shortcut+1"/>
+            <MenuItem text="Library" onAction="#onLibraryPageButtonClicked" accelerator="Shortcut+2"/>
         </Menu>
         <Menu text="Help">
             <MenuItem text="Help..." accelerator="F1"/>
@@ -50,7 +50,7 @@
         <VBox spacing="5" VBox.vgrow="ALWAYS" maxHeight="Infinity">
             <SearchBar onSearch="#onSearch"/>
             <HBox spacing="5" alignment="CENTER_LEFT">
-                <AudioSequencerSelector onSelect="#onSequencerChanged" minWidth="150" maxWidth="150"/>
+                <AudioSequencerSelector fx:id="_audioSequencerSelector" onSelect="#onSequencerChanged" minWidth="150" maxWidth="150"/>
                 <Button text="Shuffle" onAction="#onShuffleButtonClicked"/>
             </HBox>
             <HBox alignment="CENTER_LEFT"  spacing="5">

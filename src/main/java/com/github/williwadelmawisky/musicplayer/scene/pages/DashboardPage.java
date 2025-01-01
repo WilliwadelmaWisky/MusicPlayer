@@ -9,6 +9,7 @@ import com.github.williwadelmawisky.musicplayer.core.data.Song;
 import com.github.williwadelmawisky.musicplayer.core.db.FetchHandler;
 import com.github.williwadelmawisky.musicplayer.core.db.URL;
 import com.github.williwadelmawisky.musicplayer.routing.Page;
+import com.github.williwadelmawisky.musicplayer.routing.RedirectHandler;
 import com.github.williwadelmawisky.musicplayer.scene.controls.AudioControlPanel;
 import com.github.williwadelmawisky.musicplayer.scene.controls.SearchBar;
 import com.github.williwadelmawisky.musicplayer.scene.controls.AudioSequencerSelector;
@@ -34,8 +35,10 @@ public class DashboardPage extends VBox implements Page {
 
     @FXML private VBox _songVBox;
     @FXML private AudioControlPanel _audioControlPanel;
+    @FXML private AudioSequencerSelector _audioSequencerSelector;
 
     private FetchHandler _fetchHandler;
+    private RedirectHandler _redirectHandler;
     private AudioSequencePlayer _audioSequencePlayer;
 
 
@@ -45,16 +48,17 @@ public class DashboardPage extends VBox implements Page {
     public DashboardPage() {}
 
     /**
-     * @param sequencer
      * @param fetchHandler
+     * @param redirectHandler
      */
-    public DashboardPage(final Sequencer<AudioClip> sequencer, final FetchHandler fetchHandler) {
+    public DashboardPage(final FetchHandler fetchHandler, final RedirectHandler redirectHandler) {
         super();
 
         ResourceLoader.loadFxml("fxml/pages/DashboardPage.fxml", this);
 
-        _audioSequencePlayer = new AudioSequencePlayer(sequencer);
+        _audioSequencePlayer = new AudioSequencePlayer(_audioSequencerSelector.getCurrentSequencer());
         _fetchHandler = fetchHandler;
+        _redirectHandler = redirectHandler;
 
         _audioControlPanel.setAudioClipPlayer(_audioSequencePlayer.getAudioClipPlayer());
         _audioControlPanel.setFetchHandler(_fetchHandler);
@@ -301,6 +305,15 @@ public class DashboardPage extends VBox implements Page {
         final double volume = 0;
         _audioSequencePlayer.getAudioClipPlayer().setVolume(volume);
         _audioControlPanel.updateVolume();
+    }
+
+
+    /**
+     * @param e
+     */
+    @FXML
+    private void onLibraryPageButtonClicked(ActionEvent e) {
+        _redirectHandler.setRoute("/library");
     }
 
 

@@ -43,7 +43,7 @@ public class AudioSequencerSelector extends ComboBox<String> {
     /**
      *
      */
-    private enum SequencerType {
+    public enum SequencerType {
         Order,
         Random,
         Repeat
@@ -67,8 +67,25 @@ public class AudioSequencerSelector extends ComboBox<String> {
         final List<String> nameList = _sequencerMap.keySet().stream().map(Enum::name).toList();
         final ObservableList<String> items = FXCollections.observableList(nameList);
         setItems(items);
-        setValue(SequencerType.Order.name());
+        setCurrentSequencer(SequencerType.Order);
         valueProperty().addListener(this::onValueChanged);
+    }
+
+
+    /**
+     * @return
+     */
+    public Sequencer<AudioClip> getCurrentSequencer() {
+        final SequencerType type = SequencerType.valueOf(getValue());
+        return _sequencerMap.get(type);
+    }
+
+    /**
+     * @param sequencerType
+     */
+    public void setCurrentSequencer(final SequencerType sequencerType) {
+        if (_sequencerMap.containsKey(sequencerType))
+            setValue(sequencerType.name());
     }
 
 
@@ -89,6 +106,9 @@ public class AudioSequencerSelector extends ComboBox<String> {
      * @param newVal
      */
     private void onValueChanged(final ObservableValue<? extends String> observable, final String oldVal, final String newVal) {
+        if (_selectEventHandler == null)
+            return;
+
         final SequencerType type = SequencerType.valueOf(newVal);
         final Sequencer<AudioClip> sequencer = _sequencerMap.get(type);
         final SelectEvent event = new SelectEvent(Event.ANY, sequencer);

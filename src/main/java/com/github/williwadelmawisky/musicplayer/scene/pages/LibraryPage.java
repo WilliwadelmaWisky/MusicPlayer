@@ -1,14 +1,28 @@
 package com.github.williwadelmawisky.musicplayer.scene.pages;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
+import com.github.williwadelmawisky.musicplayer.core.db.FetchGetHandler;
 import com.github.williwadelmawisky.musicplayer.routing.Page;
+import com.github.williwadelmawisky.musicplayer.routing.RedirectHandler;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
+import org.controlsfx.control.GridView;
+
+import java.util.Arrays;
 
 /**
  *
  */
 public class LibraryPage extends VBox implements Page {
+
+    @FXML private GridView<String> _gridView;
+
+    private FetchGetHandler _fetchHandler;
+    private RedirectHandler _redirectHandler;
 
 
     /**
@@ -17,12 +31,28 @@ public class LibraryPage extends VBox implements Page {
     public LibraryPage() {}
 
     /**
-     * @param library
+     * @param fetchHandler
+     * @param redirectHandler
      */
-    public LibraryPage(final String library) {
+    public LibraryPage(final FetchGetHandler fetchHandler, final RedirectHandler redirectHandler) {
         super();
 
         ResourceLoader.loadFxml("fxml/pages/LibraryPage.fxml", this);
+
+        _fetchHandler = fetchHandler;
+        _redirectHandler = redirectHandler;
+        
+        final ObservableList<String> items = FXCollections.observableList(Arrays.asList("Hello", "World"));
+        _gridView.setItems(items);
+    }
+
+
+    /**
+     * @param e
+     */
+    @FXML
+    private void onDashboardPageButtonClicked(ActionEvent e) {
+        _redirectHandler.setRoute("/");
     }
 
 

@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  *
  */
-public class Router {
+public class Router implements RedirectHandler {
 
     /**
      *

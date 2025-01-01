@@ -31,8 +31,8 @@ public class Main extends Application {
         final FetchHandler fetchHandler = new FetchHandler(database);
 
         final Router router = new Router(new NotFoundPage());
-        router.addRoute("/", new DashboardPage(new OrderSequencer(), fetchHandler));
-        router.addRoute("/library", new LibraryPage(""));
+        router.addRoute("/", new DashboardPage(fetchHandler, router));
+        router.addRoute("/library", new LibraryPage(fetchHandler, router));
 
         final Window window = new Window(stage, router);
         window.show();
