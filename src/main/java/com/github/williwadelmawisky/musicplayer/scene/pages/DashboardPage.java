@@ -62,8 +62,8 @@ public class DashboardPage extends VBox implements Page {
 
         _audioControlPanel.setAudioClipPlayer(_audioSequencePlayer.getAudioClipPlayer());
         _audioControlPanel.setFetchHandler(_fetchHandler);
-        _audioControlPanel.setOnPrevious(this::onPrevious);
-        _audioControlPanel.setOnNext(this::onNext);
+        _audioControlPanel.setOnPrevious(this::onPreviousSongSelected);
+        _audioControlPanel.setOnNext(this::onNextSongSelected);
     }
 
 
@@ -200,14 +200,14 @@ public class DashboardPage extends VBox implements Page {
     /**
      *
      */
-    private void onPrevious() {
+    private void onPreviousSongSelected() {
         _audioSequencePlayer.previous();
     }
 
     /**
      *
      */
-    private void onNext() {
+    private void onNextSongSelected() {
         _audioSequencePlayer.next();
     }
 
@@ -217,8 +217,7 @@ public class DashboardPage extends VBox implements Page {
      */
     @FXML
     private void onNewPlaylistButtonClicked(ActionEvent e) {
-        final Playlist playlist = new Playlist(UUID.randomUUID(), "");
-        final Page page =  new PlaylistEditPage(playlist, () -> loadPlaylist(playlist));
+        final Page page =  new NewPlaylistPage(_fetchHandler, this::loadPlaylist);
         final ModalWindow window = new ModalWindow("Create a new playlist", page);
         window.show();
     }

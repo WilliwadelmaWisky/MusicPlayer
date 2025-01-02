@@ -23,6 +23,9 @@
             <MenuItem text="Open Directory..." onAction="#onOpenDirectoryButtonClicked" accelerator="Shortcut+D"/>
             <MenuItem text="Open Playlist..." onAction="#onOpenPlaylistButtonClicked" accelerator="Shortcut+O"/>
             <SeparatorMenuItem/>
+            <MenuItem text="Import Playlist..."/>
+            <MenuItem text="Export Playlist..."/>
+            <SeparatorMenuItem/>
             <MenuItem text="Quit" accelerator="Shortcut+Q"/>
         </Menu>
         <Menu text="Playback">
