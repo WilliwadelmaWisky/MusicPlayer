@@ -1,6 +1,7 @@
 package com.github.williwadelmawisky.musicplayer.core.control.audio;
 
 import com.github.williwadelmawisky.musicplayer.util.Lists;
+import com.github.williwadelmawisky.musicplayer.util.event.EventHandler;
 
 import java.util.*;
 
@@ -12,6 +13,7 @@ public class AudioSequencePlayer implements Iterable<AudioClip> {
     private final List<AudioClip> _audioClipList;
     private final AudioClipPlayer _audioClipPlayer;
     private Sequencer<AudioClip> _sequencer;
+    private EventHandler<AudioClip> _onSelected;
 
 
     /**
@@ -40,6 +42,13 @@ public class AudioSequencePlayer implements Iterable<AudioClip> {
         sequencer.setCurrentIndex(currentIndex);
 
         _sequencer = sequencer;
+    }
+
+    /**
+     * @param onSelected
+     */
+    public void setOnSelected(EventHandler<AudioClip> onSelected) {
+        _onSelected = onSelected;
     }
 
 
@@ -78,6 +87,7 @@ public class AudioSequencePlayer implements Iterable<AudioClip> {
     public void next() {
         final AudioClip audioClip = _sequencer.next(_audioClipList);
         _audioClipPlayer.setAudioClip(audioClip);
+        _onSelected.invoke(audioClip);
     }
 
     /**
@@ -86,6 +96,7 @@ public class AudioSequencePlayer implements Iterable<AudioClip> {
     public void previous() {
         final AudioClip audioClip = _sequencer.previous(_audioClipList);
         _audioClipPlayer.setAudioClip(audioClip);
+        _onSelected.invoke(audioClip);
     }
 
     /**
@@ -95,6 +106,7 @@ public class AudioSequencePlayer implements Iterable<AudioClip> {
         final AudioClip audioClip = _audioClipList.get(index);
         _audioClipPlayer.setAudioClip(audioClip);
         _sequencer.setCurrentIndex(index);
+        _onSelected.invoke(audioClip);
     }
 
     /**

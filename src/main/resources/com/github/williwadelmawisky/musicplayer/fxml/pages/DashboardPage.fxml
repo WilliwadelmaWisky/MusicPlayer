@@ -19,6 +19,9 @@
         <Menu text="Media">
             <MenuItem text="New Playlist" onAction="#onNewPlaylistButtonClicked" accelerator="Shortcut+N"/>
             <SeparatorMenuItem/>
+            <MenuItem text="Save" accelerator="Shortcut+S"/>
+            <MenuItem text="Save As..." accelerator="Shortcut+Shift+S"/>
+            <SeparatorMenuItem/>
             <MenuItem text="Open File..." onAction="#onOpenFileButtonClicked" accelerator="Shortcut+F"/>
             <MenuItem text="Open Directory..." onAction="#onOpenDirectoryButtonClicked" accelerator="Shortcut+D"/>
             <MenuItem text="Open Playlist..." onAction="#onOpenPlaylistButtonClicked" accelerator="Shortcut+O"/>
@@ -64,9 +67,7 @@
                 <Label text="Artist" minWidth="250" maxWidth="250"/>
                 <Label text="Duration" minWidth="65" maxWidth="65"/>
             </HBox>
-            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" maxHeight="Infinity">
-                <VBox fx:id="_songVBox"/>
-            </ScrollPane>
+            <ListView fx:id="_songListView" VBox.vgrow="ALWAYS" maxHeight="Infinity"/>
         </VBox>
         <AudioControlPanel fx:id="_audioControlPanel"/>
     </VBox>

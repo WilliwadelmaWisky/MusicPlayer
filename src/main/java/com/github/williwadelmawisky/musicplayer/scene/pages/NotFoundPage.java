@@ -16,4 +16,14 @@ public class NotFoundPage extends VBox implements Page {
     public Parent getRoot() {
         return this;
     }
+
+    @Override
+    public void onLoad() {
+
+    }
+
+    @Override
+    public void onUnload() {
+
+    }
 }

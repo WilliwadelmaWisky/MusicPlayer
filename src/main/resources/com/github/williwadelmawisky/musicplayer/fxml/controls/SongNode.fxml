@@ -11,12 +11,8 @@
 
 <fx:root type="com.github.williwadelmawisky.musicplayer.scene.controls.SongNode"
          xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-         onMouseClicked="#onClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited"
          alignment="CENTER_LEFT" spacing="5"
 >
-    <padding>
-        <Insets top="2" bottom="2" left="5" right="5"/>
-    </padding>
     <ImageView pickOnBounds="true" preserveRatio="true" fitWidth="15">
         <Image url="@../../img/logo.png"/>
     </ImageView>

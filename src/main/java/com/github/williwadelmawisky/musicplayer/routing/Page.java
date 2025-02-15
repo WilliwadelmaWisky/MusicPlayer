@@ -11,4 +11,14 @@ public interface Page {
      * @return
      */
     Parent getRoot();
+
+    /**
+     *
+     */
+    void onLoad();
+
+    /**
+     *
+     */
+    void onUnload();
 }

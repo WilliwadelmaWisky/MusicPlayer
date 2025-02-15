@@ -42,7 +42,7 @@ public class PlaylistOpenPage extends VBox implements Page {
     public PlaylistOpenPage(final FetchGetHandler fetchHandler, final OnOpenPlaylist onOpenPlaylist) {
         super();
 
-        ResourceLoader.loadFxml("fxml/pages/PlaylistOpenPage.fxml", this);
+        ResourceLoader.loadFxml("fxml/pages/OpenPlaylistPage.fxml", this);
 
         _fetchHandler = fetchHandler;
         _onOpenPlaylist = onOpenPlaylist;
@@ -76,5 +76,15 @@ public class PlaylistOpenPage extends VBox implements Page {
     @Override
     public Parent getRoot() {
         return this;
+    }
+
+    @Override
+    public void onLoad() {
+
+    }
+
+    @Override
+    public void onUnload() {
+
     }
 }

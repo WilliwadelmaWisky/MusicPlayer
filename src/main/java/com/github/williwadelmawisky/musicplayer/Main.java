@@ -3,8 +3,10 @@ package com.github.williwadelmawisky.musicplayer;
 import com.github.williwadelmawisky.musicplayer.core.control.audio.OrderSequencer;
 import com.github.williwadelmawisky.musicplayer.core.db.Database;
 import com.github.williwadelmawisky.musicplayer.core.db.FetchHandler;
+import com.github.williwadelmawisky.musicplayer.routing.SessionStorage;
 import com.github.williwadelmawisky.musicplayer.scene.pages.DashboardPage;
 import com.github.williwadelmawisky.musicplayer.routing.Router;
+import com.github.williwadelmawisky.musicplayer.scene.pages.EditPlaylistPage;
 import com.github.williwadelmawisky.musicplayer.scene.pages.LibraryPage;
 import com.github.williwadelmawisky.musicplayer.scene.pages.NotFoundPage;
 import com.github.williwadelmawisky.musicplayer.stage.Window;
@@ -30,9 +32,11 @@ public class Main extends Application {
         final Database database = new Database();
         final FetchHandler fetchHandler = new FetchHandler(database);
 
+        final SessionStorage sessionStorage = new SessionStorage();
         final Router router = new Router(new NotFoundPage());
-        router.addRoute("/", new DashboardPage(fetchHandler, router));
-        router.addRoute("/library", new LibraryPage(fetchHandler, router));
+        router.addRoute("/", new DashboardPage(fetchHandler, router, sessionStorage));
+        router.addRoute("/library", new LibraryPage(fetchHandler, router, sessionStorage));
+        router.addRoute("/edit", new EditPlaylistPage(fetchHandler, router, sessionStorage));
 
         final Window window = new Window(stage, router);
         window.show();

@@ -10,6 +10,7 @@ import com.github.williwadelmawisky.musicplayer.core.db.FetchHandler;
 import com.github.williwadelmawisky.musicplayer.core.db.URL;
 import com.github.williwadelmawisky.musicplayer.routing.Page;
 import com.github.williwadelmawisky.musicplayer.routing.RedirectHandler;
+import com.github.williwadelmawisky.musicplayer.routing.SessionStorage;
 import com.github.williwadelmawisky.musicplayer.scene.controls.AudioControlPanel;
 import com.github.williwadelmawisky.musicplayer.scene.controls.SearchBar;
 import com.github.williwadelmawisky.musicplayer.scene.controls.AudioSequencerSelector;
@@ -20,7 +21,9 @@ import com.github.williwadelmawisky.musicplayer.util.Lists;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.input.MouseButton;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -33,12 +36,13 @@ import java.util.*;
  */
 public class DashboardPage extends VBox implements Page {
 
-    @FXML private VBox _songVBox;
+    @FXML private ListView<SongNode> _songListView;
     @FXML private AudioControlPanel _audioControlPanel;
     @FXML private AudioSequencerSelector _audioSequencerSelector;
 
     private FetchHandler _fetchHandler;
     private RedirectHandler _redirectHandler;
+    private SessionStorage _sessionStorage;
     private AudioSequencePlayer _audioSequencePlayer;
 
 
@@ -50,20 +54,49 @@ public class DashboardPage extends VBox implements Page {
     /**
      * @param fetchHandler
      * @param redirectHandler
+     * @param sessionStorage
      */
-    public DashboardPage(final FetchHandler fetchHandler, final RedirectHandler redirectHandler) {
+    public DashboardPage(final FetchHandler fetchHandler, final RedirectHandler redirectHandler, final SessionStorage sessionStorage) {
         super();
 
         ResourceLoader.loadFxml("fxml/pages/DashboardPage.fxml", this);
 
         _audioSequencePlayer = new AudioSequencePlayer(_audioSequencerSelector.getCurrentSequencer());
+        _audioSequencePlayer.setOnSelected(this::onSongSelected);
         _fetchHandler = fetchHandler;
         _redirectHandler = redirectHandler;
+        _sessionStorage = sessionStorage;
+
+        _songListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        _songListView.setOnMouseClicked(this::onListViewClicked);
 
         _audioControlPanel.setAudioClipPlayer(_audioSequencePlayer.getAudioClipPlayer());
         _audioControlPanel.setFetchHandler(_fetchHandler);
         _audioControlPanel.setOnPrevious(this::onPreviousSongSelected);
         _audioControlPanel.setOnNext(this::onNextSongSelected);
+    }
+
+
+    /**
+     * @return
+     */
+    @Override
+    public Parent getRoot() { return this; }
+
+    /**
+     *
+     */
+    @Override
+    public void onLoad() {
+
+    }
+
+    /**
+     *
+     */
+    @Override
+    public void onUnload() {
+
     }
 
 
@@ -80,8 +113,8 @@ public class DashboardPage extends VBox implements Page {
             _audioSequencePlayer.add(audioClip);
         }
 
-        _audioSequencePlayer.selectFirst();
         updateSongList();
+        _audioSequencePlayer.selectFirst();
     }
 
     /**
@@ -92,8 +125,8 @@ public class DashboardPage extends VBox implements Page {
 
         final AudioClip audioClip = new AudioClip(UUID.randomUUID(), file.getName(), null, file.getAbsolutePath(), null);
         _audioSequencePlayer.add(audioClip);
-        _audioSequencePlayer.selectFirst();
         updateSongList();
+        _audioSequencePlayer.selectFirst();
     }
 
     /**
@@ -108,8 +141,8 @@ public class DashboardPage extends VBox implements Page {
             _audioSequencePlayer.add(audioClip);
         });
 
-        _audioSequencePlayer.selectFirst();
         updateSongList();
+        _audioSequencePlayer.selectFirst();
     }
 
 
@@ -118,8 +151,8 @@ public class DashboardPage extends VBox implements Page {
      */
     public void shuffle() {
         _audioSequencePlayer.shuffle();
-        _audioSequencePlayer.selectFirst();
         updateSongList();
+        _audioSequencePlayer.selectFirst();
     }
 
 
@@ -127,13 +160,13 @@ public class DashboardPage extends VBox implements Page {
      *
      */
     private void updateSongList() {
-        _songVBox.getChildren().clear();
+        _songListView.getItems().clear();
 
         for (AudioClip audioClip : _audioSequencePlayer) {
             final Artist artist = _fetchHandler.fetchGET(URL.ARTIST, audioClip.getArtistID());
             final String artistName = (artist != null) ? artist.getName() : "";
-            final SongNode songNode = new SongNode(audioClip.getID(), audioClip.getName(), artistName, audioClip.getDuration(), this::onSongNodeClicked);
-            _songVBox.getChildren().add(songNode);
+            final SongNode songNode = new SongNode(audioClip.getID(), audioClip.getName(), artistName, audioClip.getDuration());
+            _songListView.getItems().add(songNode);
 
             /*
             final Media media = ResourceLoader.loadMedia(audioClip.getFilePath());
@@ -149,7 +182,7 @@ public class DashboardPage extends VBox implements Page {
      * @param searchString
      */
     private void searchSongList(final String searchString) {
-        _songVBox.getChildren().clear();
+        _songListView.getItems().clear();
 
         for (AudioClip audioClip : _audioSequencePlayer) {
             final Artist artist = _fetchHandler.fetchGET(URL.ARTIST, audioClip.getArtistID());
@@ -158,8 +191,8 @@ public class DashboardPage extends VBox implements Page {
             final boolean matchArtist = artistName.toLowerCase().contains(searchString);
 
             if (matchName || matchArtist) {
-                final SongNode songNode = new SongNode(audioClip.getID(), audioClip.getName(), artistName, audioClip.getDuration(), this::onSongNodeClicked);
-                _songVBox.getChildren().add(songNode);
+                final SongNode songNode = new SongNode(audioClip.getID(), audioClip.getName(), artistName, audioClip.getDuration());
+                _songListView.getItems().add(songNode);
             }
 
             /*
@@ -172,28 +205,24 @@ public class DashboardPage extends VBox implements Page {
         }
     }
 
+
+    /**
+     * @param audioClip
+     */
+    private void onSongSelected(final AudioClip audioClip) {
+        int index = Lists.indexFunc(_songListView.getItems(), songNode -> songNode.getSongID().equals(audioClip.getID()));
+        if (index == -1)
+            return;
+
+        _songListView.getSelectionModel().clearAndSelect(index);
+    }
+
     /**
      * @param e
      */
-    private void onSongNodeClicked(final SongNode.ClickEvent e) {
-        if (e.getMouseButton() != MouseButton.PRIMARY)
-            return;
-
-        if (e.getTarget().isSelected()) {
-            _audioSequencePlayer.select(e.getTarget().getSongID());
-        }
-
-        if (e.isShortcutDown()) {
-            final int index = Lists.indexFunc(_songVBox.getChildren(), node -> ((SongNode)node).isSelected());
-            ((SongNode)_songVBox.getChildren().get(index)).select();
-            return;
-        }
-
-        if (e.isShiftDown()) {
-            return;
-        }
-
-        _songVBox.getChildren().forEach(node -> ((SongNode)node).deselect());
+    private void onListViewClicked(MouseEvent e) {
+        final SongNode songNode = _songListView.getSelectionModel().getSelectedItem();
+        _audioSequencePlayer.select(songNode.getSongID());
     }
 
 
@@ -217,9 +246,8 @@ public class DashboardPage extends VBox implements Page {
      */
     @FXML
     private void onNewPlaylistButtonClicked(ActionEvent e) {
-        final Page page =  new NewPlaylistPage(_fetchHandler, this::loadPlaylist);
-        final ModalWindow window = new ModalWindow("Create a new playlist", page);
-        window.show();
+        _sessionStorage.delete("playlist");
+        _redirectHandler.setRoute("/edit");
     }
 
 
@@ -338,14 +366,5 @@ public class DashboardPage extends VBox implements Page {
     @FXML
     private void onSearch(SearchBar.SearchEvent e) {
         searchSongList(e.getSearchString().toLowerCase());
-    }
-
-
-    /**
-     * @return
-     */
-    @Override
-    public Parent getRoot() {
-        return this;
     }
 }

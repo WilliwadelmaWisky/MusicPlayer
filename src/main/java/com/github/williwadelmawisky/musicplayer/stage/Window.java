@@ -13,24 +13,24 @@ import javafx.stage.Stage;
 public class Window {
 
     protected final Stage _stage;
-    private final Router _router;
+    private Page _currentPage;
 
 
     /**
      * @param stage
      * @param router
      */
-    public Window(Stage stage, Router router) {
+    public Window(final Stage stage, final Router router) {
         _stage = stage;
-        _router = router;
 
-        Scene scene = new Scene(_router.getRoute().getPage().getRoot());
+        _currentPage = router.getRoute().getPage();
+        Scene scene = new Scene(_currentPage.getRoot());
         scene.getStylesheets().add(ResourceLoader.loadCss("css/style.css"));
         _stage.setScene(scene);
 
         _stage.getIcons().add(ResourceLoader.loadImage("img/logo.png"));
 
-        _router.setOnRouteSelected(this::onRouteSelected);
+        router.setOnRouteSelected(this::onRouteSelected);
     }
 
 
@@ -38,7 +38,12 @@ public class Window {
      * @param page
      */
     private void onRouteSelected(final Page page) {
-        setRoot(page.getRoot());
+        if (_currentPage != null)
+            _currentPage.onUnload();
+
+        _currentPage = page;
+        setRoot(_currentPage.getRoot());
+        _currentPage.onLoad();
     }
 
     /**
