@@ -1,7 +1,7 @@
-package com.github.williwadelmawisky.musicplayer.core.control.audio;
+package com.github.williwadelmawisky.musicplayer.core.audio;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
-import com.github.williwadelmawisky.musicplayer.core.control.Timer;
+import com.github.williwadelmawisky.musicplayer.core.Timer;
 import com.github.williwadelmawisky.musicplayer.util.event.Action;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.media.Media;

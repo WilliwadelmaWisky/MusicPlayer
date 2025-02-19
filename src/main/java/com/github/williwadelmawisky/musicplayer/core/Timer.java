@@ -1,4 +1,4 @@
-package com.github.williwadelmawisky.musicplayer.core.control;
+package com.github.williwadelmawisky.musicplayer.core;
 
 import com.github.williwadelmawisky.musicplayer.util.Util;
 

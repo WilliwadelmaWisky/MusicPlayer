@@ -31,9 +31,15 @@
             <SeparatorMenuItem/>
             <MenuItem text="Quit" accelerator="Shortcut+Q"/>
         </Menu>
+        <Menu text="Edit">
+            <MenuItem text="Undo" accelerator="Shortcut+Z"/>
+            <MenuItem text="Redo" accelerator="Shortcut+Y"/>
+            <SeparatorMenuItem/>
+            <MenuItem text="Preferences"/>
+        </Menu>
         <Menu text="Playback">
-            <MenuItem text="Play"/>
-            <MenuItem text="Pause"/>
+            <MenuItem text="Play" onAction="#onPlayButtonClicked"/>
+            <MenuItem text="Pause" onAction="#onPauseButtonClicked"/>
         </Menu>
         <Menu text="Audio">
             <MenuItem text="Increase Volume" onAction="#onIncreaseVolumeButtonClicked"/>

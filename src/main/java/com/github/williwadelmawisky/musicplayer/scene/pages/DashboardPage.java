@@ -1,7 +1,7 @@
 package com.github.williwadelmawisky.musicplayer.scene.pages;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
-import com.github.williwadelmawisky.musicplayer.core.control.audio.*;
+import com.github.williwadelmawisky.musicplayer.core.audio.*;
 import com.github.williwadelmawisky.musicplayer.core.data.Artist;
 import com.github.williwadelmawisky.musicplayer.core.data.AudioFile;
 import com.github.williwadelmawisky.musicplayer.core.data.Playlist;
@@ -42,7 +42,6 @@ public class DashboardPage extends VBox implements Page {
 
     private FetchHandler _fetchHandler;
     private RedirectHandler _redirectHandler;
-    private SessionStorage _sessionStorage;
     private AudioSequencePlayer _audioSequencePlayer;
 
 
@@ -54,18 +53,18 @@ public class DashboardPage extends VBox implements Page {
     /**
      * @param fetchHandler
      * @param redirectHandler
-     * @param sessionStorage
+     * @param audioSequencePlayer
      */
-    public DashboardPage(final FetchHandler fetchHandler, final RedirectHandler redirectHandler, final SessionStorage sessionStorage) {
+    public DashboardPage(final FetchHandler fetchHandler, final RedirectHandler redirectHandler, final AudioSequencePlayer audioSequencePlayer) {
         super();
 
         ResourceLoader.loadFxml("fxml/pages/DashboardPage.fxml", this);
 
-        _audioSequencePlayer = new AudioSequencePlayer(_audioSequencerSelector.getCurrentSequencer());
+        _audioSequencePlayer = audioSequencePlayer;
+        _audioSequencePlayer.setSequencer(_audioSequencerSelector.getCurrentSequencer());
         _audioSequencePlayer.setOnSelected(this::onSongSelected);
         _fetchHandler = fetchHandler;
         _redirectHandler = redirectHandler;
-        _sessionStorage = sessionStorage;
 
         _songListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         _songListView.setOnMouseClicked(this::onListViewClicked);
@@ -122,9 +121,7 @@ public class DashboardPage extends VBox implements Page {
      */
     public void loadFile(final File file) {
         _audioSequencePlayer.clear();
-
-        final AudioClip audioClip = new AudioClip(UUID.randomUUID(), file.getName(), null, file.getAbsolutePath(), null);
-        _audioSequencePlayer.add(audioClip);
+        addFile(file);
         updateSongList();
         _audioSequencePlayer.selectFirst();
     }
@@ -134,15 +131,18 @@ public class DashboardPage extends VBox implements Page {
      */
     public void loadDirectory(final File directory) {
         _audioSequencePlayer.clear();
-
         final String[] extensions = new String[] { ".mp3", ".wav" };
-        Files.listFiles(directory, extensions, true, file -> {
-            final AudioClip audioClip = new AudioClip(UUID.randomUUID(), file.getName(), null, file.getAbsolutePath(), null);
-            _audioSequencePlayer.add(audioClip);
-        });
-
+        Files.listFiles(directory, extensions, true, this::addFile);
         updateSongList();
         _audioSequencePlayer.selectFirst();
+    }
+
+    /**
+     * @param file
+     */
+    public void addFile(final File file) {
+        final AudioClip audioClip = new AudioClip(UUID.randomUUID(), file.getName(), null, file.getAbsolutePath(), null);
+        _audioSequencePlayer.add(audioClip);
     }
 
 
@@ -222,6 +222,9 @@ public class DashboardPage extends VBox implements Page {
      */
     private void onListViewClicked(MouseEvent e) {
         final SongNode songNode = _songListView.getSelectionModel().getSelectedItem();
+        if (songNode == null)
+            return;
+
         _audioSequencePlayer.select(songNode.getSongID());
     }
 
@@ -246,8 +249,8 @@ public class DashboardPage extends VBox implements Page {
      */
     @FXML
     private void onNewPlaylistButtonClicked(ActionEvent e) {
-        _sessionStorage.delete("playlist");
-        _redirectHandler.setRoute("/edit");
+        _audioSequencePlayer.clear();
+        _songListView.getItems().clear();
     }
 
 
@@ -301,6 +304,22 @@ public class DashboardPage extends VBox implements Page {
         window.show();
     }
 
+
+    /**
+     * @param e
+     */
+    @FXML
+    private void onPlayButtonClicked(ActionEvent e) {
+        _audioSequencePlayer.getAudioClipPlayer().play();
+    }
+
+    /**
+     * @param e
+     */
+    @FXML
+    private void onPauseButtonClicked(ActionEvent e) {
+        _audioSequencePlayer.getAudioClipPlayer().pause();
+    }
 
     /**
      * @param e

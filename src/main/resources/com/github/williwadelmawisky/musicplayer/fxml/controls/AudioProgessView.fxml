@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root type="com.github.williwadelmawisky.musicplayer.scene.controls.AudioProgressView"
+         xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+>
+    <Label fx:id="_playbackPositionLabel" minWidth="40" maxWidth="40"/>
+    <ProgressBar fx:id="_progressBar" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+    <Label fx:id="_durationLabel" minWidth="40" maxWidth="40" alignment="CENTER_RIGHT"/>
+</fx:root>

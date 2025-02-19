@@ -1,6 +1,6 @@
 package com.github.williwadelmawisky.musicplayer.scene.controls;
 
-import com.github.williwadelmawisky.musicplayer.core.control.audio.*;
+import com.github.williwadelmawisky.musicplayer.core.audio.*;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

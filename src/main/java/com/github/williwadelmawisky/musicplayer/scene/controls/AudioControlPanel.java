@@ -1,9 +1,9 @@
 package com.github.williwadelmawisky.musicplayer.scene.controls;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
-import com.github.williwadelmawisky.musicplayer.core.control.audio.AudioClip;
-import com.github.williwadelmawisky.musicplayer.core.control.audio.AudioClipPlayer;
-import com.github.williwadelmawisky.musicplayer.core.control.Timer;
+import com.github.williwadelmawisky.musicplayer.core.audio.AudioClip;
+import com.github.williwadelmawisky.musicplayer.core.audio.AudioClipPlayer;
+import com.github.williwadelmawisky.musicplayer.core.Timer;
 import com.github.williwadelmawisky.musicplayer.core.data.Artist;
 import com.github.williwadelmawisky.musicplayer.core.db.FetchGetHandler;
 import com.github.williwadelmawisky.musicplayer.core.db.URL;

@@ -1,4 +1,4 @@
-package com.github.williwadelmawisky.musicplayer.core.control.audio;
+package com.github.williwadelmawisky.musicplayer.core.audio;
 
 import com.github.williwadelmawisky.musicplayer.util.Lists;
 import com.github.williwadelmawisky.musicplayer.util.event.EventHandler;
