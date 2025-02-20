@@ -69,7 +69,7 @@ public class DashboardPage extends VBox implements Page {
         _songListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         _songListView.setOnMouseClicked(this::onListViewClicked);
 
-        _audioControlPanel.setAudioClipPlayer(_audioSequencePlayer.getAudioClipPlayer());
+        _audioControlPanel.setAudioClipPlayer(_audioSequencePlayer);
         _audioControlPanel.setFetchHandler(_fetchHandler);
         _audioControlPanel.setOnPrevious(this::onPreviousSongSelected);
         _audioControlPanel.setOnNext(this::onNextSongSelected);
@@ -152,7 +152,6 @@ public class DashboardPage extends VBox implements Page {
     public void shuffle() {
         _audioSequencePlayer.shuffle();
         updateSongList();
-        _audioSequencePlayer.selectFirst();
     }
 
 
@@ -310,7 +309,7 @@ public class DashboardPage extends VBox implements Page {
      */
     @FXML
     private void onPlayButtonClicked(ActionEvent e) {
-        _audioSequencePlayer.getAudioClipPlayer().play();
+        _audioSequencePlayer.play();
     }
 
     /**
@@ -318,7 +317,7 @@ public class DashboardPage extends VBox implements Page {
      */
     @FXML
     private void onPauseButtonClicked(ActionEvent e) {
-        _audioSequencePlayer.getAudioClipPlayer().pause();
+        _audioSequencePlayer.pause();
     }
 
     /**
@@ -327,9 +326,8 @@ public class DashboardPage extends VBox implements Page {
     @FXML
     private void onIncreaseVolumeButtonClicked(ActionEvent e) {
         final double incrementPercent = 5;
-        final double volume = ((int)(_audioSequencePlayer.getAudioClipPlayer().getVolume() * 100 / incrementPercent) + 1) * incrementPercent / 100;
-        _audioSequencePlayer.getAudioClipPlayer().setVolume(volume);
-        _audioControlPanel.updateVolume();
+        final double volume = ((int)(_audioSequencePlayer.getVolumeProperty().getValue() * 100 / incrementPercent) + 1) * incrementPercent / 100;
+        _audioSequencePlayer.getVolumeProperty().setValue(volume);
     }
 
     /**
@@ -338,9 +336,8 @@ public class DashboardPage extends VBox implements Page {
     @FXML
     private void onDecreaseVolumeButtonClicked(ActionEvent e) {
         final double decrementPercent = 5;
-        final double volume = ((int)(_audioSequencePlayer.getAudioClipPlayer().getVolume() * 100 / decrementPercent) - 1) * decrementPercent / 100;
-        _audioSequencePlayer.getAudioClipPlayer().setVolume(volume);
-        _audioControlPanel.updateVolume();
+        final double volume = ((int)(_audioSequencePlayer.getVolumeProperty().getValue() * 100 / decrementPercent) - 1) * decrementPercent / 100;
+        _audioSequencePlayer.getVolumeProperty().setValue(volume);
     }
 
     /**
@@ -349,8 +346,7 @@ public class DashboardPage extends VBox implements Page {
     @FXML
     private void onMuteVolumeButtonClicked(ActionEvent e) {
         final double volume = 0;
-        _audioSequencePlayer.getAudioClipPlayer().setVolume(volume);
-        _audioControlPanel.updateVolume();
+        _audioSequencePlayer.getVolumeProperty().setValue(volume);
     }
 
 

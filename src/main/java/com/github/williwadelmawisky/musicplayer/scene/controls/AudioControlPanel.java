@@ -34,9 +34,8 @@ public class AudioControlPanel extends VBox {
     @FXML private Label _durationLabel;
     @FXML private Label _titleLabel;
     @FXML private Label _artistLabel;
-    @FXML private Label _volumeLabel;
     @FXML private ProgressBar _progressBar;
-    @FXML private Slider _volumeSlider;
+    @FXML private VolumeSlider _volumeSlider;
     @FXML private ImageView _statusImageView;
 
     private AudioClipPlayer _audioClipPlayer;
@@ -61,7 +60,6 @@ public class AudioControlPanel extends VBox {
         setDisable(true);
 
         _progressBar.setOnMouseClicked(this::onProgressBarClicked);
-        _volumeSlider.valueProperty().addListener(this::onVolumeSliderChanged);
     }
 
 
@@ -71,7 +69,7 @@ public class AudioControlPanel extends VBox {
     public void setAudioClipPlayer(final AudioClipPlayer audioClipPlayer) {
         _audioClipPlayer = audioClipPlayer;
 
-        updateVolume();
+        _volumeSlider.setVolumeProperty(audioClipPlayer.getVolumeProperty());
 
         _audioClipPlayer.setOnUpdate(this::onUpdate);
         _audioClipPlayer.setOnAudioClipReady(this::onAudioClipReady);
@@ -140,21 +138,6 @@ public class AudioControlPanel extends VBox {
         _statusImageView.setImage(ResourceLoader.loadImage(iconPath));
     }
 
-    /**
-     * @param volume
-     */
-    private void updateVolumeLabel(final double volume) {
-        _volumeLabel.setText((int)(volume * 100) + "%");
-    }
-
-    /**
-     *
-     */
-    public void updateVolume() {
-        _volumeSlider.setValue(_audioClipPlayer.getVolume());
-        updateVolumeLabel(_audioClipPlayer.getVolume());
-    }
-
 
     /**
      * @param e
@@ -185,14 +168,5 @@ public class AudioControlPanel extends VBox {
         Bounds progressBarBounds = _progressBar.localToScreen(_progressBar.getBoundsInLocal());
         double rewindPosition = (mouseX - progressBarBounds.getMinX()) / (progressBarBounds.getMaxX() - progressBarBounds.getMinX());
         _audioClipPlayer.rewind(rewindPosition);
-    }
-
-    /**
-     * @param newValue
-     */
-    private void onVolumeSliderChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-        final double volume = newValue.doubleValue();
-        _audioClipPlayer.setVolume(volume);
-        updateVolumeLabel(volume);
     }
 }

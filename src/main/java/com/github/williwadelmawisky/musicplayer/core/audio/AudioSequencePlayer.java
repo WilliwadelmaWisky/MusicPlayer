@@ -8,10 +8,9 @@ import java.util.*;
 /**
  *
  */
-public class AudioSequencePlayer implements Iterable<AudioClip> {
+public class AudioSequencePlayer extends AudioClipPlayer implements Iterable<AudioClip> {
 
     private final List<AudioClip> _audioClipList;
-    private final AudioClipPlayer _audioClipPlayer;
     private Sequencer<AudioClip> _sequencer;
     private EventHandler<AudioClip> _onSelected;
 
@@ -20,17 +19,11 @@ public class AudioSequencePlayer implements Iterable<AudioClip> {
      * @param sequencer
      */
     public AudioSequencePlayer(final Sequencer<AudioClip> sequencer) {
+        super();
+
         _sequencer = sequencer;
-        _audioClipPlayer = new AudioClipPlayer(this::onAudioClipFinished);
         _audioClipList = new ArrayList<>();
-    }
-
-
-    /**
-     * @return
-     */
-    public AudioClipPlayer getAudioClipPlayer() {
-        return _audioClipPlayer;
+        set_onAudioClipFinished(this::onAudioClipFinished);
     }
 
 
@@ -40,7 +33,6 @@ public class AudioSequencePlayer implements Iterable<AudioClip> {
     public void setSequencer(final Sequencer<AudioClip> sequencer) {
         final int currentIndex = _sequencer.getCurrentIndex();
         sequencer.setCurrentIndex(currentIndex);
-
         _sequencer = sequencer;
     }
 
@@ -77,7 +69,11 @@ public class AudioSequencePlayer implements Iterable<AudioClip> {
      *
      */
     public void shuffle() {
+        if (_audioClipList.isEmpty())
+            return;
+
         Collections.shuffle(_audioClipList, new Random());
+        selectFirst();
     }
 
 
@@ -86,7 +82,7 @@ public class AudioSequencePlayer implements Iterable<AudioClip> {
      */
     public void next() {
         final AudioClip audioClip = _sequencer.next(_audioClipList);
-        _audioClipPlayer.setAudioClip(audioClip);
+        setAudioClip(audioClip);
         _onSelected.invoke(audioClip);
     }
 
@@ -95,7 +91,7 @@ public class AudioSequencePlayer implements Iterable<AudioClip> {
      */
     public void previous() {
         final AudioClip audioClip = _sequencer.previous(_audioClipList);
-        _audioClipPlayer.setAudioClip(audioClip);
+        setAudioClip(audioClip);
         _onSelected.invoke(audioClip);
     }
 
@@ -104,7 +100,7 @@ public class AudioSequencePlayer implements Iterable<AudioClip> {
      */
     public void select(final int index) {
         final AudioClip audioClip = _audioClipList.get(index);
-        _audioClipPlayer.setAudioClip(audioClip);
+        setAudioClip(audioClip);
         _sequencer.setCurrentIndex(index);
         _onSelected.invoke(audioClip);
     }

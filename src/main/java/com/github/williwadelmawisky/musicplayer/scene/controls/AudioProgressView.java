@@ -1,5 +1,6 @@
 package com.github.williwadelmawisky.musicplayer.scene.controls;
 
+import com.github.williwadelmawisky.musicplayer.ResourceLoader;
 import com.github.williwadelmawisky.musicplayer.core.Timer;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -23,6 +24,8 @@ public class AudioProgressView extends HBox {
      */
     public AudioProgressView() {
         super();
+
+        ResourceLoader.loadFxml("fxml/controls/AudioProgressView.fxml", this);
     }
 
 

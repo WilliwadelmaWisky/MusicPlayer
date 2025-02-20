@@ -51,9 +51,9 @@ public class AudioClipPlayer {
         void invoke(final boolean isPlaying);
     }
 
-    private final Action _onAudioClipFinished;
+    private Action _onAudioClipFinished;
     private MediaPlayer _mediaPlayer;
-    private double _volume;
+    private final VolumeProperty _volumeProperty;
     private Timer _timer;
     private OnUpdate _onUpdate;
     private OnAudioClipReady _onAudioClipReady;
@@ -61,18 +61,18 @@ public class AudioClipPlayer {
 
 
     /**
-     * @param onAudioClipFinished
+     *
      */
-    public AudioClipPlayer(final Action onAudioClipFinished) {
-        _onAudioClipFinished = onAudioClipFinished;
-        _volume = 0.5f;
+    public AudioClipPlayer() {
+        _volumeProperty = new VolumeProperty(0.5);
+        _volumeProperty.getUpdateEvent().addListener(this::onVolumeChanged);
     }
 
 
     /**
      * @return
      */
-    public double getVolume() { return _volume; }
+    public VolumeProperty getVolumeProperty() { return _volumeProperty; }
 
     /**
      * @return
@@ -80,12 +80,17 @@ public class AudioClipPlayer {
     public boolean isPlaying() { return _mediaPlayer != null &&_mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING; }
 
 
+    public void set_onAudioClipFinished(Action onAudioClipFinished) {
+        _onAudioClipFinished = onAudioClipFinished;
+    }
+
+
     /**
      * @param volume
      */
-    public void setVolume(final double volume) {
-        _volume = Math.clamp(volume, 0, 1);
-        if (_mediaPlayer != null) _mediaPlayer.setVolume(_volume);
+    private void onVolumeChanged(final double volume) {
+        if (_mediaPlayer != null)
+            _mediaPlayer.setVolume(volume);
     }
 
     /**
@@ -97,7 +102,7 @@ public class AudioClipPlayer {
 
         final Media media = ResourceLoader.loadMedia(audioClip.getFilePath());
         _mediaPlayer = new MediaPlayer(media);
-        _mediaPlayer.setVolume(_volume);
+        _mediaPlayer.setVolume(_volumeProperty.getValue());
 
         _mediaPlayer.setOnReady(() -> onAudioClipReady(audioClip, media, wasPlaying));
         _mediaPlayer.setOnEndOfMedia(this::onAudioFinished);
