@@ -24,7 +24,7 @@ public final class VolumeProperty {
      */
     public VolumeProperty(final double defaultValue) {
         _updateEvent = new UpdateEvent();
-        _value = defaultValue;
+        _value = Math.clamp(defaultValue, 0, 1);;
     }
 
     /**

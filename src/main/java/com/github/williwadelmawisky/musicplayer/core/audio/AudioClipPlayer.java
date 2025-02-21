@@ -39,25 +39,14 @@ public class AudioClipPlayer {
         void invoke(final AudioClip audioClip, final Duration duration);
     }
 
-    /**
-     *
-     */
-    @FunctionalInterface
-    public interface OnStatusChanged {
-
-        /**
-         * @param isPlaying
-         */
-        void invoke(final boolean isPlaying);
-    }
-
     private Action _onAudioClipFinished;
     private MediaPlayer _mediaPlayer;
     private final VolumeProperty _volumeProperty;
+    private final StatusProperty _statusProperty;
+    private final ProgressProperty _progressProperty;
     private Timer _timer;
     private OnUpdate _onUpdate;
     private OnAudioClipReady _onAudioClipReady;
-    private OnStatusChanged _onStatusChanged;
 
 
     /**
@@ -65,7 +54,11 @@ public class AudioClipPlayer {
      */
     public AudioClipPlayer() {
         _volumeProperty = new VolumeProperty(0.5);
+        _statusProperty = new StatusProperty(false);
+        _progressProperty = new ProgressProperty(Duration.ZERO, 0);
+
         _volumeProperty.getUpdateEvent().addListener(this::onVolumeChanged);
+        _statusProperty.getUpdateEvent().addListener(this::onStatusChanged);
     }
 
 
@@ -77,7 +70,7 @@ public class AudioClipPlayer {
     /**
      * @return
      */
-    public boolean isPlaying() { return _mediaPlayer != null &&_mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING; }
+    public StatusProperty getStatusProperty() { return _statusProperty; }
 
 
     public void set_onAudioClipFinished(Action onAudioClipFinished) {
@@ -86,27 +79,41 @@ public class AudioClipPlayer {
 
 
     /**
-     * @param volume
-     */
-    private void onVolumeChanged(final double volume) {
-        if (_mediaPlayer != null)
-            _mediaPlayer.setVolume(volume);
-    }
-
-    /**
      * @param audioClip
      */
     public void setAudioClip(final AudioClip audioClip) {
-        final boolean wasPlaying = isPlaying();
+        final boolean wasPlaying = _statusProperty.getValue();
         if (wasPlaying) _mediaPlayer.stop();
 
         final Media media = ResourceLoader.loadMedia(audioClip.getFilePath());
         _mediaPlayer = new MediaPlayer(media);
         _mediaPlayer.setVolume(_volumeProperty.getValue());
 
-        _mediaPlayer.setOnReady(() -> onAudioClipReady(audioClip, media, wasPlaying));
-        _mediaPlayer.setOnEndOfMedia(this::onAudioFinished);
-        _mediaPlayer.currentTimeProperty().addListener(this::onUpdate);
+        _mediaPlayer.setOnReady(() -> onMediaReady(audioClip, media, wasPlaying));
+        _mediaPlayer.setOnEndOfMedia(this::onMediaFinished);
+        _mediaPlayer.currentTimeProperty().addListener(this::onTimeChanged);
+    }
+
+
+    /**
+     * @param volume
+     */
+    private void onVolumeChanged(final double volume) {
+        if (_mediaPlayer == null)
+            return;
+
+        _mediaPlayer.setVolume(volume);
+    }
+
+    /**
+     * @param isPlaying
+     */
+    private void onStatusChanged(final boolean isPlaying) {
+        if (_mediaPlayer == null)
+            return;
+
+        if (isPlaying) _mediaPlayer.play();
+        else _mediaPlayer.pause();
     }
 
     /**
@@ -119,27 +126,22 @@ public class AudioClipPlayer {
      */
     public void setOnAudioClipReady(final OnAudioClipReady onAudioClipReady) { _onAudioClipReady = onAudioClipReady; }
 
-    /**
-     * @param onStatusChanged
-     */
-    public void setOnStatusChanged(final OnStatusChanged onStatusChanged) { _onStatusChanged = onStatusChanged; }
-
 
     /**
      * @param audioClip
      * @param media
      * @param play
      */
-    private void onAudioClipReady(final AudioClip audioClip, final Media media, final boolean play) {
+    private void onMediaReady(final AudioClip audioClip, final Media media, final boolean play) {
         _onAudioClipReady.invoke(audioClip, media.getDuration());
         _timer = new Timer(media.getDuration());
-        if (play) play();
+        if (play) _mediaPlayer.play();
     }
 
     /**
      *
      */
-    private void onAudioFinished() {
+    private void onMediaFinished() {
         _onAudioClipFinished.invoke();
     }
 
@@ -148,7 +150,7 @@ public class AudioClipPlayer {
      * @param oldValue
      * @param newValue
      */
-    private void onUpdate(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
+    private void onTimeChanged(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
         _timer.setPlaybackPosition(newValue);
         _onUpdate.invoke(_timer.getPlaybackPosition(), _timer.getDuration());
     }
@@ -158,48 +160,19 @@ public class AudioClipPlayer {
      *
      */
     public void togglePlay() {
-        if (isPlaying()) {
-            pause();
-            return;
-        }
-
-        play();
-    }
-
-
-    /**
-     *
-     */
-    public void play() {
-        if (_mediaPlayer == null)
-            return;
-
-        _mediaPlayer.play();
-        _onStatusChanged.invoke(true);
+        final boolean isPlaying = _statusProperty.getValue();
+        _statusProperty.setValue(!isPlaying);
     }
 
     /**
      *
      */
-    public void pause() {
-        if (_mediaPlayer == null)
-            return;
-
-        _mediaPlayer.pause();
-        _onStatusChanged.invoke(false);
-    }
+    public void play() { _statusProperty.setValue(true); }
 
     /**
      *
      */
-    public void stop() {
-        if (_mediaPlayer == null)
-            return;
-
-        _mediaPlayer.stop();
-        _onStatusChanged.invoke(false);
-        _mediaPlayer = null;
-    }
+    public void pause() { _statusProperty.setValue(false); }
 
 
     /**

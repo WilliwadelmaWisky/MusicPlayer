@@ -10,6 +10,7 @@
 <?import javafx.scene.image.Image?>
 
 <?import com.github.williwadelmawisky.musicplayer.scene.controls.VolumeSlider?>
+<?import com.github.williwadelmawisky.musicplayer.scene.controls.PlayButton?>
 <fx:root type="com.github.williwadelmawisky.musicplayer.scene.controls.AudioControlPanel"
          xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
          spacing="10" styleClass="content-box"
@@ -36,11 +37,7 @@
                     </ImageView>
                 </graphic>
             </Button>
-            <Button onAction="#onPlayButtonClicked">
-                <graphic>
-                    <ImageView fx:id="_statusImageView" fitWidth="15" pickOnBounds="true" preserveRatio="true"/>
-                </graphic>
-            </Button>
+            <PlayButton fx:id="_playButton" onAction="#onPlayButtonClicked"/>
             <Button onAction="#onNextButtonClicked">
                 <graphic>
                     <ImageView fitWidth="15" pickOnBounds="true" preserveRatio="true">

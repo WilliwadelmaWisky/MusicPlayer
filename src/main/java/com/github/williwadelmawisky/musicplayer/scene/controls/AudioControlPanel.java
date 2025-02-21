@@ -27,16 +27,13 @@ import java.awt.MouseInfo;
  */
 public class AudioControlPanel extends VBox {
 
-    private static final String PLAY_ICON = "img/play_icon.png";
-    private static final String PAUSE_ICON = "img/pause_icon.png";
-
     @FXML private Label _playbackPositionLabel;
     @FXML private Label _durationLabel;
     @FXML private Label _titleLabel;
     @FXML private Label _artistLabel;
     @FXML private ProgressBar _progressBar;
     @FXML private VolumeSlider _volumeSlider;
-    @FXML private ImageView _statusImageView;
+    @FXML private PlayButton _playButton;
 
     private AudioClipPlayer _audioClipPlayer;
     private FetchGetHandler _fetchHandler;
@@ -51,7 +48,6 @@ public class AudioControlPanel extends VBox {
 
         ResourceLoader.loadFxml("fxml/controls/AudioControlPanel.fxml", this);
 
-        updatePlayIcon(false);
         _titleLabel.setText("");
         _artistLabel.setText("");
         _playbackPositionLabel.setText("0:00");
@@ -69,11 +65,11 @@ public class AudioControlPanel extends VBox {
     public void setAudioClipPlayer(final AudioClipPlayer audioClipPlayer) {
         _audioClipPlayer = audioClipPlayer;
 
-        _volumeSlider.setVolumeProperty(audioClipPlayer.getVolumeProperty());
+        _volumeSlider.setVolumeProperty(_audioClipPlayer.getVolumeProperty());
+        _playButton.setStatusProperty(_audioClipPlayer.getStatusProperty());
 
         _audioClipPlayer.setOnUpdate(this::onUpdate);
         _audioClipPlayer.setOnAudioClipReady(this::onAudioClipReady);
-        _audioClipPlayer.setOnStatusChanged(this::onStatusChanged);
     }
 
     /**
@@ -120,22 +116,6 @@ public class AudioControlPanel extends VBox {
         _playbackPositionLabel.setText(Timer.durationToString(playbackPosition));
         final double progress = playbackPosition.toMillis() / duration.toMillis();
         _progressBar.setProgress(progress);
-    }
-
-    /**
-     * @param isPlaying
-     */
-    private void onStatusChanged(final boolean isPlaying) {
-        updatePlayIcon(isPlaying);
-    }
-
-
-    /**
-     * @param isPlaying
-     */
-    private void updatePlayIcon(boolean isPlaying) {
-        String iconPath = isPlaying ? PAUSE_ICON : PLAY_ICON;
-        _statusImageView.setImage(ResourceLoader.loadImage(iconPath));
     }
 
 
