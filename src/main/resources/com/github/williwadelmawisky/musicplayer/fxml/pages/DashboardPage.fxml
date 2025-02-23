@@ -67,8 +67,6 @@
                     <Insets top="10" left="5" right="5"/>
                 </padding>
                 <Label text="Song" minWidth="320" maxWidth="320"/>
-                <Label text="Artist" minWidth="250" maxWidth="250"/>
-                <Label text="Duration" minWidth="65" maxWidth="65"/>
             </HBox>
             <ListView fx:id="_songListView" VBox.vgrow="ALWAYS" maxHeight="Infinity"/>
         </VBox>

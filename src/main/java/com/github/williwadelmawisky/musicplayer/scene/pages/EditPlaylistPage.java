@@ -101,7 +101,7 @@ public class EditPlaylistPage extends VBox implements Page {
     private void generate() {
         final List<SongNode> list = new ArrayList<>();
         _playlist.forEach(songID -> {
-            final SongNode songNode = new SongNode(songID, "Song", "Artist", null);
+            final SongNode songNode = new SongNode(songID, "Song", "Artist");
             list.add(songNode);
         });
 
@@ -145,7 +145,7 @@ public class EditPlaylistPage extends VBox implements Page {
         if (file == null || !file.exists())
             return;
 
-        final SongNode songNode = new SongNode(UUID.randomUUID(), file.getName(), "", null);
+        final SongNode songNode = new SongNode(UUID.randomUUID(), file.getName(), "");
         _songListView.getItems().add(songNode);
     }
 
@@ -167,7 +167,7 @@ public class EditPlaylistPage extends VBox implements Page {
 
         final String[] extensions = new String[] { ".mp3", ".wav" };
         Files.listFiles(directory, extensions, true, file -> {
-            final SongNode songNode = new SongNode(UUID.randomUUID(), file.getName(), "", null);
+            final SongNode songNode = new SongNode(UUID.randomUUID(), file.getName(), "");
             _songListView.getItems().add(songNode);
         });
     }
@@ -177,7 +177,7 @@ public class EditPlaylistPage extends VBox implements Page {
      */
     @FXML
     private void onAddSongButtonClicked(ActionEvent e) {
-        final SongNode songNode = new SongNode(UUID.randomUUID(), "Song", "", null);
+        final SongNode songNode = new SongNode(UUID.randomUUID(), "Song", "");
         _songListView.getItems().add(songNode);
     }
 

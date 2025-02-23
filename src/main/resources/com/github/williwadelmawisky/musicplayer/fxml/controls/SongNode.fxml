@@ -16,7 +16,5 @@
     <ImageView pickOnBounds="true" preserveRatio="true" fitWidth="15">
         <Image url="@../../img/logo.png"/>
     </ImageView>
-    <Label text="Song Name" minWidth="300" maxWidth="300" fx:id="_nameLabel"/>
-    <Label text="Artist Name" minWidth="250" maxWidth="250" fx:id="_artistLabel"/>
-    <Label text="3:54" minWidth="65" maxWidth="65" fx:id="_durationLabel"/>
+    <Label fx:id="_nameLabel" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
 </fx:root>

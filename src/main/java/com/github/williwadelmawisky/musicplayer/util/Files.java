@@ -96,4 +96,23 @@ public final class Files {
                 proc.invoke(file);
         }
     }
+
+    /**
+     * @param file
+     * @return
+     */
+    public static String getExtension(final File file) {
+        final int index = file.getName().lastIndexOf('.');
+        return (index != -1) ? file.getName().substring(index +1) : null;
+    }
+
+    /**
+     * @param file
+     * @param extensions
+     * @return
+     */
+    public static boolean doesMatchExtension(final File file, final String[] extensions) {
+        final String extension = getExtension(file);
+        return extension != null && Arrays.contains(extensions, extension);
+    }
 }
