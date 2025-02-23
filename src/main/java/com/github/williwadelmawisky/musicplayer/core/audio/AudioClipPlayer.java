@@ -1,7 +1,6 @@
 package com.github.williwadelmawisky.musicplayer.core.audio;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
-import com.github.williwadelmawisky.musicplayer.core.Timer;
 import com.github.williwadelmawisky.musicplayer.util.event.Action;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.media.Media;
@@ -13,40 +12,12 @@ import javafx.util.Duration;
  */
 public class AudioClipPlayer {
 
-    /**
-     *
-     */
-    @FunctionalInterface
-    public interface OnUpdate {
-
-        /**
-         * @param playbackPosition
-         * @param duration
-         */
-        void invoke(final Duration playbackPosition, final Duration duration);
-    }
-
-    /**
-     *
-     */
-    @FunctionalInterface
-    public interface OnAudioClipReady {
-
-        /**
-         * @param audioClip
-         * @param duration
-         */
-        void invoke(final AudioClip audioClip, final Duration duration);
-    }
-
     private Action _onAudioClipFinished;
     private MediaPlayer _mediaPlayer;
     private final VolumeProperty _volumeProperty;
     private final StatusProperty _statusProperty;
     private final ProgressProperty _progressProperty;
-    private Timer _timer;
-    private OnUpdate _onUpdate;
-    private OnAudioClipReady _onAudioClipReady;
+    private final AudioProperty _audioProperty;
 
 
     /**
@@ -55,10 +26,12 @@ public class AudioClipPlayer {
     public AudioClipPlayer() {
         _volumeProperty = new VolumeProperty(0.5);
         _statusProperty = new StatusProperty(false);
-        _progressProperty = new ProgressProperty(Duration.ZERO, 0);
+        _progressProperty = new ProgressProperty(0);
+        _audioProperty = new AudioProperty(null, Duration.ZERO);
 
         _volumeProperty.getUpdateEvent().addListener(this::onVolumeChanged);
         _statusProperty.getUpdateEvent().addListener(this::onStatusChanged);
+        _progressProperty.getUpdateEvent().addListener(this::onProgressChanged);
     }
 
 
@@ -71,6 +44,16 @@ public class AudioClipPlayer {
      * @return
      */
     public StatusProperty getStatusProperty() { return _statusProperty; }
+
+    /**
+     * @return
+     */
+    public ProgressProperty getProgressProperty() { return _progressProperty; }
+
+    /**
+     * @return
+     */
+    public AudioProperty getAudioProperty() { return _audioProperty; }
 
 
     public void set_onAudioClipFinished(Action onAudioClipFinished) {
@@ -88,7 +71,6 @@ public class AudioClipPlayer {
         final Media media = ResourceLoader.loadMedia(audioClip.getFilePath());
         _mediaPlayer = new MediaPlayer(media);
         _mediaPlayer.setVolume(_volumeProperty.getValue());
-
         _mediaPlayer.setOnReady(() -> onMediaReady(audioClip, media, wasPlaying));
         _mediaPlayer.setOnEndOfMedia(this::onMediaFinished);
         _mediaPlayer.currentTimeProperty().addListener(this::onTimeChanged);
@@ -117,14 +99,15 @@ public class AudioClipPlayer {
     }
 
     /**
-     * @param onUpdate
+     * @param changeEvent
      */
-    public void setOnUpdate(final OnUpdate onUpdate) { _onUpdate = onUpdate; }
+    private void onProgressChanged(final ProgressProperty.ChangeEvent changeEvent) {
+        if (_mediaPlayer == null || changeEvent.EventType == ProgressProperty.ChangeEvent.Type.IGNORED)
+            return;
 
-    /**
-     * @param onAudioClipReady
-     */
-    public void setOnAudioClipReady(final OnAudioClipReady onAudioClipReady) { _onAudioClipReady = onAudioClipReady; }
+        final Duration playbackPosition = _audioProperty.getDuration().multiply(changeEvent.Progress);
+        _mediaPlayer.seek(playbackPosition);
+    }
 
 
     /**
@@ -133,8 +116,8 @@ public class AudioClipPlayer {
      * @param play
      */
     private void onMediaReady(final AudioClip audioClip, final Media media, final boolean play) {
-        _onAudioClipReady.invoke(audioClip, media.getDuration());
-        _timer = new Timer(media.getDuration());
+        _audioProperty.setValue(audioClip, media.getDuration());
+        _progressProperty.setValue(0, ProgressProperty.ChangeEvent.Type.IGNORED);
         if (play) _mediaPlayer.play();
     }
 
@@ -151,8 +134,8 @@ public class AudioClipPlayer {
      * @param newValue
      */
     private void onTimeChanged(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
-        _timer.setPlaybackPosition(newValue);
-        _onUpdate.invoke(_timer.getPlaybackPosition(), _timer.getDuration());
+        final double progress = newValue.toMillis() / _audioProperty.getDuration().toMillis();
+        _progressProperty.setValue(progress, ProgressProperty.ChangeEvent.Type.IGNORED);
     }
 
 
@@ -179,19 +162,14 @@ public class AudioClipPlayer {
      * @param duration
      */
     public void rewind(final Duration duration) {
-        if (_mediaPlayer == null)
-            return;
-
-        _mediaPlayer.seek(duration);
-        _timer.setPlaybackPosition(duration);
-        _onUpdate.invoke(_timer.getPlaybackPosition(), _timer.getDuration());
+        final double progress = duration.toMillis() / _audioProperty.getDuration().toMillis();
+        rewind(progress);
     }
 
     /**
      * @param progress
      */
     public void rewind(final double progress) {
-        final Duration duration = _timer.getDuration().multiply(progress);
-        rewind(duration);
+        _progressProperty.setValue(progress);
     }
 }

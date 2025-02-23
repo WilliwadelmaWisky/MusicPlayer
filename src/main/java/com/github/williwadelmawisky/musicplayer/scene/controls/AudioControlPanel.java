@@ -1,21 +1,19 @@
 package com.github.williwadelmawisky.musicplayer.scene.controls;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
-import com.github.williwadelmawisky.musicplayer.core.audio.AudioClip;
 import com.github.williwadelmawisky.musicplayer.core.audio.AudioClipPlayer;
 import com.github.williwadelmawisky.musicplayer.core.Timer;
+import com.github.williwadelmawisky.musicplayer.core.audio.AudioProperty;
+import com.github.williwadelmawisky.musicplayer.core.audio.ProgressProperty;
 import com.github.williwadelmawisky.musicplayer.core.data.Artist;
 import com.github.williwadelmawisky.musicplayer.core.db.FetchGetHandler;
 import com.github.williwadelmawisky.musicplayer.core.db.URL;
 import com.github.williwadelmawisky.musicplayer.util.event.Action;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.control.Slider;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
@@ -68,8 +66,8 @@ public class AudioControlPanel extends VBox {
         _volumeSlider.setVolumeProperty(_audioClipPlayer.getVolumeProperty());
         _playButton.setStatusProperty(_audioClipPlayer.getStatusProperty());
 
-        _audioClipPlayer.setOnUpdate(this::onUpdate);
-        _audioClipPlayer.setOnAudioClipReady(this::onAudioClipReady);
+        _audioClipPlayer.getAudioProperty().getUpdateEvent().addListener(this::onAudioProprtyChanged);
+        _audioClipPlayer.getProgressProperty().getUpdateEvent().addListener(this::onProgressPropertyChanged);
     }
 
     /**
@@ -93,29 +91,27 @@ public class AudioControlPanel extends VBox {
 
 
     /**
-     * @param audioClip
-     * @param duration
+     * @param changeEvent
      */
-    private void onAudioClipReady(final AudioClip audioClip, final Duration duration) {
-        final Artist artist = _fetchHandler.fetchGET(URL.ARTIST, audioClip.getArtistID());
+    private void onAudioProprtyChanged(AudioProperty.ChangeEvent changeEvent) {
+        final Artist artist = _fetchHandler.fetchGET(URL.ARTIST, changeEvent.AudioClip.getArtistID());
         final String artistName = (artist == null) ? "" : artist.getName();
 
-        _titleLabel.setText(audioClip.getName());
+        _titleLabel.setText(changeEvent.AudioClip.getName());
         _artistLabel.setText(artistName);
-        _durationLabel.setText(Timer.durationToString(duration));
+        _durationLabel.setText(Timer.durationToString(changeEvent.Duration));
         _playbackPositionLabel.setText("0:00");
         _progressBar.setProgress(0);
         setDisable(false);
     }
 
     /**
-     * @param playbackPosition
-     * @param duration
+     * @param changeEvent
      */
-    private void onUpdate(final Duration playbackPosition, final Duration duration) {
+    private void onProgressPropertyChanged(ProgressProperty.ChangeEvent changeEvent) {
+        _progressBar.setProgress(changeEvent.Progress);
+        final Duration playbackPosition = _audioClipPlayer.getAudioProperty().getDuration().multiply(changeEvent.Progress);
         _playbackPositionLabel.setText(Timer.durationToString(playbackPosition));
-        final double progress = playbackPosition.toMillis() / duration.toMillis();
-        _progressBar.setProgress(progress);
     }
 
 

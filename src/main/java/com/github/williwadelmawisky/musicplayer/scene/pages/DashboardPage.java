@@ -21,6 +21,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
@@ -37,6 +38,7 @@ import java.util.*;
  */
 public class DashboardPage extends VBox implements Page {
 
+    @FXML private MenuItem _playMenuItem;
     @FXML private ListView<SongNode> _songListView;
     @FXML private AudioControlPanel _audioControlPanel;
     @FXML private AudioSequencerSelector _audioSequencerSelector;
@@ -62,10 +64,13 @@ public class DashboardPage extends VBox implements Page {
         ResourceLoader.loadFxml("fxml/pages/DashboardPage.fxml", this);
 
         _audioSequencePlayer = audioSequencePlayer;
-        _audioSequencePlayer.setSequencer(_audioSequencerSelector.getCurrentSequencer());
-        _audioSequencePlayer.setOnSelected(this::onSongSelected);
         _fetchHandler = fetchHandler;
         _redirectHandler = redirectHandler;
+
+        _audioSequencePlayer.setSequencer(_audioSequencerSelector.getCurrentSequencer());
+        _audioSequencePlayer.setOnSelected(this::onSongSelected);
+        _audioSequencePlayer.getStatusProperty().getUpdateEvent().addListener(this::onPlayStatusChanged);
+        onPlayStatusChanged(_audioSequencePlayer.getStatusProperty().getValue());
 
         _songListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         _songListView.setOnMouseClicked(this::onListViewClicked);
@@ -112,7 +117,7 @@ public class DashboardPage extends VBox implements Page {
         for (UUID songID : playlist) {
             final Song song = _fetchHandler.fetchGET(URL.SONG, songID);
             final AudioFile audioFile = _fetchHandler.fetchGET(URL.AUDIO_FILE, songID);
-            final AudioClip audioClip = new AudioClip(song, audioFile);
+            final AudioClip audioClip = new AudioClip(audioFile.getID(), song.getName(), song.getGenre(), audioFile.getPath(), song.getArtistID());
             _audioSequencePlayer.add(audioClip);
             addSongNode(audioClip);
         }
@@ -274,6 +279,14 @@ public class DashboardPage extends VBox implements Page {
 
 
     /**
+     * @param isPlaying
+     */
+    private void onPlayStatusChanged(final boolean isPlaying) {
+        final String text = isPlaying ? "Pause" : "Play";
+        _playMenuItem.setText(text);
+    }
+
+    /**
      *
      */
     private void onPreviousSongSelected() {
@@ -354,16 +367,9 @@ public class DashboardPage extends VBox implements Page {
      */
     @FXML
     private void onPlayButtonClicked(ActionEvent e) {
-        _audioSequencePlayer.play();
+        _audioSequencePlayer.togglePlay();
     }
 
-    /**
-     * @param e
-     */
-    @FXML
-    private void onPauseButtonClicked(ActionEvent e) {
-        _audioSequencePlayer.pause();
-    }
 
     /**
      * @param e

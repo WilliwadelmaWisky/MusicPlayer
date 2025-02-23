@@ -1,9 +1,6 @@
 package com.github.williwadelmawisky.musicplayer.core.audio;
 
-import com.github.williwadelmawisky.musicplayer.core.data.AudioFile;
 import com.github.williwadelmawisky.musicplayer.core.data.Genre;
-import com.github.williwadelmawisky.musicplayer.core.data.Song;
-import javafx.util.Duration;
 import java.util.UUID;
 
 /**
@@ -14,7 +11,6 @@ public class AudioClip {
     private final UUID _id, _artistID;
     private final String _name, _filePath;
     private final Genre _genre;
-    private Duration _duration;
 
 
     /**
@@ -30,15 +26,6 @@ public class AudioClip {
         _genre = genre;
         _filePath = filePath;
         _artistID = artistID;
-        _duration = Duration.ZERO;
-    }
-
-    /**
-     * @param song
-     * @param audioFile
-     */
-    public AudioClip(final Song song, final AudioFile audioFile) {
-        this(song.getID(), song.getName(), song.getGenre(), audioFile.getPath(), song.getArtistID());
     }
 
 
@@ -60,23 +47,12 @@ public class AudioClip {
     /**
      * @return
      */
-    public Duration getDuration() { return _duration; }
-
-    /**
-     * @return
-     */
     public UUID getArtistID() { return _artistID; }
 
     /**
      * @return
      */
     public String getFilePath() { return _filePath; }
-
-
-    /**
-     * @param duration
-     */
-    public void setDuration(final Duration duration) { _duration = duration; }
 
 
     /**

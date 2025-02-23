@@ -1,4 +1,7 @@
 package com.github.williwadelmawisky.musicplayer.core.audio;
 
-public class AudioClipProperty {
+/**
+ *
+ */
+public interface AudioPlayer {
 }

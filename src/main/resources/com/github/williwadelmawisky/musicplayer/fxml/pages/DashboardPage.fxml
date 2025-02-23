@@ -32,11 +32,9 @@
             <MenuItem text="Quit" accelerator="Shortcut+Q"/>
         </Menu>
         <Menu text="Playback">
-            <MenuItem text="Play" onAction="#onPlayButtonClicked"/>
-            <MenuItem text="Pause" onAction="#onPauseButtonClicked"/>
-            <SeparatorMenuItem/>
-            <MenuItem text="Next"/>
-            <MenuItem text="Previous"/>
+            <MenuItem text="Play" fx:id="_playMenuItem" onAction="#onPlayButtonClicked"/>
+            <MenuItem text="Next Song"/>
+            <MenuItem text="Previous Song"/>
         </Menu>
         <Menu text="Audio">
             <MenuItem text="Increase Volume" onAction="#onIncreaseVolumeButtonClicked"/>
