@@ -5,9 +5,9 @@ import com.github.williwadelmawisky.musicplayer.core.audio.AudioClipPlayer;
 import com.github.williwadelmawisky.musicplayer.core.Timer;
 import com.github.williwadelmawisky.musicplayer.core.audio.AudioProperty;
 import com.github.williwadelmawisky.musicplayer.core.audio.ProgressProperty;
-import com.github.williwadelmawisky.musicplayer.core.data.Artist;
-import com.github.williwadelmawisky.musicplayer.core.db.FetchGetHandler;
-import com.github.williwadelmawisky.musicplayer.core.db.URL;
+import com.github.williwadelmawisky.musicplayer.core.database.data.Artist;
+import com.github.williwadelmawisky.musicplayer.core.database.FetchGetHandler;
+import com.github.williwadelmawisky.musicplayer.core.database.URL;
 import com.github.williwadelmawisky.musicplayer.util.event.Action;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -30,7 +30,7 @@ public class AudioControlPanel extends VBox {
     @FXML private Label _titleLabel;
     @FXML private Label _artistLabel;
     @FXML private ProgressBar _progressBar;
-    @FXML private VolumeSlider _volumeSlider;
+    @FXML private VolumeSliderView _volumeSliderView;
     @FXML private PlayButton _playButton;
 
     private AudioClipPlayer _audioClipPlayer;
@@ -63,7 +63,7 @@ public class AudioControlPanel extends VBox {
     public void setAudioClipPlayer(final AudioClipPlayer audioClipPlayer) {
         _audioClipPlayer = audioClipPlayer;
 
-        _volumeSlider.setVolumeProperty(_audioClipPlayer.getVolumeProperty());
+        _volumeSliderView.setVolumeProperty(_audioClipPlayer.getVolumeProperty());
         _playButton.setStatusProperty(_audioClipPlayer.getStatusProperty());
 
         _audioClipPlayer.getAudioProperty().getUpdateEvent().addListener(this::onAudioProprtyChanged);

@@ -11,6 +11,7 @@
 
 <?import com.github.williwadelmawisky.musicplayer.scene.controls.VolumeSlider?>
 <?import com.github.williwadelmawisky.musicplayer.scene.controls.PlayButton?>
+<?import com.github.williwadelmawisky.musicplayer.scene.controls.VolumeSliderView?>
 <fx:root type="com.github.williwadelmawisky.musicplayer.scene.controls.AudioControlPanel"
          xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
          spacing="10" styleClass="content-box"
@@ -46,7 +47,7 @@
                 </graphic>
             </Button>
         </HBox>
-        <VolumeSlider fx:id="_volumeSlider" alignment="CENTER_LEFT" minWidth="200" maxWidth="200"/>
+        <VolumeSliderView fx:id="_volumeSliderView" alignment="CENTER_LEFT" minWidth="200" maxWidth="200"/>
         <Region minWidth="40" maxWidth="40"/>
     </HBox>
 </fx:root>

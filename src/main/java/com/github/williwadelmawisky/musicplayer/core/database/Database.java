@@ -1,10 +1,10 @@
-package com.github.williwadelmawisky.musicplayer.core.db;
+package com.github.williwadelmawisky.musicplayer.core.database;
 
-import com.github.williwadelmawisky.musicplayer.core.data.Artist;
-import com.github.williwadelmawisky.musicplayer.core.data.AudioFile;
-import com.github.williwadelmawisky.musicplayer.core.data.Playlist;
-import com.github.williwadelmawisky.musicplayer.core.data.Song;
-import com.github.williwadelmawisky.musicplayer.core.serialization.*;
+import com.github.williwadelmawisky.musicplayer.core.database.data.Artist;
+import com.github.williwadelmawisky.musicplayer.core.database.data.AudioFile;
+import com.github.williwadelmawisky.musicplayer.core.database.data.Playlist;
+import com.github.williwadelmawisky.musicplayer.core.database.data.Song;
+import com.github.williwadelmawisky.musicplayer.core.database.serialization.*;
 import com.github.williwadelmawisky.musicplayer.util.Files;
 import com.github.williwadelmawisky.musicplayer.util.Tuple;
 

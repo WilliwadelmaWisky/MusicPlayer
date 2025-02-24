@@ -1,11 +1,11 @@
 package com.github.williwadelmawisky.musicplayer.scene.pages;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
-import com.github.williwadelmawisky.musicplayer.core.data.Artist;
-import com.github.williwadelmawisky.musicplayer.core.data.Genre;
-import com.github.williwadelmawisky.musicplayer.core.data.Song;
-import com.github.williwadelmawisky.musicplayer.core.db.FetchGetHandler;
-import com.github.williwadelmawisky.musicplayer.core.db.URL;
+import com.github.williwadelmawisky.musicplayer.core.database.data.Artist;
+import com.github.williwadelmawisky.musicplayer.core.database.data.Genre;
+import com.github.williwadelmawisky.musicplayer.core.database.data.Song;
+import com.github.williwadelmawisky.musicplayer.core.database.FetchGetHandler;
+import com.github.williwadelmawisky.musicplayer.core.database.URL;
 import com.github.williwadelmawisky.musicplayer.routing.Page;
 import com.github.williwadelmawisky.musicplayer.scene.controls.ArtistSelector;
 import com.github.williwadelmawisky.musicplayer.util.event.Action;

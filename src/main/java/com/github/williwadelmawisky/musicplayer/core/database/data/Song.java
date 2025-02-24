@@ -1,4 +1,4 @@
-package com.github.williwadelmawisky.musicplayer.core.data;
+package com.github.williwadelmawisky.musicplayer.core.database.data;
 
 import java.util.UUID;
 

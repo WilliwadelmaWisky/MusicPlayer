@@ -1,4 +1,4 @@
-package com.github.williwadelmawisky.musicplayer.core.db;
+package com.github.williwadelmawisky.musicplayer.core.database;
 
 import java.util.HashMap;
 import java.util.Map;

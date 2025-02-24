@@ -1,13 +1,12 @@
 package com.github.williwadelmawisky.musicplayer.scene.controls;
 
 import com.github.williwadelmawisky.musicplayer.core.audio.VolumeProperty;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.control.Slider;
+import javafx.scene.control.Label;
 
 /**
  *
  */
-public class VolumeSlider extends Slider {
+public class VolumeLabel extends Label {
 
     private VolumeProperty _volumeProperty;
 
@@ -15,18 +14,15 @@ public class VolumeSlider extends Slider {
     /**
      *
      */
-    public VolumeSlider() {
+    public VolumeLabel() {
         super();
-
-        this.setMax(1);
         updateView(0);
-        this.valueProperty().addListener(this::onVolumeSliderChanged);
     }
 
     /**
      * @param volumeProperty
      */
-    public VolumeSlider(final VolumeProperty volumeProperty) {
+    public VolumeLabel(final VolumeProperty volumeProperty) {
         this();
         setVolumeProperty(volumeProperty);
     }
@@ -50,18 +46,10 @@ public class VolumeSlider extends Slider {
     }
 
     /**
-     * @param observable
-     * @param oldValue
-     * @param newValue
-     */
-    private void onVolumeSliderChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-        _volumeProperty.setValue(newValue.doubleValue());
-    }
-
-    /**
      * @param volume
      */
     private void updateView(final double volume) {
-        this.setValue(volume);
+        final int percentage = (int)(volume * 100);
+        this.setText(percentage + "%");
     }
 }

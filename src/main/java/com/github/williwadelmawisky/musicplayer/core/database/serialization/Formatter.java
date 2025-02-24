@@ -1,4 +1,4 @@
-package com.github.williwadelmawisky.musicplayer.core.serialization;
+package com.github.williwadelmawisky.musicplayer.core.database.serialization;
 
 /**
  * @param <T>

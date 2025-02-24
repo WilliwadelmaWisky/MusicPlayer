@@ -1,6 +1,6 @@
-package com.github.williwadelmawisky.musicplayer.core.serialization;
+package com.github.williwadelmawisky.musicplayer.core.database.serialization;
 
-import com.github.williwadelmawisky.musicplayer.core.data.Artist;
+import com.github.williwadelmawisky.musicplayer.core.database.data.Artist;
 
 import java.util.UUID;
 

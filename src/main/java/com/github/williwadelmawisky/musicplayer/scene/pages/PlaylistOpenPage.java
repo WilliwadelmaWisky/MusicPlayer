@@ -1,9 +1,9 @@
 package com.github.williwadelmawisky.musicplayer.scene.pages;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
-import com.github.williwadelmawisky.musicplayer.core.data.Playlist;
-import com.github.williwadelmawisky.musicplayer.core.db.FetchGetHandler;
-import com.github.williwadelmawisky.musicplayer.core.db.URL;
+import com.github.williwadelmawisky.musicplayer.core.database.data.Playlist;
+import com.github.williwadelmawisky.musicplayer.core.database.FetchGetHandler;
+import com.github.williwadelmawisky.musicplayer.core.database.URL;
 import com.github.williwadelmawisky.musicplayer.routing.Page;
 import com.github.williwadelmawisky.musicplayer.scene.controls.PlaylistNode;
 import javafx.fxml.FXML;

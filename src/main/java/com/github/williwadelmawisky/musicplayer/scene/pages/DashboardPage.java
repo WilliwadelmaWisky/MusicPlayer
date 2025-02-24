@@ -2,12 +2,12 @@ package com.github.williwadelmawisky.musicplayer.scene.pages;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
 import com.github.williwadelmawisky.musicplayer.core.audio.*;
-import com.github.williwadelmawisky.musicplayer.core.data.Artist;
-import com.github.williwadelmawisky.musicplayer.core.data.AudioFile;
-import com.github.williwadelmawisky.musicplayer.core.data.Playlist;
-import com.github.williwadelmawisky.musicplayer.core.data.Song;
-import com.github.williwadelmawisky.musicplayer.core.db.FetchHandler;
-import com.github.williwadelmawisky.musicplayer.core.db.URL;
+import com.github.williwadelmawisky.musicplayer.core.database.data.Artist;
+import com.github.williwadelmawisky.musicplayer.core.database.data.AudioFile;
+import com.github.williwadelmawisky.musicplayer.core.database.data.Playlist;
+import com.github.williwadelmawisky.musicplayer.core.database.data.Song;
+import com.github.williwadelmawisky.musicplayer.core.database.FetchHandler;
+import com.github.williwadelmawisky.musicplayer.core.database.URL;
 import com.github.williwadelmawisky.musicplayer.routing.Page;
 import com.github.williwadelmawisky.musicplayer.routing.RedirectHandler;
 import com.github.williwadelmawisky.musicplayer.scene.controls.AudioControlPanel;
@@ -77,6 +77,8 @@ public class DashboardPage extends VBox implements Page {
         _songListView.setOnDragOver(this::onListViewDragOver);
         _songListView.setOnDragDropped(this::onListViewDragDrop);
 
+        _playMenuItem.setDisable(true);
+
         _audioControlPanel.setAudioClipPlayer(_audioSequencePlayer);
         _audioControlPanel.setFetchHandler(_fetchHandler);
         _audioControlPanel.setOnPrevious(this::onPreviousSongSelected);
@@ -94,23 +96,19 @@ public class DashboardPage extends VBox implements Page {
      *
      */
     @Override
-    public void onLoad() {
-
-    }
+    public void onLoad() { }
 
     /**
      *
      */
     @Override
-    public void onUnload() {
-
-    }
+    public void onUnload() { }
 
 
     /**
      * @param playlist
      */
-    public void loadPlaylist(final Playlist playlist) {
+    public void open(final Playlist playlist) {
         _audioSequencePlayer.clear();
         _songListView.getItems().clear();
 
@@ -128,7 +126,21 @@ public class DashboardPage extends VBox implements Page {
     /**
      * @param file
      */
-    public void loadFile(final File file) {
+    public void open(final File file) {
+        if (file.isDirectory()) {
+            openDirectory(file);
+            return;
+        }
+
+        final String[] extensions = new String[] { ".mp3", ".wav" };
+        if (Files.doesMatchExtension(file, extensions))
+            openFile(file);
+    }
+
+    /**
+     * @param file
+     */
+    private void openFile(final File file) {
         _audioSequencePlayer.clear();
         _songListView.getItems().clear();
         addFile(file);
@@ -136,9 +148,33 @@ public class DashboardPage extends VBox implements Page {
     }
 
     /**
+     * @param directory
+     */
+    private void openDirectory(final File directory) {
+        _audioSequencePlayer.clear();
+        _songListView.getItems().clear();
+        addDirectory(directory);
+        _audioSequencePlayer.selectFirst();
+    }
+
+    /**
      * @param file
      */
-    public void addFile(final File file) {
+    private void add(final File file) {
+        if (file.isDirectory()) {
+            addDirectory(file);
+            return;
+        }
+
+        final String[] extensions = new String[] { ".mp3", ".wav" };
+        if (Files.doesMatchExtension(file, extensions))
+            addFile(file);
+    }
+
+    /**
+     * @param file
+     */
+    private void addFile(final File file) {
         final AudioClip audioClip = new AudioClip(UUID.randomUUID(), file.getName(), null, file.getAbsolutePath(), null);
         _audioSequencePlayer.add(audioClip);
         addSongNode(audioClip);
@@ -147,17 +183,7 @@ public class DashboardPage extends VBox implements Page {
     /**
      * @param directory
      */
-    public void loadDirectory(final File directory) {
-        _audioSequencePlayer.clear();
-        _songListView.getItems().clear();
-        addDirectory(directory);
-        _audioSequencePlayer.selectFirst();
-    }
-
-    /**
-     * @param directory
-     */
-    public void addDirectory(final File directory) {
+    private void addDirectory(final File directory) {
         final String[] extensions = new String[] { ".mp3", ".wav" };
         Files.listFiles(directory, extensions, true, this::addFile);
     }
@@ -168,7 +194,7 @@ public class DashboardPage extends VBox implements Page {
      */
     public void shuffle() {
         _audioSequencePlayer.shuffle();
-        updateSongList();
+        refresh();
     }
 
     /**
@@ -187,33 +213,17 @@ public class DashboardPage extends VBox implements Page {
                 final SongNode songNode = new SongNode(audioClip.getID(), audioClip.getName(), artistName);
                 _songListView.getItems().add(songNode);
             }
-
-            /*
-            final Media media = ResourceLoader.loadMedia(audioClip.getFilePath());
-            final MediaPlayer mediaPlayer = new MediaPlayer(media);
-            mediaPlayer.setOnReady(() -> {
-                songNode.setDuration(media.getDuration());
-            });
-             */
         }
     }
 
     /**
      *
      */
-    private void updateSongList() {
+    private void refresh() {
         _songListView.getItems().clear();
 
         for (AudioClip audioClip : _audioSequencePlayer) {
             addSongNode(audioClip);
-
-            /*
-            final Media media = ResourceLoader.loadMedia(audioClip.getFilePath());
-            final MediaPlayer mediaPlayer = new MediaPlayer(media);
-            mediaPlayer.setOnReady(() -> {
-                songNode.setDuration(media.getDuration());
-            });
-             */
         }
     }
 
@@ -232,7 +242,7 @@ public class DashboardPage extends VBox implements Page {
      * @param audioClip
      */
     private void onSongSelected(final AudioClip audioClip) {
-        int index = Lists.indexFunc(_songListView.getItems(), songNode -> songNode.getSongID().equals(audioClip.getID()));
+        int index = Lists.indexFunc(_songListView.getItems(), songNode -> audioClip.equalsID(songNode.getSongID()));
         if (index == -1)
             return;
 
@@ -266,14 +276,7 @@ public class DashboardPage extends VBox implements Page {
     private void onListViewDragDrop(DragEvent e) {
         final List<File> fileList = e.getDragboard().getFiles();
         fileList.forEach(file -> {
-            if (file.isDirectory()) {
-                addDirectory(file);
-                return;
-            }
 
-            final String[] extensions = new String[] { ".mp3", ".wav" };
-            if (Files.doesMatchExtension(file, extensions))
-                addFile(file);
         });
     }
 
@@ -329,7 +332,7 @@ public class DashboardPage extends VBox implements Page {
         if (file == null || !file.exists())
             return;
 
-        loadFile(file);
+        openFile(file);
     }
 
     /**
@@ -348,7 +351,7 @@ public class DashboardPage extends VBox implements Page {
         if (directory == null || !directory.exists() || !directory.isDirectory())
             return;
 
-        loadDirectory(directory);
+        openDirectory(directory);
     }
 
     /**
@@ -356,7 +359,7 @@ public class DashboardPage extends VBox implements Page {
      */
     @FXML
     private void onOpenPlaylistButtonClicked(ActionEvent e) {
-        final Page page = new PlaylistOpenPage(_fetchHandler, this::loadPlaylist);
+        final Page page = new PlaylistOpenPage(_fetchHandler, this::open);
         final ModalWindow window = new ModalWindow("Open a playlist", page);
         window.show();
     }

@@ -1,10 +1,9 @@
 package com.github.williwadelmawisky.musicplayer.scene.pages;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
-import com.github.williwadelmawisky.musicplayer.core.db.FetchGetHandler;
+import com.github.williwadelmawisky.musicplayer.core.database.FetchGetHandler;
 import com.github.williwadelmawisky.musicplayer.routing.Page;
 import com.github.williwadelmawisky.musicplayer.routing.RedirectHandler;
-import com.github.williwadelmawisky.musicplayer.routing.SessionStorage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -34,9 +33,8 @@ public class LibraryPage extends VBox implements Page {
     /**
      * @param fetchHandler
      * @param redirectHandler
-     * @param sessionStorage
      */
-    public LibraryPage(final FetchGetHandler fetchHandler, final RedirectHandler redirectHandler, final SessionStorage sessionStorage) {
+    public LibraryPage(final FetchGetHandler fetchHandler, final RedirectHandler redirectHandler) {
         super();
 
         ResourceLoader.loadFxml("fxml/pages/LibraryPage.fxml", this);

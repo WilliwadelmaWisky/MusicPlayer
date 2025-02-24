@@ -2,9 +2,8 @@ package com.github.williwadelmawisky.musicplayer;
 
 import com.github.williwadelmawisky.musicplayer.core.audio.AudioSequencePlayer;
 import com.github.williwadelmawisky.musicplayer.core.audio.OrderSequencer;
-import com.github.williwadelmawisky.musicplayer.core.db.Database;
-import com.github.williwadelmawisky.musicplayer.core.db.FetchHandler;
-import com.github.williwadelmawisky.musicplayer.routing.SessionStorage;
+import com.github.williwadelmawisky.musicplayer.core.database.Database;
+import com.github.williwadelmawisky.musicplayer.core.database.FetchHandler;
 import com.github.williwadelmawisky.musicplayer.scene.pages.DashboardPage;
 import com.github.williwadelmawisky.musicplayer.routing.Router;
 import com.github.williwadelmawisky.musicplayer.scene.pages.LibraryPage;
@@ -12,6 +11,10 @@ import com.github.williwadelmawisky.musicplayer.scene.pages.NotFoundPage;
 import com.github.williwadelmawisky.musicplayer.stage.Window;
 import javafx.application.Application;
 import javafx.stage.Stage;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.util.List;
 
 /**
  *
@@ -33,11 +36,18 @@ public class Main extends Application {
         final FetchHandler fetchHandler = new FetchHandler(database);
         final AudioSequencePlayer audioSequencePlayer = new AudioSequencePlayer(new OrderSequencer());
 
-        final SessionStorage sessionStorage = new SessionStorage();
         final Router router = new Router(new NotFoundPage());
-        router.addRoute("/", new DashboardPage(fetchHandler, router, audioSequencePlayer));
-        router.addRoute("/library", new LibraryPage(fetchHandler, router, sessionStorage));
-        //router.addRoute("/edit", new EditPlaylistPage(fetchHandler, router, sessionStorage));
+        final DashboardPage dashboardPage = new DashboardPage(fetchHandler, router, audioSequencePlayer);
+        final LibraryPage libraryPage = new LibraryPage(fetchHandler, router);
+
+        router.addRoute("/", dashboardPage);
+        router.addRoute("/library", libraryPage);
+
+        final List<String> args = getParameters().getRaw();
+        if (!args.isEmpty()) {
+            final File file = Path.of(args.getFirst()).toAbsolutePath().toFile();
+            dashboardPage.open(file);
+        }
 
         final Window window = new Window(stage, router);
         window.show();
