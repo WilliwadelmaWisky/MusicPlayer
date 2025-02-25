@@ -9,9 +9,9 @@ public interface FetchPostHandler {
 
     /**
      *
-     * @param url
+     * @param tableType
      * @param id
      * @param value
      */
-    void fetchPOST(final URL url, final UUID id, final Object value);
+    void fetchPOST(final Database.TableType tableType, final UUID id, final Serializable value);
 }

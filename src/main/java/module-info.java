@@ -11,7 +11,6 @@ module com.github.williwadelmawisky.musicplayer {
     opens com.github.williwadelmawisky.musicplayer to javafx.fxml;
     exports com.github.williwadelmawisky.musicplayer.core.audio;
     opens com.github.williwadelmawisky.musicplayer.core.audio to javafx.fxml;
-    exports com.github.williwadelmawisky.musicplayer.core.database.data;
     exports com.github.williwadelmawisky.musicplayer.core.database;
     exports com.github.williwadelmawisky.musicplayer.routing;
     opens com.github.williwadelmawisky.musicplayer.routing to javafx.fxml;
@@ -23,8 +22,4 @@ module com.github.williwadelmawisky.musicplayer {
     opens com.github.williwadelmawisky.musicplayer.stage to javafx.fxml;
     exports com.github.williwadelmawisky.musicplayer.util;
     opens com.github.williwadelmawisky.musicplayer.util to javafx.fxml;
-    exports com.github.williwadelmawisky.musicplayer.util.event;
-    opens com.github.williwadelmawisky.musicplayer.util.event to javafx.fxml;
-    exports com.github.williwadelmawisky.musicplayer.core;
-    opens com.github.williwadelmawisky.musicplayer.core to javafx.fxml;
 }

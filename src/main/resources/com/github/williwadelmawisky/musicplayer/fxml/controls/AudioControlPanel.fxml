@@ -12,6 +12,7 @@
 <?import com.github.williwadelmawisky.musicplayer.scene.controls.VolumeSlider?>
 <?import com.github.williwadelmawisky.musicplayer.scene.controls.PlayButton?>
 <?import com.github.williwadelmawisky.musicplayer.scene.controls.VolumeSliderView?>
+<?import com.github.williwadelmawisky.musicplayer.scene.controls.AudioProgressView?>
 <fx:root type="com.github.williwadelmawisky.musicplayer.scene.controls.AudioControlPanel"
          xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
          spacing="10" styleClass="content-box"
@@ -19,11 +20,7 @@
     <padding>
         <Insets topRightBottomLeft="10"/>
     </padding>
-    <HBox spacing="5" alignment="BOTTOM_LEFT">
-        <Label fx:id="_playbackPositionLabel" minWidth="40" maxWidth="40"/>
-        <ProgressBar fx:id="_progressBar" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-        <Label fx:id="_durationLabel" minWidth="40" maxWidth="40" alignment="CENTER_RIGHT"/>
-    </HBox>
+    <AudioProgressView fx:id="_audioProgressView" spacing="5" alignment="BOTTOM_LEFT"/>
     <HBox spacing="10">
         <Region minWidth="40" maxWidth="40"/>
         <VBox spacing="2" minWidth="200" maxWidth="200">

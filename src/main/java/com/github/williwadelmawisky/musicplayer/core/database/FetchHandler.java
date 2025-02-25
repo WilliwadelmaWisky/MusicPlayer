@@ -1,7 +1,7 @@
 package com.github.williwadelmawisky.musicplayer.core.database;
 
-import com.github.williwadelmawisky.musicplayer.util.Util;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -23,29 +23,34 @@ public class FetchHandler implements FetchGetHandler, FetchPostHandler, FetchDel
 
     /**
      *
-     * @param type
+     * @param tableType
      * @param id
      * @return
      * @param <T>
      */
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T fetchGET(final URL type, final UUID id) {
-        final Table table = _database.getTable(type);
-        return (T)table.read(id);
+    public <T> T fetchGET(final Database.TableType tableType, final UUID id) {
+        final Table table = _database.getTable(tableType);
+        return (T)table.get(id);
     }
 
     /**
      *
-     * @param url
+     * @param tableType
      * @return
      * @param <T>
      */
     @Override
     @SuppressWarnings("unchecked")
-    public <T> Iterable<T> fetchGET(URL url) {
-        final Table table = _database.getTable(url);
-        return Util.map(table.readAll(), obj -> (T)obj);
+    public <T> Iterable<T> fetchGET(final Database.TableType tableType) {
+        final Table table = _database.getTable(tableType);
+        final List<T> valueList = new ArrayList<>();
+        for (UUID id : table) {
+            valueList.add((T)table.get(id));
+        }
+
+        return valueList;
     }
 
     /**
@@ -55,9 +60,9 @@ public class FetchHandler implements FetchGetHandler, FetchPostHandler, FetchDel
      * @param value
      */
     @Override
-    public void fetchPOST(final URL type, final UUID id, final Object value) {
+    public void fetchPOST(final Database.TableType type, final UUID id, final Serializable value) {
         final Table table = _database.getTable(type);
-        table.write(id, value);
+        table.set(id, value);
     }
 
     /**
@@ -66,7 +71,7 @@ public class FetchHandler implements FetchGetHandler, FetchPostHandler, FetchDel
      * @param id
      */
     @Override
-    public void fetchDELETE(final URL type, final UUID id) {
+    public void fetchDELETE(final Database.TableType type, final UUID id) {
         final Table table = _database.getTable(type);
         table.delete(id);
     }

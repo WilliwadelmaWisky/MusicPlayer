@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -32,10 +33,12 @@ public class Main extends Application {
         stage.setHeight(500);
         stage.setMinHeight(300);
 
-        final Database database = new Database();
+        final String path = Paths.get(System.getProperty("user.home"), ".WilliwadelmaWisky", "MusicPlayer").toString();
+        final Database database = new Database(path);
+        database.load();
+
         final FetchHandler fetchHandler = new FetchHandler(database);
         final AudioSequencePlayer audioSequencePlayer = new AudioSequencePlayer(new OrderSequencer());
-
         final Router router = new Router(new NotFoundPage());
         final DashboardPage dashboardPage = new DashboardPage(fetchHandler, router, audioSequencePlayer);
         final LibraryPage libraryPage = new LibraryPage(fetchHandler, router);

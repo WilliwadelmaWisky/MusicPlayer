@@ -1,9 +1,9 @@
 package com.github.williwadelmawisky.musicplayer.scene.pages;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
-import com.github.williwadelmawisky.musicplayer.core.database.data.Playlist;
+import com.github.williwadelmawisky.musicplayer.core.database.Database;
+import com.github.williwadelmawisky.musicplayer.core.database.PlaylistData;
 import com.github.williwadelmawisky.musicplayer.core.database.FetchGetHandler;
-import com.github.williwadelmawisky.musicplayer.core.database.URL;
 import com.github.williwadelmawisky.musicplayer.routing.Page;
 import com.github.williwadelmawisky.musicplayer.routing.RedirectHandler;
 import com.github.williwadelmawisky.musicplayer.routing.SessionStorage;
@@ -37,7 +37,7 @@ public class EditPlaylistPage extends VBox implements Page {
     private FetchGetHandler _fetchHandler;
     private RedirectHandler _redirectHandler;
     private SessionStorage _sessionStorage;
-    private Playlist _playlist;
+    private PlaylistData _playlistData;
 
 
     /**
@@ -77,9 +77,9 @@ public class EditPlaylistPage extends VBox implements Page {
     public void onLoad() {
         if (_sessionStorage.hasKey("playlist")) {
             final String playlistID = _sessionStorage.get("playlist");
-            _playlist = _fetchHandler.fetchGET(URL.PLAYLIST, UUID.fromString(playlistID));
+            _playlistData = _fetchHandler.fetchGET(Database.TableType.PLAYLIST, UUID.fromString(playlistID));
         } else {
-            _playlist = new Playlist(UUID.randomUUID(), "New Playlist");
+            _playlistData = new PlaylistData(UUID.randomUUID(), "New Playlist");
         }
 
         generate();
@@ -99,7 +99,7 @@ public class EditPlaylistPage extends VBox implements Page {
      */
     private void generate() {
         final List<SongNode> list = new ArrayList<>();
-        _playlist.forEach(songID -> {
+        _playlistData.forEach(songID -> {
             final SongNode songNode = new SongNode(songID, "Song", "Artist");
             list.add(songNode);
         });
@@ -200,7 +200,7 @@ public class EditPlaylistPage extends VBox implements Page {
         if (name.isEmpty())
             return;
 
-        final Playlist playlist = new Playlist(UUID.randomUUID(), name);
+        final PlaylistData playlistData = new PlaylistData(UUID.randomUUID(), name);
         //_onApply.invoke(playlist);
     }
 }

@@ -1,62 +1,8 @@
 package com.github.williwadelmawisky.musicplayer.util;
 
-import javafx.util.Callback;
+import javafx.util.Duration;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- *
- */
-public class Util {
-
-    /**
-     * @param in
-     * @param proc
-     * @param <TIn>
-     * @param <TOut>
-     * @return
-     */
-    public static <TIn, TOut> Iterable<TOut> map(final Iterable<TIn> in, final Callback<TIn, TOut> proc) {
-        final List<TOut> out = new ArrayList<>();
-        for (TIn t : in) {
-            out.add(proc.call(t));
-        }
-
-        return out;
-    }
-
-    /**
-     * @param in
-     * @param match
-     * @param <T>
-     * @return
-     */
-    public static <T> Iterable<T> filter(final Iterable<T> in, final Callback<T, Boolean> match) {
-        final List<T> out = new ArrayList<>();
-        for (T t : in) {
-            if (match.call(t))
-                out.add(t);
-        }
-
-        return out;
-    }
-
-    /**
-     * @param in
-     * @param match
-     * @param <T>
-     * @return
-     */
-    public static <T> T find(final Iterable<T> in, final Callback<T, Boolean> match) {
-        for (T t : in) {
-            if (match.call(t))
-                return t;
-        }
-
-        return null;
-    }
-
+public abstract class Strings {
 
     /**
      * Add specified extra characters to the start of the string until a certain length is achieved.
@@ -94,5 +40,16 @@ public class Util {
         }
 
         return stringBuilder.toString();
+    }
+
+
+    /**
+     * @param duration
+     * @return
+     */
+    public static String durationToString(final Duration duration) {
+        final int MINUTE_TO_SECOND = 60;
+        final int seconds = (int)(duration.toSeconds() - (int)duration.toMinutes() * MINUTE_TO_SECOND);
+        return (int)duration.toMinutes() + ":" + Strings.padLeft(String.valueOf(seconds), 2, '0');
     }
 }

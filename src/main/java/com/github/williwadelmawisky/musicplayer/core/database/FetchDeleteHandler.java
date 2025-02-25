@@ -9,8 +9,8 @@ public interface FetchDeleteHandler {
 
     /**
      *
-     * @param url
+     * @param tableType
      * @param id
      */
-    void fetchDELETE(final URL url, final UUID id);
+    void fetchDELETE(final Database.TableType tableType, final UUID id);
 }

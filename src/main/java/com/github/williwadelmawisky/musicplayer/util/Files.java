@@ -1,7 +1,5 @@
 package com.github.williwadelmawisky.musicplayer.util;
 
-import com.github.williwadelmawisky.musicplayer.util.event.EventHandler;
-
 import java.io.*;
 import java.util.Objects;
 

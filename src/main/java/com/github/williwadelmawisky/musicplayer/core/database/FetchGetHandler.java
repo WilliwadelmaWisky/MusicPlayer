@@ -9,18 +9,18 @@ public interface FetchGetHandler {
 
     /**
      *
-     * @param url
+     * @param tableType
      * @param id
      * @return
      * @param <T>
      */
-    <T> T fetchGET(final URL url, final UUID id);
+    <T> T fetchGET(final Database.TableType tableType, final UUID id);
 
     /**
      *
-     * @param url
+     * @param tableType
      * @return
      * @param <T>
      */
-    <T> Iterable<T> fetchGET(final URL url);
+    <T> Iterable<T> fetchGET(final Database.TableType tableType);
 }

@@ -1,7 +1,7 @@
 package com.github.williwadelmawisky.musicplayer.scene.controls;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
-import com.github.williwadelmawisky.musicplayer.core.database.data.Artist;
+import com.github.williwadelmawisky.musicplayer.core.database.ArtistData;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,7 +22,7 @@ public class ArtistSelector extends HBox {
 
     @FXML private SearchableComboBox<String> _comboBox;
 
-    private final Map<UUID, Artist> _artistMap;
+    private final Map<UUID, ArtistData> _artistMap;
     private UUID _value;
 
 
@@ -48,13 +48,13 @@ public class ArtistSelector extends HBox {
     /**
      * @param artists
      */
-    public void setItems(final Iterable<Artist> artists) {
+    public void setItems(final Iterable<ArtistData> artists) {
         _artistMap.clear();
-        for (Artist artist : artists) {
-            _artistMap.put(artist.getID(), artist);
+        for (ArtistData artistData : artists) {
+            _artistMap.put(artistData.getID(), artistData);
         }
 
-        final ObservableList<String> artistNameList = FXCollections.observableList(_artistMap.values().stream().map(Artist::getName).toList());
+        final ObservableList<String> artistNameList = FXCollections.observableList(_artistMap.values().stream().map(ArtistData::getName).toList());
         _comboBox.setItems(artistNameList);
     }
 
@@ -84,7 +84,7 @@ public class ArtistSelector extends HBox {
      * @param newVal
      */
     private void onValueSelected(ObservableValue<? extends String> observable, String oldVal, String newVal) {
-        final List<Artist> artistList = _artistMap.values().stream().filter(artist -> artist.getName().equals(newVal)).toList();
-        _value = artistList.getFirst().getID();
+        final List<ArtistData> artistDataList = _artistMap.values().stream().filter(artist -> artist.getName().equals(newVal)).toList();
+        _value = artistDataList.getFirst().getID();
     }
 }

@@ -1,7 +1,7 @@
 package com.github.williwadelmawisky.musicplayer.core.audio;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
-import com.github.williwadelmawisky.musicplayer.util.event.Action;
+import com.github.williwadelmawisky.musicplayer.util.Action;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;

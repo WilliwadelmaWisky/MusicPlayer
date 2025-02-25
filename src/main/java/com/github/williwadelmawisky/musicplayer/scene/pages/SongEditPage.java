@@ -1,14 +1,10 @@
 package com.github.williwadelmawisky.musicplayer.scene.pages;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
-import com.github.williwadelmawisky.musicplayer.core.database.data.Artist;
-import com.github.williwadelmawisky.musicplayer.core.database.data.Genre;
-import com.github.williwadelmawisky.musicplayer.core.database.data.Song;
-import com.github.williwadelmawisky.musicplayer.core.database.FetchGetHandler;
-import com.github.williwadelmawisky.musicplayer.core.database.URL;
+import com.github.williwadelmawisky.musicplayer.core.database.*;
 import com.github.williwadelmawisky.musicplayer.routing.Page;
 import com.github.williwadelmawisky.musicplayer.scene.controls.ArtistSelector;
-import com.github.williwadelmawisky.musicplayer.util.event.Action;
+import com.github.williwadelmawisky.musicplayer.util.Action;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -32,7 +28,7 @@ public class SongEditPage extends VBox implements Page {
     @FXML private ComboBox<String> _genreComboBox;
     @FXML private ArtistSelector _artistSelector;
 
-    private Song _song;
+    private SongData _songData;
     private Action _onApply;
     private FetchGetHandler _fetchHandler;
 
@@ -43,29 +39,29 @@ public class SongEditPage extends VBox implements Page {
     public SongEditPage() {}
 
     /**
-     * @param song
+     * @param songData
      * @param fetchHandler
      * @param onApply
      */
-    public SongEditPage(final Song song, final FetchGetHandler fetchHandler, final Action onApply) {
+    public SongEditPage(final SongData songData, final FetchGetHandler fetchHandler, final Action onApply) {
         super();
 
         ResourceLoader.loadFxml("fxml/pages/SongEditPage.fxml", this);
 
-        _song = song;
+        _songData = songData;
         _onApply = onApply;
         _fetchHandler = fetchHandler;
 
-        _nameTextField.setText(_song.getName());
+        _nameTextField.setText(_songData.getName());
 
-        Iterable<Artist> artists = fetchHandler.fetchGET(URL.ARTIST);
+        Iterable<ArtistData> artists = fetchHandler.fetchGET(Database.TableType.ARTIST);
         _artistSelector.setItems(artists);
-        _artistSelector.setValue(_song.getArtistID());
+        _artistSelector.setValue(_songData.getArtistID());
 
         List<String> values = Arrays.stream(Genre.values()).map(Enum::name).toList();
         ObservableList<String> itemList = FXCollections.observableList(values);
         _genreComboBox.setItems(itemList);
-        _genreComboBox.setValue(song.getGenre().name());
+        _genreComboBox.setValue(songData.getGenre().name());
     }
 
     /**
@@ -83,9 +79,9 @@ public class SongEditPage extends VBox implements Page {
 
         final Genre genre = Genre.valueOf(_genreComboBox.getValue());
 
-        _song.setName(songName);
-        _song.setArtistID(artistID);
-        _song.setGenre(genre);
+        _songData.setName(songName);
+        _songData.setArtistID(artistID);
+        _songData.setGenre(genre);
 
         _onApply.invoke();
     }

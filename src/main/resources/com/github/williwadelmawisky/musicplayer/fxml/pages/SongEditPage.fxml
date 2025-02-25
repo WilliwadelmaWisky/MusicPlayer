@@ -24,7 +24,7 @@
             <VBox spacing="5">
                 <HBox alignment="CENTER_LEFT">
                     <Label text="Name" minWidth="80" maxWidth="80"/>
-                    <TextField promptText="Enter the song name..." HBox.hgrow="ALWAYS" maxWidth="Infinity" fx:id="_nameTextField"/>
+                    <TextField promptText="Enter the songData name..." HBox.hgrow="ALWAYS" maxWidth="Infinity" fx:id="_nameTextField"/>
                 </HBox>
                 <HBox alignment="CENTER_LEFT">
                     <Label text="Genre" minWidth="80" maxWidth="80"/>

@@ -1,11 +1,12 @@
 package com.github.williwadelmawisky.musicplayer.scene.controls;
 
-import com.github.williwadelmawisky.musicplayer.ResourceLoader;
-import com.github.williwadelmawisky.musicplayer.core.Timer;
+import com.github.williwadelmawisky.musicplayer.core.audio.AudioProperty;
+import com.github.williwadelmawisky.musicplayer.core.audio.ProgressProperty;
+import com.github.williwadelmawisky.musicplayer.util.Strings;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
+import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.util.Duration;
 
 /**
@@ -13,11 +14,10 @@ import javafx.util.Duration;
  */
 public class AudioProgressView extends HBox {
 
-    @FXML private Label _playbackPositionLabel;
-    @FXML private Label _durationLabel;
-    @FXML private ProgressBar _progressBar;
+    private final AudioPlaybackPositionLabel _audioPlaybackPositionLabel;
+    private final AudioDurationLabel _audioDurationLabel;
+    private final AudioProgressBar _audioProgressBar;
 
-    private Duration _duration;
 
     /**
      *
@@ -25,25 +25,41 @@ public class AudioProgressView extends HBox {
     public AudioProgressView() {
         super();
 
-        ResourceLoader.loadFxml("fxml/controls/AudioProgressView.fxml", this);
+        _audioPlaybackPositionLabel = new AudioPlaybackPositionLabel();
+        _audioPlaybackPositionLabel.setAlignment(Pos.CENTER_LEFT);
+        _audioPlaybackPositionLabel.setMinWidth(40);
+        _audioPlaybackPositionLabel.setMaxWidth(40);
+        this.getChildren().add(_audioPlaybackPositionLabel);
+
+        _audioProgressBar = new AudioProgressBar();
+        HBox.setHgrow(_audioProgressBar, Priority.ALWAYS);
+        _audioProgressBar.setMaxWidth(Double.POSITIVE_INFINITY);
+        this.getChildren().add(_audioProgressBar);
+
+        _audioDurationLabel = new AudioDurationLabel();
+        _audioDurationLabel.setAlignment(Pos.CENTER_RIGHT);
+        _audioDurationLabel.setMinWidth(40);
+        _audioDurationLabel.setMaxWidth(40);
+        this.getChildren().add(_audioDurationLabel);
+    }
+
+    /**
+     * @param progressProperty
+     * @param audioProperty
+     */
+    public AudioProgressView(final ProgressProperty progressProperty, final AudioProperty audioProperty) {
+        this();
+        setProgressProperty(progressProperty, audioProperty);
     }
 
 
     /**
-     * @param duration
+     * @param progressProperty
+     * @param audioProperty
      */
-    public void setDuration(final Duration duration) {
-        _duration = duration;
-        _durationLabel.setText(Timer.durationToString(duration));
-    }
-
-    /**
-     * @param progress
-     */
-    public void setProgess(double progress) {
-        progress = Math.clamp(progress, 0, 1);
-        final Duration playbackPosition = _duration.multiply(progress);
-        _playbackPositionLabel.setText(Timer.durationToString(playbackPosition));
-        _progressBar.setProgress(progress);
+    public void setProgressProperty(final ProgressProperty progressProperty, final AudioProperty audioProperty) {
+        _audioPlaybackPositionLabel.setProgressProperty(progressProperty, audioProperty);
+        _audioDurationLabel.setAudioProperty(audioProperty);
+        _audioProgressBar.setProgressProperty(progressProperty);
     }
 }

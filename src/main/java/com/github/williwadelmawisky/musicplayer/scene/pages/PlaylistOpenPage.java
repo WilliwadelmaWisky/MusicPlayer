@@ -1,9 +1,9 @@
 package com.github.williwadelmawisky.musicplayer.scene.pages;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
-import com.github.williwadelmawisky.musicplayer.core.database.data.Playlist;
+import com.github.williwadelmawisky.musicplayer.core.database.Database;
+import com.github.williwadelmawisky.musicplayer.core.database.PlaylistData;
 import com.github.williwadelmawisky.musicplayer.core.database.FetchGetHandler;
-import com.github.williwadelmawisky.musicplayer.core.database.URL;
 import com.github.williwadelmawisky.musicplayer.routing.Page;
 import com.github.williwadelmawisky.musicplayer.scene.controls.PlaylistNode;
 import javafx.fxml.FXML;
@@ -20,7 +20,7 @@ public class PlaylistOpenPage extends VBox implements Page {
      */
     @FunctionalInterface
     public interface OnOpenPlaylist {
-        void invoke(final Playlist playlist);
+        void invoke(final PlaylistData playlistData);
     }
 
     @FXML
@@ -55,19 +55,19 @@ public class PlaylistOpenPage extends VBox implements Page {
      *
      */
     public void refresh() {
-        final Iterable<Playlist> playlists = _fetchHandler.fetchGET(URL.PLAYLIST);
-        for (final Playlist playlist : playlists) {
-            PlaylistNode playlistNode = new PlaylistNode(playlist.getName(), () -> onPlaylistClicked(playlist));
+        final Iterable<PlaylistData> playlists = _fetchHandler.fetchGET(Database.TableType.PLAYLIST);
+        for (final PlaylistData playlistData : playlists) {
+            PlaylistNode playlistNode = new PlaylistNode(playlistData.getName(), () -> onPlaylistClicked(playlistData));
             _playlistBox.getChildren().add(playlistNode);
         }
     }
 
 
     /**
-     * @param playlist
+     * @param playlistData
      */
-    private void onPlaylistClicked(final Playlist playlist) {
-        _onOpenPlaylist.invoke(playlist);
+    private void onPlaylistClicked(final PlaylistData playlistData) {
+        _onOpenPlaylist.invoke(playlistData);
     }
 
     /**
