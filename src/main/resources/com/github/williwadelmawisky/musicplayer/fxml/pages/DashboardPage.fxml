@@ -33,8 +33,8 @@
         </Menu>
         <Menu text="Playback">
             <MenuItem text="Play" fx:id="_playMenuItem" onAction="#onPlayButtonClicked"/>
-            <MenuItem text="Next Song"/>
-            <MenuItem text="Previous Song"/>
+            <MenuItem text="Next Song" onAction="#onNextSongButtonClicked"/>
+            <MenuItem text="Previous Song" onAction="#onPreviousSongButtonClicked"/>
         </Menu>
         <Menu text="Audio">
             <MenuItem text="Increase Volume" onAction="#onIncreaseVolumeButtonClicked"/>
@@ -68,6 +68,6 @@
             </HBox>
             <ListView fx:id="_songListView" VBox.vgrow="ALWAYS" maxHeight="Infinity"/>
         </VBox>
-        <AudioControlPanel fx:id="_audioControlPanel"/>
+        <AudioControlPanel fx:id="_audioControlPanel" onNext="#onNextSongButtonClicked" onPrevious="#onPreviousSongButtonClicked"/>
     </VBox>
 </fx:root>

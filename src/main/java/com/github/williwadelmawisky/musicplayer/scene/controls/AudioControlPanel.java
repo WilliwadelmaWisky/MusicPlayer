@@ -3,21 +3,15 @@ package com.github.williwadelmawisky.musicplayer.scene.controls;
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
 import com.github.williwadelmawisky.musicplayer.core.audio.AudioClipPlayer;
 import com.github.williwadelmawisky.musicplayer.core.audio.AudioProperty;
-import com.github.williwadelmawisky.musicplayer.core.audio.ProgressProperty;
 import com.github.williwadelmawisky.musicplayer.core.database.ArtistData;
 import com.github.williwadelmawisky.musicplayer.core.database.Database;
 import com.github.williwadelmawisky.musicplayer.core.database.FetchGetHandler;
 import com.github.williwadelmawisky.musicplayer.util.Action;
-import com.github.williwadelmawisky.musicplayer.util.Strings;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Bounds;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
-
-import java.awt.MouseInfo;
 
 /**
  *
@@ -27,12 +21,12 @@ public class AudioControlPanel extends VBox {
     @FXML private Label _titleLabel;
     @FXML private Label _artistLabel;
     @FXML private AudioProgressView _audioProgressView;
+    @FXML private AudioControlButtonView _audioControlButtonView;
     @FXML private VolumeSliderView _volumeSliderView;
-    @FXML private PlayButton _playButton;
 
+    private EventHandler<ActionEvent> _onPrevious, _onNext;
     private AudioClipPlayer _audioClipPlayer;
     private FetchGetHandler _fetchHandler;
-    private Action _onPrevious, _onNext;
 
 
     /**
@@ -45,7 +39,14 @@ public class AudioControlPanel extends VBox {
 
         _titleLabel.setText("");
         _artistLabel.setText("");
-        setDisable(true);
+    }
+
+    /**
+     * @param audioClipPlayer
+     */
+    public AudioControlPanel(final AudioClipPlayer audioClipPlayer) {
+        this();
+        setAudioClipPlayer(audioClipPlayer);
     }
 
 
@@ -55,9 +56,11 @@ public class AudioControlPanel extends VBox {
     public void setAudioClipPlayer(final AudioClipPlayer audioClipPlayer) {
         _audioClipPlayer = audioClipPlayer;
 
-        _audioProgressView.setProgressProperty(_audioClipPlayer.getProgressProperty(), _audioClipPlayer.getAudioProperty());
+        _audioProgressView.setProgressAndAudioProperty(_audioClipPlayer.getProgressProperty(), _audioClipPlayer.getAudioProperty());
         _volumeSliderView.setVolumeProperty(_audioClipPlayer.getVolumeProperty());
-        _playButton.setStatusProperty(_audioClipPlayer.getStatusProperty());
+        _audioControlButtonView.setStatusProperty(_audioClipPlayer.getStatusProperty());
+        _audioControlButtonView.setOnPrevious(_onPrevious);
+        _audioControlButtonView.setOnNext(_onNext);
 
         _audioClipPlayer.getAudioProperty().getUpdateEvent().addListener(this::onAudioPropertyChanged);
     }
@@ -72,20 +75,9 @@ public class AudioControlPanel extends VBox {
 
 
     /**
-     * @param onPrevious
-     */
-    public void setOnPrevious(final Action onPrevious) { _onPrevious = onPrevious; }
-
-    /**
-     * @param onNext
-     */
-    public void setOnNext(final Action onNext) { _onNext = onNext; }
-
-
-    /**
      * @param changeEvent
      */
-    private void onAudioPropertyChanged(AudioProperty.ChangeEvent changeEvent) {
+    private void onAudioPropertyChanged(final AudioProperty.ChangeEvent changeEvent) {
         final ArtistData artistData = _fetchHandler.fetchGET(Database.TableType.ARTIST, changeEvent.AudioClip.getArtistID());
         final String artistName = (artistData == null) ? "" : artistData.getName();
 
@@ -96,22 +88,22 @@ public class AudioControlPanel extends VBox {
 
 
     /**
-     * @param e
+     * @return
      */
-    @FXML
-    private void onPlayButtonClicked(ActionEvent e) {
-       _audioClipPlayer.togglePlay();
-    }
+    public EventHandler<ActionEvent> getOnPrevious() { return _onPrevious; }
 
     /**
-     * @param e
+     * @return
      */
-    @FXML
-    private void onPreviousButtonClicked(ActionEvent e) { _onPrevious.invoke(); }
+    public EventHandler<ActionEvent> getOnNext() { return _onNext; }
 
     /**
-     * @param e
+     * @param onPrevious
      */
-    @FXML
-    private void onNextButtonClicked(ActionEvent e) { _onNext.invoke(); }
+    public void setOnPrevious(EventHandler<ActionEvent> onPrevious) { _onPrevious = onPrevious; }
+
+    /**
+     * @param onNext
+     */
+    public void setOnNext(EventHandler<ActionEvent> onNext) { _onNext = onNext; }
 }

@@ -13,6 +13,7 @@
 <?import com.github.williwadelmawisky.musicplayer.scene.controls.PlayButton?>
 <?import com.github.williwadelmawisky.musicplayer.scene.controls.VolumeSliderView?>
 <?import com.github.williwadelmawisky.musicplayer.scene.controls.AudioProgressView?>
+<?import com.github.williwadelmawisky.musicplayer.scene.controls.AudioControlButtonView?>
 <fx:root type="com.github.williwadelmawisky.musicplayer.scene.controls.AudioControlPanel"
          xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
          spacing="10" styleClass="content-box"
@@ -27,23 +28,7 @@
             <Label fx:id="_titleLabel"/>
             <Label fx:id="_artistLabel"/>
         </VBox>
-        <HBox spacing="5" alignment="CENTER" HBox.hgrow="ALWAYS" maxWidth="Infinity">
-            <Button onAction="#onPreviousButtonClicked">
-                <graphic>
-                    <ImageView fitWidth="15" pickOnBounds="true" preserveRatio="true">
-                        <Image url="@../../img/previous_icon.png"/>
-                    </ImageView>
-                </graphic>
-            </Button>
-            <PlayButton fx:id="_playButton" onAction="#onPlayButtonClicked"/>
-            <Button onAction="#onNextButtonClicked">
-                <graphic>
-                    <ImageView fitWidth="15" pickOnBounds="true" preserveRatio="true">
-                        <Image url="@../../img/next_icon.png"/>
-                    </ImageView>
-                </graphic>
-            </Button>
-        </HBox>
+        <AudioControlButtonView fx:id="_audioControlButtonView" alignment="CENTER" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
         <VolumeSliderView fx:id="_volumeSliderView" alignment="CENTER_LEFT" minWidth="200" maxWidth="200"/>
         <Region minWidth="40" maxWidth="40"/>
     </HBox>

@@ -29,7 +29,7 @@ public class AudioPlaybackPositionLabel extends Label {
      */
     public AudioPlaybackPositionLabel(final ProgressProperty progressProperty, final AudioProperty audioProperty) {
         this();
-        setProgressProperty(progressProperty, audioProperty);
+        setProgressAndAudioProperty(progressProperty, audioProperty);
     }
 
 
@@ -37,7 +37,7 @@ public class AudioPlaybackPositionLabel extends Label {
      * @param progressProperty
      * @param audioProperty
      */
-    public void setProgressProperty(final ProgressProperty progressProperty, final AudioProperty audioProperty) {
+    public void setProgressAndAudioProperty(final ProgressProperty progressProperty, final AudioProperty audioProperty) {
         if (_progressProperty != null) _progressProperty.getUpdateEvent().removeListener(this::onProgressChanged);
 
         _audioProperty = audioProperty;

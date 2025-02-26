@@ -7,7 +7,6 @@ import com.github.williwadelmawisky.musicplayer.core.database.FetchHandler;
 import com.github.williwadelmawisky.musicplayer.scene.pages.DashboardPage;
 import com.github.williwadelmawisky.musicplayer.routing.Router;
 import com.github.williwadelmawisky.musicplayer.scene.pages.LibraryPage;
-import com.github.williwadelmawisky.musicplayer.scene.pages.NotFoundPage;
 import com.github.williwadelmawisky.musicplayer.stage.Window;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -39,14 +38,15 @@ public class Main extends Application {
 
         final FetchHandler fetchHandler = new FetchHandler(database);
         final AudioSequencePlayer audioSequencePlayer = new AudioSequencePlayer(new OrderSequencer());
-        final Router router = new Router(new NotFoundPage());
+
+        final Router router = new Router();
         final DashboardPage dashboardPage = new DashboardPage(fetchHandler, router, audioSequencePlayer);
         final LibraryPage libraryPage = new LibraryPage(fetchHandler, router);
 
         router.addRoute("/", dashboardPage);
         router.addRoute("/library", libraryPage);
 
-        final List<String> args = getParameters().getRaw();
+        final List<String> args = this.getParameters().getRaw();
         if (!args.isEmpty()) {
             final File file = Path.of(args.getFirst()).toAbsolutePath().toFile();
             dashboardPage.open(file);

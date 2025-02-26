@@ -8,94 +8,47 @@ import java.util.Map;
  */
 public class Router implements RedirectHandler {
 
+    private final RouteProperty _routeProperty;
+    private final Map<String, Page> _routeMap;
+
+
     /**
      *
      */
-    @FunctionalInterface
-    public interface OnRouteSelected {
-
-        /**
-         * @param page
-         */
-        void invoke(final Page page);
-    }
-
-    private String _path;
-    private OnRouteSelected _onRouteSelected;
-    private final Map<String, Route> _routeMap;
-    private final Page _notFoundPage;
-
-
-    /**
-     * @param notFound
-     */
-    public Router(final Page notFound) {
+    public Router() {
+        _routeProperty = new RouteProperty("/");
         _routeMap = new HashMap<>();
-        _notFoundPage = notFound;
-        _path = "/";
     }
 
-
-    /**
-     * @param path
-     * @return
-     */
-    public Route getRoute(final String path) {
-        return _routeMap.get(path);
-    }
 
     /**
      * @return
      */
-    public Route getRoute() {
-        return getRoute(_path);
-    }
+    public RouteProperty getRouteProperty() { return _routeProperty; }
 
     /**
-     * @param path
+     * @param route
+     * @return
      */
-    public void setRoute(final String path) {
-        _path = path;
-        if (_routeMap.containsKey(_path)) {
-            final Route route = _routeMap.get(_path);
-            _onRouteSelected.invoke(route.getPage());
-            return;
-        }
-
-        _onRouteSelected.invoke(_notFoundPage);
-    }
-
-    /**
-     * @param onRouteSelected
-     */
-    public void setOnRouteSelected(OnRouteSelected onRouteSelected) {
-        _onRouteSelected = onRouteSelected;
+    public Page getPage(final String route) {
+        return _routeMap.get(route);
     }
 
 
     /**
      * @param route
      */
-    public void addRoute(final Route route) {
-        _routeMap.put(route.getPath(), route);
-    }
-
-    /**
-     * @param path
-     * @param page
-     */
-    public void addRoute(final String path, Page page) {
-        addRoute(new Route(path, page));
+    @Override
+    public void setRoute(final String route) {
+        _routeProperty.setValue(route);
     }
 
 
     /**
+     * @param route
      * @param page
-     * @return
      */
-    public static Router singlePageRouter(final Page page) {
-        final Router router = new Router(null);
-        router.addRoute("/", page);
-        return router;
+    public void addRoute(final String route, Page page) {
+        _routeMap.put(route, page);
     }
 }

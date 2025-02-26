@@ -17,6 +17,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.input.DragEvent;
@@ -73,12 +74,10 @@ public class DashboardPage extends VBox implements Page {
         _songListView.setOnDragOver(this::onListViewDragOver);
         _songListView.setOnDragDropped(this::onListViewDragDrop);
 
-        _playMenuItem.setDisable(true);
-
         _audioControlPanel.setAudioClipPlayer(_audioSequencePlayer);
         _audioControlPanel.setFetchHandler(_fetchHandler);
-        _audioControlPanel.setOnPrevious(this::onPreviousSongSelected);
-        _audioControlPanel.setOnNext(this::onNextSongSelected);
+
+        _audioControlPanel.setDisable(true);
     }
 
 
@@ -271,9 +270,7 @@ public class DashboardPage extends VBox implements Page {
      */
     private void onListViewDragDrop(DragEvent e) {
         final List<File> fileList = e.getDragboard().getFiles();
-        fileList.forEach(file -> {
-
-        });
+        fileList.forEach(this::add);
     }
 
 
@@ -283,20 +280,6 @@ public class DashboardPage extends VBox implements Page {
     private void onPlayStatusChanged(final boolean isPlaying) {
         final String text = isPlaying ? "Pause" : "Play";
         _playMenuItem.setText(text);
-    }
-
-    /**
-     *
-     */
-    private void onPreviousSongSelected() {
-        _audioSequencePlayer.previous();
-    }
-
-    /**
-     *
-     */
-    private void onNextSongSelected() {
-        _audioSequencePlayer.next();
     }
 
 
@@ -367,6 +350,22 @@ public class DashboardPage extends VBox implements Page {
     @FXML
     private void onPlayButtonClicked(ActionEvent e) {
         _audioSequencePlayer.togglePlay();
+    }
+
+    /**
+     * @param e
+     */
+    @FXML
+    private void onNextSongButtonClicked(ActionEvent e) {
+        _audioSequencePlayer.next();
+    }
+
+    /**
+     * @param e
+     */
+    @FXML
+    private void onPreviousSongButtonClicked(ActionEvent e) {
+        _audioSequencePlayer.previous();
     }
 
 

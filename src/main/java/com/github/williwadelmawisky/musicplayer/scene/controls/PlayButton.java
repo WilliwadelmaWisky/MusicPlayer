@@ -2,6 +2,7 @@ package com.github.williwadelmawisky.musicplayer.scene.controls;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
 import com.github.williwadelmawisky.musicplayer.core.audio.StatusProperty;
+import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 
@@ -27,7 +28,16 @@ public class PlayButton extends Button {
         _imageView.setFitWidth(15);
         _imageView.setPickOnBounds(true);
         _imageView.setPreserveRatio(true);
-        setGraphic(_imageView);
+        this.setGraphic(_imageView);
+        this.setOnAction(this::onClicked);
+    }
+
+    /**
+     * @param statusProperty
+     */
+    public PlayButton(final StatusProperty statusProperty) {
+        this();
+        setStatusProperty(statusProperty);
     }
 
 
@@ -55,5 +65,13 @@ public class PlayButton extends Button {
      */
     private void onStatusChanged(final boolean isPlaying) {
         updateView(isPlaying);
+    }
+
+    /**
+     * @param e
+     */
+    private void onClicked(ActionEvent e) {
+        final boolean isPlaying = _statusProperty.getValue();
+        _statusProperty.setValue(!isPlaying);
     }
 }
