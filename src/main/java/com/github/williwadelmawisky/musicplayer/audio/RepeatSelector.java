@@ -5,7 +5,7 @@ import java.util.List;
 /**
  *
  */
-public class OrderSequencer implements Sequencer<AudioClip> {
+public class RepeatSelector implements Selector<AudioClip> {
 
     private int _currentIndex;
 
@@ -15,11 +15,7 @@ public class OrderSequencer implements Sequencer<AudioClip> {
      * @return
      */
     @Override
-    public AudioClip previous(final List<AudioClip> sequence) {
-        if (sequence == null || sequence.isEmpty())
-            return null;
-
-        _currentIndex = (_currentIndex <= 0) ? sequence.size() - 1 : _currentIndex - 1;
+    public AudioClip next(final List<AudioClip> sequence) {
         return sequence.get(_currentIndex);
     }
 
@@ -28,11 +24,7 @@ public class OrderSequencer implements Sequencer<AudioClip> {
      * @return
      */
     @Override
-    public AudioClip next(final List<AudioClip> sequence) {
-        if (sequence == null || sequence.isEmpty())
-            return null;
-
-        _currentIndex = (_currentIndex + 1) % sequence.size();
+    public AudioClip previous(final List<AudioClip> sequence) {
         return sequence.get(_currentIndex);
     }
 

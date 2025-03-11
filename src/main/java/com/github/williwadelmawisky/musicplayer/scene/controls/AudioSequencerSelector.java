@@ -23,21 +23,21 @@ public class AudioSequencerSelector extends ComboBox<String> {
      */
     public static class SelectEvent extends Event {
 
-        private final Sequencer<AudioClip> _sequencer;
+        private final Selector<AudioClip> _selector;
 
         /**
          * @param eventType
-         * @param sequencer
+         * @param selector
          */
-        public SelectEvent(final EventType<? extends Event> eventType, final Sequencer<AudioClip> sequencer) {
+        public SelectEvent(final EventType<? extends Event> eventType, final Selector<AudioClip> selector) {
             super(eventType);
-            _sequencer = sequencer;
+            _selector = selector;
         }
 
         /**
          * @return
          */
-        public Sequencer<AudioClip> getSequencer() { return _sequencer; }
+        public Selector<AudioClip> getSequencer() { return _selector; }
     }
 
     /**
@@ -49,7 +49,7 @@ public class AudioSequencerSelector extends ComboBox<String> {
         Repeat
     }
 
-    private final Map<SequencerType, Sequencer<AudioClip>> _sequencerMap;
+    private final Map<SequencerType, Selector<AudioClip>> _sequencerMap;
     private EventHandler<SelectEvent> _selectEventHandler;
 
 
@@ -60,9 +60,9 @@ public class AudioSequencerSelector extends ComboBox<String> {
         super();
 
         _sequencerMap = new HashMap<>();
-        _sequencerMap.put(SequencerType.Order, new OrderSequencer());
-        _sequencerMap.put(SequencerType.Random, new RandomSequencer());
-        _sequencerMap.put(SequencerType.Repeat, new RepeatSequencer());
+        _sequencerMap.put(SequencerType.Order, new OrderSelector());
+        _sequencerMap.put(SequencerType.Random, new RandomSelector());
+        _sequencerMap.put(SequencerType.Repeat, new RepeatSelector());
 
         final List<String> nameList = _sequencerMap.keySet().stream().map(Enum::name).toList();
         final ObservableList<String> items = FXCollections.observableList(nameList);
@@ -75,7 +75,7 @@ public class AudioSequencerSelector extends ComboBox<String> {
     /**
      * @return
      */
-    public Sequencer<AudioClip> getCurrentSequencer() {
+    public Selector<AudioClip> getCurrentSequencer() {
         final SequencerType type = SequencerType.valueOf(getValue());
         return _sequencerMap.get(type);
     }
@@ -110,8 +110,8 @@ public class AudioSequencerSelector extends ComboBox<String> {
             return;
 
         final SequencerType type = SequencerType.valueOf(newVal);
-        final Sequencer<AudioClip> sequencer = _sequencerMap.get(type);
-        final SelectEvent event = new SelectEvent(Event.ANY, sequencer);
+        final Selector<AudioClip> selector = _sequencerMap.get(type);
+        final SelectEvent event = new SelectEvent(Event.ANY, selector);
         _selectEventHandler.handle(event);
     }
 }

@@ -14,7 +14,7 @@ import javafx.scene.layout.HBox;
 public class AudioControlButtonView extends HBox {
 
     private final PlayButton _playButton;
-    private EventHandler<ActionEvent> _onPrevious, _onNext;
+    private EventHandler<ActionEvent> _onPrevious, _onNext, _onTogglePlay;
 
 
     /**
@@ -34,6 +34,7 @@ public class AudioControlButtonView extends HBox {
         this.getChildren().add(previousButton);
 
         _playButton = new PlayButton();
+        _playButton.setOnAction(_onTogglePlay);
         this.getChildren().add(_playButton);
 
         final Button nextButton = new Button();
@@ -74,6 +75,11 @@ public class AudioControlButtonView extends HBox {
     public EventHandler<ActionEvent> getOnNext() { return _onNext; }
 
     /**
+     * @return
+     */
+    public EventHandler<ActionEvent> getOnTogglePlay() { return _onTogglePlay; }
+
+    /**
      * @param onPrevious
      */
     public void setOnPrevious(EventHandler<ActionEvent> onPrevious) { _onPrevious = onPrevious; }
@@ -82,4 +88,9 @@ public class AudioControlButtonView extends HBox {
      * @param onNext
      */
     public void setOnNext(EventHandler<ActionEvent> onNext) { _onNext = onNext; }
+
+    /**
+     * @param onTogglePlay
+     */
+    public void setOnTogglePlay(EventHandler<ActionEvent> onTogglePlay) { _onTogglePlay = onTogglePlay; }
 }

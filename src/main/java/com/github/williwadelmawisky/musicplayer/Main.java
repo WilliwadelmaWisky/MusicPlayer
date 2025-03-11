@@ -1,7 +1,7 @@
 package com.github.williwadelmawisky.musicplayer;
 
 import com.github.williwadelmawisky.musicplayer.audio.AudioSequencePlayer;
-import com.github.williwadelmawisky.musicplayer.audio.OrderSequencer;
+import com.github.williwadelmawisky.musicplayer.audio.OrderSelector;
 import com.github.williwadelmawisky.musicplayer.database.Database;
 import com.github.williwadelmawisky.musicplayer.database.FetchHandler;
 import com.github.williwadelmawisky.musicplayer.scene.pages.DashboardPage;
@@ -37,7 +37,7 @@ public class Main extends Application {
         database.load();
 
         final FetchHandler fetchHandler = new FetchHandler(database);
-        final AudioSequencePlayer audioSequencePlayer = new AudioSequencePlayer(new OrderSequencer());
+        final AudioSequencePlayer audioSequencePlayer = new AudioSequencePlayer(new OrderSelector());
 
         final Router router = new Router();
         final DashboardPage dashboardPage = new DashboardPage(fetchHandler, router, audioSequencePlayer);

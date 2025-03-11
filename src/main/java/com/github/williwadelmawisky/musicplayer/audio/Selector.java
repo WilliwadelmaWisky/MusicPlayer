@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * @param <T>
  */
-public interface Sequencer<T> {
+public interface Selector<T> {
 
     /**
      * @param sequence

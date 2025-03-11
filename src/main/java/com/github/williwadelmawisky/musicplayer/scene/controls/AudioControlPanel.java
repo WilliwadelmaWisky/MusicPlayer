@@ -58,6 +58,7 @@ public class AudioControlPanel extends VBox {
         _audioProgressView.setProgressAndAudioProperty(_audioClipPlayer.getProgressProperty(), _audioClipPlayer.getAudioProperty());
         _volumeSliderView.setVolumeProperty(_audioClipPlayer.getVolumeProperty());
         _audioControlButtonView.setStatusProperty(_audioClipPlayer.getStatusProperty());
+        _audioControlButtonView.setOnTogglePlay(e -> _audioClipPlayer.togglePlay());
         _audioControlButtonView.setOnPrevious(_onPrevious);
         _audioControlButtonView.setOnNext(_onNext);
 

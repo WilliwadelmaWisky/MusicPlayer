@@ -6,7 +6,7 @@ import java.util.Random;
 /**
  *
  */
-public class RandomSequencer implements Sequencer<AudioClip> {
+public class RandomSelector implements Selector<AudioClip> {
 
     private final Random _random;
     private int _currentIndex;
@@ -15,7 +15,7 @@ public class RandomSequencer implements Sequencer<AudioClip> {
     /**
      *
      */
-    public RandomSequencer() {
+    public RandomSelector() {
         _random = new Random();
     }
 

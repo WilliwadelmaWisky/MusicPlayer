@@ -143,6 +143,9 @@ public class AudioClipPlayer {
      *
      */
     public void togglePlay() {
+        if (_mediaPlayer == null)
+            return;
+
         final boolean isPlaying = _statusProperty.getValue();
         _statusProperty.setValue(!isPlaying);
     }
@@ -150,12 +153,22 @@ public class AudioClipPlayer {
     /**
      *
      */
-    public void play() { _statusProperty.setValue(true); }
+    public void play() {
+        if (_mediaPlayer == null)
+            return;
+
+        _statusProperty.setValue(true);
+    }
 
     /**
      *
      */
-    public void pause() { _statusProperty.setValue(false); }
+    public void pause() {
+        if (_mediaPlayer == null)
+            return;
+
+        _statusProperty.setValue(false);
+    }
 
 
     /**

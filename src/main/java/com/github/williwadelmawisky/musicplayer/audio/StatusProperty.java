@@ -42,7 +42,7 @@ public class StatusProperty {
     /**
      * @param value
      */
-    public void setValue(boolean value) {
+    void setValue(boolean value) {
         if (_value == value)
             return;
 
