@@ -1,7 +1,7 @@
 package com.github.williwadelmawisky.musicplayer.scene.pages;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
-import com.github.williwadelmawisky.musicplayer.core.database.FetchGetHandler;
+import com.github.williwadelmawisky.musicplayer.database.FetchGetHandler;
 import com.github.williwadelmawisky.musicplayer.routing.Page;
 import com.github.williwadelmawisky.musicplayer.routing.RedirectHandler;
 import javafx.collections.FXCollections;

@@ -1,6 +1,4 @@
-package com.github.williwadelmawisky.musicplayer.core.audio;
-
-import javafx.util.Duration;
+package com.github.williwadelmawisky.musicplayer.audio;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -8,35 +6,24 @@ import java.util.List;
 /**
  *
  */
-public class AudioProperty {
+public class ProgressProperty {
 
     private final UpdateEvent _updateEvent;
-    private Duration _duration;
-    private AudioClip _audioClip;
-
+    private double _value;
 
     /**
      *
      */
-    public AudioProperty() {
-        this(null);
+    public ProgressProperty() {
+        this(0);
     }
 
     /**
-     * @param audioClip
+     * @param defaultValue
      */
-    public AudioProperty(final AudioClip audioClip) {
-        this(audioClip, Duration.ZERO);
-    }
-
-    /**
-     * @param audioClip
-     * @param duration
-     */
-    public AudioProperty(final AudioClip audioClip, final Duration duration) {
+    public ProgressProperty(final double defaultValue) {
         _updateEvent = new UpdateEvent();
-        _audioClip = audioClip;
-        _duration = duration;
+        _value = Math.clamp(defaultValue, 0, 1);
     }
 
 
@@ -48,22 +35,27 @@ public class AudioProperty {
     /**
      * @return
      */
-    public AudioClip getAudioClip() { return _audioClip; }
-
-    /**
-     * @return
-     */
-    public Duration getDuration() { return _duration; }
+    public double getValue() { return _value; }
 
 
     /**
-     * @param audioClip
-     * @param duration
+     * @param value
      */
-    public void setValue(AudioClip audioClip, Duration duration) {
-        _audioClip = audioClip;
-        _duration = duration;
-        final ChangeEvent changeEvent = new ChangeEvent(_audioClip, _duration);
+    public void setValue(double value) {
+        setValue(value, ChangeEvent.Type.ANY);
+    }
+
+    /**
+     * @param value
+     * @param eventType
+     */
+    public void setValue(double value, final ChangeEvent.Type eventType) {
+        value = Math.clamp(value, 0, 1);
+        if (Math.abs(_value - value) <= 1e-6)
+            return;
+
+        _value = value;
+        final ChangeEvent changeEvent = new ChangeEvent(_value, eventType);
         _updateEvent.invoke(changeEvent);
     }
 
@@ -100,22 +92,31 @@ public class AudioProperty {
         public void removeListener(final OnUpdate e) { _listenerList.remove(e); }
     }
 
+
     /**
      *
      */
     public static class ChangeEvent {
 
-        public final AudioClip AudioClip;
-        public final Duration Duration;
+        /**
+         *
+         */
+        public enum Type {
+            ANY,
+            IGNORED
+        }
+
+        public final double Progress;
+        public final Type EventType;
 
 
         /**
-         * @param audioClip
-         * @param duration
+         * @param progress
+         * @param eventType
          */
-        public ChangeEvent(final AudioClip audioClip, final Duration duration) {
-            AudioClip = audioClip;
-            Duration = duration;
+        public ChangeEvent(final double progress, final Type eventType) {
+            Progress = progress;
+            EventType = eventType;
         }
     }
 

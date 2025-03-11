@@ -1,12 +1,11 @@
 package com.github.williwadelmawisky.musicplayer.scene.controls;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
-import com.github.williwadelmawisky.musicplayer.core.audio.AudioClipPlayer;
-import com.github.williwadelmawisky.musicplayer.core.audio.AudioProperty;
-import com.github.williwadelmawisky.musicplayer.core.database.ArtistData;
-import com.github.williwadelmawisky.musicplayer.core.database.Database;
-import com.github.williwadelmawisky.musicplayer.core.database.FetchGetHandler;
-import com.github.williwadelmawisky.musicplayer.util.Action;
+import com.github.williwadelmawisky.musicplayer.audio.AudioClipPlayer;
+import com.github.williwadelmawisky.musicplayer.audio.AudioProperty;
+import com.github.williwadelmawisky.musicplayer.database.ArtistData;
+import com.github.williwadelmawisky.musicplayer.database.Database;
+import com.github.williwadelmawisky.musicplayer.database.FetchGetHandler;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;

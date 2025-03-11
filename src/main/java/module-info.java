@@ -9,9 +9,9 @@ module com.github.williwadelmawisky.musicplayer {
 
     exports com.github.williwadelmawisky.musicplayer;
     opens com.github.williwadelmawisky.musicplayer to javafx.fxml;
-    exports com.github.williwadelmawisky.musicplayer.core.audio;
-    opens com.github.williwadelmawisky.musicplayer.core.audio to javafx.fxml;
-    exports com.github.williwadelmawisky.musicplayer.core.database;
+    exports com.github.williwadelmawisky.musicplayer.audio;
+    opens com.github.williwadelmawisky.musicplayer.audio to javafx.fxml;
+    exports com.github.williwadelmawisky.musicplayer.database;
     exports com.github.williwadelmawisky.musicplayer.routing;
     opens com.github.williwadelmawisky.musicplayer.routing to javafx.fxml;
     exports com.github.williwadelmawisky.musicplayer.scene.pages;

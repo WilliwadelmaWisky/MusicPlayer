@@ -1,9 +1,9 @@
 package com.github.williwadelmawisky.musicplayer;
 
-import com.github.williwadelmawisky.musicplayer.core.audio.AudioSequencePlayer;
-import com.github.williwadelmawisky.musicplayer.core.audio.OrderSequencer;
-import com.github.williwadelmawisky.musicplayer.core.database.Database;
-import com.github.williwadelmawisky.musicplayer.core.database.FetchHandler;
+import com.github.williwadelmawisky.musicplayer.audio.AudioSequencePlayer;
+import com.github.williwadelmawisky.musicplayer.audio.OrderSequencer;
+import com.github.williwadelmawisky.musicplayer.database.Database;
+import com.github.williwadelmawisky.musicplayer.database.FetchHandler;
 import com.github.williwadelmawisky.musicplayer.scene.pages.DashboardPage;
 import com.github.williwadelmawisky.musicplayer.routing.Router;
 import com.github.williwadelmawisky.musicplayer.scene.pages.LibraryPage;

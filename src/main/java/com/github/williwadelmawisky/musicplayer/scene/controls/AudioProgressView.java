@@ -1,7 +1,7 @@
 package com.github.williwadelmawisky.musicplayer.scene.controls;
 
-import com.github.williwadelmawisky.musicplayer.core.audio.AudioProperty;
-import com.github.williwadelmawisky.musicplayer.core.audio.ProgressProperty;
+import com.github.williwadelmawisky.musicplayer.audio.AudioProperty;
+import com.github.williwadelmawisky.musicplayer.audio.ProgressProperty;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;

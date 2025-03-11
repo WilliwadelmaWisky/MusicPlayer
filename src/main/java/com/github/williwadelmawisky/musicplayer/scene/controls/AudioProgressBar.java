@@ -1,6 +1,6 @@
 package com.github.williwadelmawisky.musicplayer.scene.controls;
 
-import com.github.williwadelmawisky.musicplayer.core.audio.ProgressProperty;
+import com.github.williwadelmawisky.musicplayer.audio.ProgressProperty;
 import javafx.geometry.Bounds;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.input.MouseEvent;

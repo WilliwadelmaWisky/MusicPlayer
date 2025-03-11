@@ -1,4 +1,4 @@
-package com.github.williwadelmawisky.musicplayer.core.audio;
+package com.github.williwadelmawisky.musicplayer.audio;
 
 import java.util.LinkedList;
 import java.util.List;

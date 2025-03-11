@@ -1,9 +1,9 @@
 package com.github.williwadelmawisky.musicplayer.scene.pages;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
-import com.github.williwadelmawisky.musicplayer.core.audio.*;
-import com.github.williwadelmawisky.musicplayer.core.database.*;
-import com.github.williwadelmawisky.musicplayer.core.database.SongData;
+import com.github.williwadelmawisky.musicplayer.audio.*;
+import com.github.williwadelmawisky.musicplayer.database.*;
+import com.github.williwadelmawisky.musicplayer.database.SongData;
 import com.github.williwadelmawisky.musicplayer.routing.Page;
 import com.github.williwadelmawisky.musicplayer.routing.RedirectHandler;
 import com.github.williwadelmawisky.musicplayer.scene.controls.AudioControlPanel;
@@ -17,7 +17,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.input.DragEvent;

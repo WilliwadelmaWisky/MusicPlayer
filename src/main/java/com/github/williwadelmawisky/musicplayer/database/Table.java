@@ -1,4 +1,4 @@
-package com.github.williwadelmawisky.musicplayer.core.database;
+package com.github.williwadelmawisky.musicplayer.database;
 
 import com.github.williwadelmawisky.musicplayer.util.Files;
 import com.github.williwadelmawisky.musicplayer.util.Func;

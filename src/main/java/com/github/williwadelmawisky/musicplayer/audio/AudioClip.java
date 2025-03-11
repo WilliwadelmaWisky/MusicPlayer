@@ -1,6 +1,6 @@
-package com.github.williwadelmawisky.musicplayer.core.audio;
+package com.github.williwadelmawisky.musicplayer.audio;
 
-import com.github.williwadelmawisky.musicplayer.core.database.Genre;
+import com.github.williwadelmawisky.musicplayer.database.Genre;
 import java.util.UUID;
 
 /**

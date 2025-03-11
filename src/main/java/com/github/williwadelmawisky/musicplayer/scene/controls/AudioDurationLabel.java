@@ -1,6 +1,6 @@
 package com.github.williwadelmawisky.musicplayer.scene.controls;
 
-import com.github.williwadelmawisky.musicplayer.core.audio.AudioProperty;
+import com.github.williwadelmawisky.musicplayer.audio.AudioProperty;
 import com.github.williwadelmawisky.musicplayer.util.Strings;
 import javafx.scene.control.Label;
 import javafx.util.Duration;
