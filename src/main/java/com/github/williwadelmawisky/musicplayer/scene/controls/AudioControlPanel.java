@@ -2,7 +2,6 @@ package com.github.williwadelmawisky.musicplayer.scene.controls;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
 import com.github.williwadelmawisky.musicplayer.audio.AudioClipPlayer;
-import com.github.williwadelmawisky.musicplayer.audio.AudioProperty;
 import com.github.williwadelmawisky.musicplayer.database.ArtistData;
 import com.github.williwadelmawisky.musicplayer.database.Database;
 import com.github.williwadelmawisky.musicplayer.database.FetchGetHandler;
@@ -77,7 +76,7 @@ public class AudioControlPanel extends VBox {
     /**
      * @param changeEvent
      */
-    private void onAudioPropertyChanged(final AudioProperty.ChangeEvent changeEvent) {
+    private void onAudioPropertyChanged(final AudioClipProperty.ChangeEvent changeEvent) {
         final ArtistData artistData = _fetchHandler.fetchGET(Database.TableType.ARTIST, changeEvent.AudioClip.getArtistID());
         final String artistName = (artistData == null) ? "" : artistData.getName();
 

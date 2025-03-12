@@ -11,7 +11,7 @@
 <?import com.github.williwadelmawisky.musicplayer.scene.controls.SearchBar?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
-<?import com.github.williwadelmawisky.musicplayer.scene.controls.AudioSequencerSelector?>
+<?import com.github.williwadelmawisky.musicplayer.scene.controls.AudioClipSelectorTypeComboBox?>
 <fx:root type="com.github.williwadelmawisky.musicplayer.scene.pages.DashboardPage"
          xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
 >
@@ -57,7 +57,7 @@
         <VBox spacing="5" VBox.vgrow="ALWAYS" maxHeight="Infinity">
             <SearchBar onSearch="#onSearch"/>
             <HBox spacing="5" alignment="CENTER_LEFT">
-                <AudioSequencerSelector fx:id="_audioSequencerSelector" onSelect="#onSequencerChanged" minWidth="150" maxWidth="150"/>
+                <AudioClipSelectorTypeComboBox fx:id="_audioClipSelectorTypeComboBox" onSelect="#onSequencerChanged" minWidth="150" maxWidth="150"/>
                 <Button text="Shuffle" onAction="#onShuffleButtonClicked"/>
             </HBox>
             <HBox alignment="CENTER_LEFT"  spacing="5">

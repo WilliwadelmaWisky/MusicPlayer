@@ -1,6 +1,7 @@
-package com.github.williwadelmawisky.musicplayer.util;
+package com.github.williwadelmawisky.musicplayer.utils;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  *
@@ -13,9 +14,9 @@ public abstract class Lists {
      * @param <T>
      * @return
      */
-    public static <T> int indexFunc(final List<T> list, final Predicate<T> match) {
+    public static <T> int indexFunc(final List<T> list, final Predicate<? super T> match) {
         for (int i = 0; i < list.size(); i++) {
-            if (match.invoke(list.get(i))) {
+            if (match.test(list.get(i))) {
                 return i;
             }
         }

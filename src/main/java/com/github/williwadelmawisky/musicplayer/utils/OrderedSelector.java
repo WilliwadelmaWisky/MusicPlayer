@@ -1,4 +1,4 @@
-package com.github.williwadelmawisky.utils;
+package com.github.williwadelmawisky.musicplayer.utils;
 
 /**
  * @param <T>

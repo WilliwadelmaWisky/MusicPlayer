@@ -1,7 +1,6 @@
 package com.github.williwadelmawisky.musicplayer;
 
-import com.github.williwadelmawisky.musicplayer.audio.AudioSequencePlayer;
-import com.github.williwadelmawisky.musicplayer.audio.OrderSelector;
+import com.github.williwadelmawisky.musicplayer.audio.AudioClipListPlayer;
 import com.github.williwadelmawisky.musicplayer.database.Database;
 import com.github.williwadelmawisky.musicplayer.database.FetchHandler;
 import com.github.williwadelmawisky.musicplayer.scene.pages.DashboardPage;
@@ -37,10 +36,10 @@ public class Main extends Application {
         database.load();
 
         final FetchHandler fetchHandler = new FetchHandler(database);
-        final AudioSequencePlayer audioSequencePlayer = new AudioSequencePlayer(new OrderSelector());
+        final AudioClipListPlayer listAudioClipPlayer = new AudioClipListPlayer();
 
         final Router router = new Router();
-        final DashboardPage dashboardPage = new DashboardPage(fetchHandler, router, audioSequencePlayer);
+        final DashboardPage dashboardPage = new DashboardPage(fetchHandler, router, listAudioClipPlayer);
         final LibraryPage libraryPage = new LibraryPage(fetchHandler, router);
 
         router.addRoute("/", dashboardPage);
@@ -49,7 +48,7 @@ public class Main extends Application {
         final List<String> args = this.getParameters().getRaw();
         if (!args.isEmpty()) {
             final File file = Path.of(args.getFirst()).toAbsolutePath().toFile();
-            dashboardPage.open(file);
+            if (file.exists()) dashboardPage.open(file);
         }
 
         final Window window = new Window(stage, router);

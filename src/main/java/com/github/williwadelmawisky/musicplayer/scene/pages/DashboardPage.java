@@ -8,11 +8,13 @@ import com.github.williwadelmawisky.musicplayer.routing.Page;
 import com.github.williwadelmawisky.musicplayer.routing.RedirectHandler;
 import com.github.williwadelmawisky.musicplayer.scene.controls.AudioControlPanel;
 import com.github.williwadelmawisky.musicplayer.scene.controls.SearchBar;
-import com.github.williwadelmawisky.musicplayer.scene.controls.AudioSequencerSelector;
+import com.github.williwadelmawisky.musicplayer.scene.controls.AudioClipSelectorTypeComboBox;
 import com.github.williwadelmawisky.musicplayer.scene.controls.SongNode;
 import com.github.williwadelmawisky.musicplayer.stage.ModalWindow;
-import com.github.williwadelmawisky.musicplayer.util.Files;
-import com.github.williwadelmawisky.musicplayer.util.Lists;
+import com.github.williwadelmawisky.musicplayer.utils.Files;
+import com.github.williwadelmawisky.musicplayer.utils.Lists;
+import com.github.williwadelmawisky.musicplayer.utils.ObservableList;
+import com.github.williwadelmawisky.musicplayer.utils.SelectionModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -37,11 +39,11 @@ public class DashboardPage extends VBox implements Page {
     @FXML private MenuItem _playMenuItem;
     @FXML private ListView<SongNode> _songListView;
     @FXML private AudioControlPanel _audioControlPanel;
-    @FXML private AudioSequencerSelector _audioSequencerSelector;
+    @FXML private AudioClipSelectorTypeComboBox _audioClipSelectorTypeComboBox;
 
     private FetchHandler _fetchHandler;
     private RedirectHandler _redirectHandler;
-    private AudioSequencePlayer _audioSequencePlayer;
+    private AudioClipListPlayer _audioClipPlayer;
 
 
     /**
@@ -52,31 +54,34 @@ public class DashboardPage extends VBox implements Page {
     /**
      * @param fetchHandler
      * @param redirectHandler
-     * @param audioSequencePlayer
+     * @param audioClipPlayer
      */
-    public DashboardPage(final FetchHandler fetchHandler, final RedirectHandler redirectHandler, final AudioSequencePlayer audioSequencePlayer) {
+    public DashboardPage(final FetchHandler fetchHandler, final RedirectHandler redirectHandler, final AudioClipListPlayer audioClipPlayer) {
         super();
 
         ResourceLoader.loadFxml("fxml/pages/DashboardPage.fxml", this);
 
-        _audioSequencePlayer = audioSequencePlayer;
+        _audioClipPlayer = audioClipPlayer;
         _fetchHandler = fetchHandler;
         _redirectHandler = redirectHandler;
 
-        _audioSequencePlayer.setSequencer(_audioSequencerSelector.getCurrentSequencer());
-        _audioSequencePlayer.setOnSelected(this::onSongSelected);
-        _audioSequencePlayer.getStatusProperty().getUpdateEvent().addListener(this::onPlayStatusChanged);
-        onPlayStatusChanged(_audioSequencePlayer.getStatusProperty().getValue());
+        final String statusText = _audioClipPlayer.getAudioStatus() == AudioStatus.PLAYING ? "Pause" : "Play";
+        _playMenuItem.setText(statusText);
 
-        _songListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        _audioClipPlayer.OnStatusChanged.addListener(this::onAudioClipPlayerStatusChanged);
+        _audioClipPlayer.getAudioClipList().OnItemAdded.addListener(this::onAudioClipAdded);
+        _audioClipPlayer.getAudioClipList().OnItemRemoved.addListener(this::onAudioClipRemoved);
+        _audioClipPlayer.getAudioClipList().OnCleared.addListener(this::onAudioClipListCleared);
+        _audioClipPlayer.getAudioClipList().OnSorted.addListener(this::onAudioClipListSorted);
+        _audioClipPlayer.getSelectionModel().OnSelected.addListener(this::onAudioClipSelected);
+
+        _songListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         _songListView.setOnMouseClicked(this::onListViewClicked);
         _songListView.setOnDragOver(this::onListViewDragOver);
         _songListView.setOnDragDropped(this::onListViewDragDrop);
 
-        _audioControlPanel.setAudioClipPlayer(_audioSequencePlayer);
+        _audioControlPanel.setAudioClipPlayer(_audioClipPlayer);
         _audioControlPanel.setFetchHandler(_fetchHandler);
-
-        _audioControlPanel.setDisable(true);
     }
 
 
@@ -100,21 +105,87 @@ public class DashboardPage extends VBox implements Page {
 
 
     /**
+     * @param sender
+     * @param args
+     */
+    private void onAudioClipPlayerStatusChanged(final Object sender, final AudioClipPlayer.OnStatusChangedEventArgs args) {
+        final String text = args.AudioStatus == AudioStatus.PLAYING ? "Pause" : "Play";
+        _playMenuItem.setText(text);
+    }
+
+    /**
+     * @param sender
+     * @param args
+     */
+    private void onAudioClipAdded(final Object sender, final ObservableList.OnItemAddedEventArgs<AudioClip> args) {
+        final ArtistData artistData = _fetchHandler.fetchGET(Database.TableType.ARTIST, args.Item.getArtistID());
+        final String artistName = (artistData != null) ? artistData.getName() : "";
+        final SongNode songNode = new SongNode(args.Item.getID(), args.Item.getName(), artistName);
+        _songListView.getItems().add(songNode);
+    }
+
+    /**
+     * @param sender
+     * @param args
+     */
+    private void onAudioClipRemoved(final Object sender, final ObservableList.OnItemRemovedEventArgs<AudioClip> args) {
+        int index = Lists.indexFunc(_songListView.getItems(), songNode -> args.Item.equalsID(songNode.getSongID()));
+        if (index == -1)
+            return;
+
+        _songListView.getItems().remove(index);
+    }
+
+    /**
+     * @param sender
+     * @param args
+     */
+    private void onAudioClipListCleared(final Object sender, final ObservableList.OnClearedEventArgs args) {
+        _songListView.getItems().clear();
+    }
+
+    /**
+     * @param sender
+     * @param args
+     */
+    private void onAudioClipListSorted(final Object sender, final ObservableList.OnSortedEventArgs args) {
+        _songListView.getItems().clear();
+        _audioClipPlayer.getAudioClipList().forEach(audioClip -> {
+            final ArtistData artistData = _fetchHandler.fetchGET(Database.TableType.ARTIST, audioClip.getArtistID());
+            final String artistName = (artistData != null) ? artistData.getName() : "";
+            final SongNode songNode = new SongNode(audioClip.getID(), audioClip.getName(), artistName);
+            _songListView.getItems().add(songNode);
+        });
+    }
+
+    /**
+     * @param sender
+     * @param args
+     */
+    private void onAudioClipSelected(final Object sender, final SelectionModel.OnSelectedEventArgs<AudioClip> args) {
+        int index = Lists.indexFunc(_songListView.getItems(), songNode -> args.Item.equalsID(songNode.getSongID()));
+        if (index == -1)
+            return;
+
+        _songListView.getSelectionModel().clearAndSelect(index);
+    }
+
+
+
+    /**
      * @param playlistData
      */
     public void open(final PlaylistData playlistData) {
-        _audioSequencePlayer.clear();
-        _songListView.getItems().clear();
+        _audioClipPlayer.getAudioClipList().clear();
 
         for (UUID songID : playlistData) {
             final SongData songData = _fetchHandler.fetchGET(Database.TableType.SONG, songID);
             final FileData fileData = _fetchHandler.fetchGET(Database.TableType.FILE, songID);
             final AudioClip audioClip = new AudioClip(fileData.getID(), songData.getName(), songData.getGenre(), fileData.getAbsolutePath(), songData.getArtistID());
-            _audioSequencePlayer.add(audioClip);
-            addSongNode(audioClip);
+            _audioClipPlayer.getAudioClipList().add(audioClip);
         }
 
-        _audioSequencePlayer.selectFirst();
+        _audioClipPlayer.getSelectionModel().clearAndSelect(0);
     }
 
     /**
@@ -135,26 +206,24 @@ public class DashboardPage extends VBox implements Page {
      * @param file
      */
     private void openFile(final File file) {
-        _audioSequencePlayer.clear();
-        _songListView.getItems().clear();
-        addFile(file);
-        _audioSequencePlayer.selectFirst();
+        _audioClipPlayer.getAudioClipList().clear();
+        addAudioFile(file);
+        _audioClipPlayer.getSelectionModel().clearAndSelect(0);
     }
 
     /**
      * @param directory
      */
     private void openDirectory(final File directory) {
-        _audioSequencePlayer.clear();
-        _songListView.getItems().clear();
+        _audioClipPlayer.getAudioClipList().clear();
         addDirectory(directory);
-        _audioSequencePlayer.selectFirst();
+        _audioClipPlayer.getSelectionModel().clearAndSelect(0);
     }
 
     /**
      * @param file
      */
-    private void add(final File file) {
+    private void addUnknownFile(final File file) {
         if (file.isDirectory()) {
             addDirectory(file);
             return;
@@ -162,16 +231,15 @@ public class DashboardPage extends VBox implements Page {
 
         final String[] extensions = new String[] { ".mp3", ".wav" };
         if (Files.doesMatchExtension(file, extensions))
-            addFile(file);
+            addAudioFile(file);
     }
 
     /**
      * @param file
      */
-    private void addFile(final File file) {
+    private void addAudioFile(final File file) {
         final AudioClip audioClip = new AudioClip(UUID.randomUUID(), file.getName(), null, file.getAbsolutePath(), null);
-        _audioSequencePlayer.add(audioClip);
-        addSongNode(audioClip);
+        _audioClipPlayer.getAudioClipList().add(audioClip);
     }
 
     /**
@@ -179,25 +247,16 @@ public class DashboardPage extends VBox implements Page {
      */
     private void addDirectory(final File directory) {
         final String[] extensions = new String[] { ".mp3", ".wav" };
-        Files.listFiles(directory, extensions, true, this::addFile);
+        Files.listFiles(directory, extensions, true, this::addAudioFile);
     }
 
-
-    /**
-     *
-     */
-    public void shuffle() {
-        _audioSequencePlayer.shuffle();
-        refresh();
-    }
 
     /**
      * @param searchString
      */
     private void search(final String searchString) {
         _songListView.getItems().clear();
-
-        for (AudioClip audioClip : _audioSequencePlayer) {
+        _audioClipPlayer.getAudioClipList().forEach(audioClip -> {
             final ArtistData artistData = _fetchHandler.fetchGET(Database.TableType.ARTIST, audioClip.getArtistID());
             final String artistName = (artistData != null) ? artistData.getName() : "";
             final boolean matchName = audioClip.getName().toLowerCase().contains(searchString);
@@ -207,41 +266,9 @@ public class DashboardPage extends VBox implements Page {
                 final SongNode songNode = new SongNode(audioClip.getID(), audioClip.getName(), artistName);
                 _songListView.getItems().add(songNode);
             }
-        }
+        });
     }
 
-    /**
-     *
-     */
-    private void refresh() {
-        _songListView.getItems().clear();
-
-        for (AudioClip audioClip : _audioSequencePlayer) {
-            addSongNode(audioClip);
-        }
-    }
-
-    /**
-     * @param audioClip
-     */
-    private void addSongNode(final AudioClip audioClip) {
-        final ArtistData artistData = _fetchHandler.fetchGET(Database.TableType.ARTIST, audioClip.getArtistID());
-        final String artistName = (artistData != null) ? artistData.getName() : "";
-        final SongNode songNode = new SongNode(audioClip.getID(), audioClip.getName(), artistName);
-        _songListView.getItems().add(songNode);
-    }
-
-
-    /**
-     * @param audioClip
-     */
-    private void onSongSelected(final AudioClip audioClip) {
-        int index = Lists.indexFunc(_songListView.getItems(), songNode -> audioClip.equalsID(songNode.getSongID()));
-        if (index == -1)
-            return;
-
-        _songListView.getSelectionModel().clearAndSelect(index);
-    }
 
     /**
      * @param e
@@ -251,7 +278,8 @@ public class DashboardPage extends VBox implements Page {
         if (songNode == null)
             return;
 
-        _audioSequencePlayer.select(songNode.getSongID());
+        final int index = _audioClipPlayer.getAudioClipList().indexOf(audioClip -> audioClip.equalsID(songNode.getSongID()));
+        _audioClipPlayer.getSelectionModel().clearAndSelect(index);
     }
 
     /**
@@ -269,16 +297,7 @@ public class DashboardPage extends VBox implements Page {
      */
     private void onListViewDragDrop(DragEvent e) {
         final List<File> fileList = e.getDragboard().getFiles();
-        fileList.forEach(this::add);
-    }
-
-
-    /**
-     * @param isPlaying
-     */
-    private void onPlayStatusChanged(final boolean isPlaying) {
-        final String text = isPlaying ? "Pause" : "Play";
-        _playMenuItem.setText(text);
+        fileList.forEach(this::addUnknownFile);
     }
 
 
@@ -287,8 +306,7 @@ public class DashboardPage extends VBox implements Page {
      */
     @FXML
     private void onNewPlaylistButtonClicked(ActionEvent e) {
-        _audioSequencePlayer.clear();
-        _songListView.getItems().clear();
+        _audioClipPlayer.getAudioClipList().clear();
     }
 
 
@@ -348,7 +366,8 @@ public class DashboardPage extends VBox implements Page {
      */
     @FXML
     private void onPlayButtonClicked(ActionEvent e) {
-        _audioSequencePlayer.togglePlay();
+        final AudioStatus audioStatus = _audioClipPlayer.getAudioStatus() == AudioStatus.PLAYING ? AudioStatus.PAUSED : AudioStatus.PLAYING;
+        _audioClipPlayer.setAudioStatus(audioStatus);
     }
 
     /**
@@ -356,7 +375,8 @@ public class DashboardPage extends VBox implements Page {
      */
     @FXML
     private void onNextSongButtonClicked(ActionEvent e) {
-        _audioSequencePlayer.next();
+        final AudioClipSelectorType audioClipSelectorType = AudioClipSelectorType.valueOf(_audioClipSelectorTypeComboBox.getValue());
+        audioClipSelectorType.getValue().next(_audioClipPlayer.getSelectionModel());
     }
 
     /**
@@ -364,7 +384,8 @@ public class DashboardPage extends VBox implements Page {
      */
     @FXML
     private void onPreviousSongButtonClicked(ActionEvent e) {
-        _audioSequencePlayer.previous();
+        final AudioClipSelectorType audioClipSelectorType = AudioClipSelectorType.valueOf(_audioClipSelectorTypeComboBox.getValue());
+        audioClipSelectorType.getValue().previous(_audioClipPlayer.getSelectionModel());
     }
 
 
@@ -374,8 +395,8 @@ public class DashboardPage extends VBox implements Page {
     @FXML
     private void onIncreaseVolumeButtonClicked(ActionEvent e) {
         final double incrementPercent = 5;
-        final double volume = ((int)(_audioSequencePlayer.getVolumeProperty().getValue() * 100 / incrementPercent) + 1) * incrementPercent / 100;
-        _audioSequencePlayer.getVolumeProperty().setValue(volume);
+        final double volume = ((int)(_audioClipPlayer.getVolumeProperty().getValue() * 100 / incrementPercent) + 1) * incrementPercent / 100;
+        _audioClipPlayer.getVolumeProperty().setValue(volume);
     }
 
     /**
@@ -384,8 +405,8 @@ public class DashboardPage extends VBox implements Page {
     @FXML
     private void onDecreaseVolumeButtonClicked(ActionEvent e) {
         final double decrementPercent = 5;
-        final double volume = ((int)(_audioSequencePlayer.getVolumeProperty().getValue() * 100 / decrementPercent) - 1) * decrementPercent / 100;
-        _audioSequencePlayer.getVolumeProperty().setValue(volume);
+        final double volume = ((int)(_audioClipPlayer.getVolumeProperty().getValue() * 100 / decrementPercent) - 1) * decrementPercent / 100;
+        _audioClipPlayer.getVolumeProperty().setValue(volume);
     }
 
     /**
@@ -394,7 +415,7 @@ public class DashboardPage extends VBox implements Page {
     @FXML
     private void onMuteVolumeButtonClicked(ActionEvent e) {
         final double volume = 0;
-        _audioSequencePlayer.getVolumeProperty().setValue(volume);
+        _audioClipPlayer.getVolumeProperty().setValue(volume);
     }
 
 
@@ -412,15 +433,15 @@ public class DashboardPage extends VBox implements Page {
      */
     @FXML
     private void onShuffleButtonClicked(ActionEvent e) {
-        shuffle();
+        _audioClipPlayer.getAudioClipList().shuffle();
     }
 
     /**
      * @param e
      */
     @FXML
-    private void onSequencerChanged(AudioSequencerSelector.SelectEvent e) {
-        _audioSequencePlayer.setSequencer(e.getSequencer());
+    private void onSequencerChanged(AudioClipSelectorTypeComboBox.SelectEvent e) {
+        _audioClipPlayer.setAudioClipSelectorType(e.getAudioClipSelectorType());
     }
 
     /**

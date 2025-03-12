@@ -3,5 +3,8 @@ package com.github.williwadelmawisky.musicplayer.audio;
 /**
  *
  */
-public interface AudioPlayer {
+public enum AudioStatus {
+    STOPPED,
+    PAUSED,
+    PLAYING
 }

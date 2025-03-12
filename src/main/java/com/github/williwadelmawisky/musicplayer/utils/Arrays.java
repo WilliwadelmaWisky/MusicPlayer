@@ -1,4 +1,6 @@
-package com.github.williwadelmawisky.musicplayer.util;
+package com.github.williwadelmawisky.musicplayer.utils;
+
+import java.util.function.Predicate;
 
 /**
  *
@@ -7,13 +9,13 @@ public abstract class Arrays {
 
     /**
      * @param array
-     * @param match
+     * @param predicate
      * @param <T>
      * @return
      */
-    public static <T> boolean containsFunc(final T[] array, final Predicate<T> match) {
+    public static <T> boolean containsFunc(final T[] array, final Predicate<? super T> predicate) {
         for (T elem : array) {
-            if (match.invoke(elem))
+            if (predicate.test(elem))
                 return true;
         }
 

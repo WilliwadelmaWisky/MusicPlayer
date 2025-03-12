@@ -1,7 +1,5 @@
 package com.github.williwadelmawisky.musicplayer.scene.controls;
 
-import com.github.williwadelmawisky.musicplayer.audio.AudioProperty;
-import com.github.williwadelmawisky.musicplayer.audio.ProgressProperty;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -42,21 +40,21 @@ public class AudioProgressView extends HBox {
 
     /**
      * @param progressProperty
-     * @param audioProperty
+     * @param audioClipProperty
      */
-    public AudioProgressView(final ProgressProperty progressProperty, final AudioProperty audioProperty) {
+    public AudioProgressView(final ProgressProperty progressProperty, final AudioClipProperty audioClipProperty) {
         this();
-        setProgressAndAudioProperty(progressProperty, audioProperty);
+        setProgressAndAudioProperty(progressProperty, audioClipProperty);
     }
 
 
     /**
      * @param progressProperty
-     * @param audioProperty
+     * @param audioClipProperty
      */
-    public void setProgressAndAudioProperty(final ProgressProperty progressProperty, final AudioProperty audioProperty) {
-        _audioPlaybackPositionLabel.setProgressAndAudioProperty(progressProperty, audioProperty);
-        _audioDurationLabel.setAudioProperty(audioProperty);
+    public void setProgressAndAudioProperty(final ProgressProperty progressProperty, final AudioClipProperty audioClipProperty) {
+        _audioPlaybackPositionLabel.setProgressAndAudioProperty(progressProperty, audioClipProperty);
+        _audioDurationLabel.setAudioProperty(audioClipProperty);
         _audioProgressBar.setProgressProperty(progressProperty);
     }
 }

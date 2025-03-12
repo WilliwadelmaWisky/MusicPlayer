@@ -1,7 +1,6 @@
 package com.github.williwadelmawisky.musicplayer.scene.controls;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
-import com.github.williwadelmawisky.musicplayer.audio.VolumeProperty;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 

@@ -1,6 +1,5 @@
 package com.github.williwadelmawisky.musicplayer.scene.controls;
 
-import com.github.williwadelmawisky.musicplayer.audio.VolumeProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Slider;
 

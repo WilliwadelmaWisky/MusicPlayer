@@ -1,4 +1,4 @@
-package com.github.williwadelmawisky.utils;
+package com.github.williwadelmawisky.musicplayer.utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +76,21 @@ public class SelectionModel<T> {
         if (_selectionMode == SelectionMode.SINGLE)
             clear();
 
+        _selectedIndexList.add(index);
+        final T selectedItem = _observableList.get(index);
+        OnSelected.invoke(this, new OnSelectedEventArgs<>(selectedItem));
+        return true;
+    }
+
+    /**
+     * @param index
+     * @return
+     */
+    public boolean clearAndSelect(final int index) {
+        if (index < 0 || index >= _observableList.length())
+            return false;
+
+        clear();
         _selectedIndexList.add(index);
         final T selectedItem = _observableList.get(index);
         OnSelected.invoke(this, new OnSelectedEventArgs<>(selectedItem));

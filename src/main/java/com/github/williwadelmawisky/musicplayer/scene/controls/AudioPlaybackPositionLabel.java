@@ -1,8 +1,6 @@
 package com.github.williwadelmawisky.musicplayer.scene.controls;
 
-import com.github.williwadelmawisky.musicplayer.audio.AudioProperty;
-import com.github.williwadelmawisky.musicplayer.audio.ProgressProperty;
-import com.github.williwadelmawisky.musicplayer.util.Strings;
+import com.github.williwadelmawisky.musicplayer.utils.Strings;
 import javafx.scene.control.Label;
 import javafx.util.Duration;
 
@@ -12,7 +10,7 @@ import javafx.util.Duration;
 public class AudioPlaybackPositionLabel extends Label {
 
     private ProgressProperty _progressProperty;
-    private AudioProperty _audioProperty;
+    private AudioClipProperty _audioClipProperty;
 
 
     /**
@@ -25,22 +23,22 @@ public class AudioPlaybackPositionLabel extends Label {
 
     /**
      * @param progressProperty
-     * @param audioProperty
+     * @param audioClipProperty
      */
-    public AudioPlaybackPositionLabel(final ProgressProperty progressProperty, final AudioProperty audioProperty) {
+    public AudioPlaybackPositionLabel(final ProgressProperty progressProperty, final AudioClipProperty audioClipProperty) {
         this();
-        setProgressAndAudioProperty(progressProperty, audioProperty);
+        setProgressAndAudioProperty(progressProperty, audioClipProperty);
     }
 
 
     /**
      * @param progressProperty
-     * @param audioProperty
+     * @param audioClipProperty
      */
-    public void setProgressAndAudioProperty(final ProgressProperty progressProperty, final AudioProperty audioProperty) {
+    public void setProgressAndAudioProperty(final ProgressProperty progressProperty, final AudioClipProperty audioClipProperty) {
         if (_progressProperty != null) _progressProperty.getUpdateEvent().removeListener(this::onProgressChanged);
 
-        _audioProperty = audioProperty;
+        _audioClipProperty = audioClipProperty;
         _progressProperty = progressProperty;
         updateView(_progressProperty.getValue());
         _progressProperty.getUpdateEvent().addListener(this::onProgressChanged);
@@ -57,7 +55,7 @@ public class AudioPlaybackPositionLabel extends Label {
      * @param progress
      */
     private void updateView(final double progress) {
-        final Duration playbackPosition = _audioProperty.getDuration().multiply(progress);
+        final Duration playbackPosition = _audioClipProperty.getDuration().multiply(progress);
         updateView(playbackPosition);
     }
 

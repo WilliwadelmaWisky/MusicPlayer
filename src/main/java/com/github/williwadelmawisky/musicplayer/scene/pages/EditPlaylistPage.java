@@ -8,7 +8,7 @@ import com.github.williwadelmawisky.musicplayer.routing.Page;
 import com.github.williwadelmawisky.musicplayer.routing.RedirectHandler;
 import com.github.williwadelmawisky.musicplayer.routing.SessionStorage;
 import com.github.williwadelmawisky.musicplayer.scene.controls.SongNode;
-import com.github.williwadelmawisky.musicplayer.util.Files;
+import com.github.williwadelmawisky.musicplayer.utils.Files;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;

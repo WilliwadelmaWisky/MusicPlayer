@@ -1,7 +1,6 @@
 package com.github.williwadelmawisky.musicplayer.scene.controls;
 
-import com.github.williwadelmawisky.musicplayer.audio.AudioProperty;
-import com.github.williwadelmawisky.musicplayer.util.Strings;
+import com.github.williwadelmawisky.musicplayer.utils.Strings;
 import javafx.scene.control.Label;
 import javafx.util.Duration;
 
@@ -10,7 +9,7 @@ import javafx.util.Duration;
  */
 public class AudioDurationLabel extends Label {
 
-    private AudioProperty _audioProperty;
+    private AudioClipProperty _audioClipProperty;
 
 
     /**
@@ -22,29 +21,29 @@ public class AudioDurationLabel extends Label {
     }
 
     /**
-     * @param audioProperty
+     * @param audioClipProperty
      */
-    public AudioDurationLabel(final AudioProperty audioProperty) {
+    public AudioDurationLabel(final AudioClipProperty audioClipProperty) {
         this();
-        setAudioProperty(audioProperty);
+        setAudioProperty(audioClipProperty);
     }
 
 
     /**
-     * @param audioProperty
+     * @param audioClipProperty
      */
-    public void setAudioProperty(final AudioProperty audioProperty) {
-        if (_audioProperty != null) _audioProperty.getUpdateEvent().removeListener(this::onAudioChanged);
+    public void setAudioProperty(final AudioClipProperty audioClipProperty) {
+        if (_audioClipProperty != null) _audioClipProperty.getUpdateEvent().removeListener(this::onAudioChanged);
 
-        _audioProperty = audioProperty;
-        updateView(_audioProperty.getDuration());
-        _audioProperty.getUpdateEvent().addListener(this::onAudioChanged);
+        _audioClipProperty = audioClipProperty;
+        updateView(_audioClipProperty.getDuration());
+        _audioClipProperty.getUpdateEvent().addListener(this::onAudioChanged);
     }
 
     /**
      * @param changeEvent
      */
-    private void onAudioChanged(final AudioProperty.ChangeEvent changeEvent) {
+    private void onAudioChanged(final AudioClipProperty.ChangeEvent changeEvent) {
         updateView(changeEvent.Duration);
     }
 

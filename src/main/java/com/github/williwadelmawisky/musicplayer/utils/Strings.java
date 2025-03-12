@@ -1,7 +1,8 @@
-package com.github.williwadelmawisky.musicplayer.util;
+package com.github.williwadelmawisky.musicplayer.utils;
 
-import javafx.util.Duration;
-
+/**
+ *
+ */
 public abstract class Strings {
 
     /**
@@ -16,9 +17,8 @@ public abstract class Strings {
             return s;
 
         StringBuilder stringBuilder = new StringBuilder(s);
-        for (int i = 0; i < length - s.length(); i++) {
+        for (int i = 0; i < length - s.length(); i++)
             stringBuilder.insert(0, padChar);
-        }
 
         return stringBuilder.toString();
     }
@@ -35,21 +35,9 @@ public abstract class Strings {
             return s;
 
         StringBuilder stringBuilder = new StringBuilder(s);
-        for (int i = 0; i < length - s.length(); i++) {
+        for (int i = 0; i < length - s.length(); i++)
             stringBuilder.append(padChar);
-        }
 
         return stringBuilder.toString();
-    }
-
-
-    /**
-     * @param duration
-     * @return
-     */
-    public static String durationToString(final Duration duration) {
-        final int MINUTE_TO_SECOND = 60;
-        final int seconds = (int)(duration.toSeconds() - (int)duration.toMinutes() * MINUTE_TO_SECOND);
-        return (int)duration.toMinutes() + ":" + Strings.padLeft(String.valueOf(seconds), 2, '0');
     }
 }

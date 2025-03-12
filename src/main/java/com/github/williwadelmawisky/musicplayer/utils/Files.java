@@ -1,7 +1,8 @@
-package com.github.williwadelmawisky.musicplayer.util;
+package com.github.williwadelmawisky.musicplayer.utils;
 
 import java.io.*;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  *
@@ -13,11 +14,11 @@ public final class Files {
      * @param file A file to read
      * @return Contents of the file (Null if file doesn't exist)
      */
-    public static String read(File file) {
+    public static String read(final File file) {
         if (file == null || !file.exists())
             return null;
 
-        StringBuilder stringBuilder = new StringBuilder();
+        final StringBuilder stringBuilder = new StringBuilder();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
@@ -36,8 +37,8 @@ public final class Files {
      * @param path A path of the file to read
      * @return Contents of the file (Null if file doesn't exist)
      */
-    public static String read(String path) {
-        File file = new File(path);
+    public static String read(final String path) {
+        final File file = new File(path);
         return read(file);
     }
 
@@ -48,7 +49,7 @@ public final class Files {
      * @param data A string to write
      * @return True or False depending on the success of the operation
      */
-    public static boolean write(File file, String data) {
+    public static boolean write(final File file, final String data) {
         if (file == null || data == null)
             return false;
 
@@ -68,7 +69,7 @@ public final class Files {
      * @return True or False depending on the success of the operation
      */
     public static boolean write(String path, String data) {
-        File file = new File(path);
+        final File file = new File(path);
         return write(file, data);
     }
 
@@ -79,7 +80,7 @@ public final class Files {
      * @param recursive
      * @param proc
      */
-    public static void listFiles(final File directory, final String[] extensions, final boolean recursive, final EventHandler<File> proc) {
+    public static void listFiles(final File directory, final String[] extensions, final boolean recursive, final Consumer<? super File> proc) {
         for (File file : Objects.requireNonNull(directory.listFiles())) {
             if (file.isDirectory()) {
                 if (!recursive)
@@ -91,7 +92,7 @@ public final class Files {
 
             boolean includeAll = extensions == null || extensions.length == 0 || Arrays.contains(extensions, "*");
             if (includeAll || Arrays.containsFunc(extensions, extension -> file.getName().endsWith(extension)))
-                proc.invoke(file);
+                proc.accept(file);
         }
     }
 

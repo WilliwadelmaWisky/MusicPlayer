@@ -1,7 +1,6 @@
 package com.github.williwadelmawisky.musicplayer.database;
 
-import com.github.williwadelmawisky.musicplayer.util.Files;
-import com.github.williwadelmawisky.musicplayer.util.Func;
+import com.github.williwadelmawisky.musicplayer.utils.Files;
 
 import java.util.*;
 
