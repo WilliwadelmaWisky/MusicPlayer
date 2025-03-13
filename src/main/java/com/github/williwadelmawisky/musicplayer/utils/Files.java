@@ -102,7 +102,16 @@ public final class Files {
      */
     public static String getExtension(final File file) {
         final int index = file.getName().lastIndexOf('.');
-        return (index != -1) ? file.getName().substring(index +1) : null;
+        return (index != -1) ? file.getName().substring(index + 1) : null;
+    }
+
+    /**
+     * @param file
+     * @return
+     */
+    public static String getNameWithoutExtension(final File file) {
+        final int index = file.getName().lastIndexOf('.');
+        return (index != -1) ? file.getName().substring(0, index) : null;
     }
 
     /**
