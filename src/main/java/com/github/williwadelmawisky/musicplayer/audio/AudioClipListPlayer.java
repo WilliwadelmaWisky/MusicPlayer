@@ -41,6 +41,11 @@ public class AudioClipListPlayer extends AudioClipPlayer {
      */
     public SelectionModel<AudioClip> getSelectionModel() { return _selectionModel; }
 
+    /**
+     * @return
+     */
+    public AudioClipSelectorType getAudioClipSelectorType() { return _audioClipSelectorType; }
+
 
     /**
      * @param audioClipSelectorType
@@ -69,7 +74,6 @@ public class AudioClipListPlayer extends AudioClipPlayer {
      * @param args
      */
     private void onAudioClipFinished(final Object sender, OnAudioClipFinishedEventArgs args) {
-        final AudioClipSelectorType audioClipSelectorType = _audioClipSelectorType != null ? _audioClipSelectorType : DEFAULT_AUDIO_CLIP_SELECTOR_TYPE;
-        audioClipSelectorType.getValue().next(_selectionModel);
+        _audioClipSelectorType.getValue().next(_selectionModel);
     }
 }

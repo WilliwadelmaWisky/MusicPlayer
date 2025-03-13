@@ -8,6 +8,7 @@ import javafx.scene.media.Media;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  *
@@ -19,8 +20,19 @@ public abstract class ResourceLoader {
      * @return
      */
     public static Parent loadFxml(final String relativePath) {
+        return loadFxml(relativePath, controller -> {});
+    }
+
+    /**
+     * @param relativePath
+     * @param action
+     * @param <T>
+     * @return
+     */
+    public static <T> Parent loadFxml(final String relativePath, final Consumer<? super T> action) {
         try {
             FXMLLoader loader = new FXMLLoader(ResourceLoader.class.getResource(relativePath));
+            action.accept(loader.getController());
             return loader.load();
         } catch (IOException ioException) {
             throw new RuntimeException(ioException);
@@ -49,6 +61,14 @@ public abstract class ResourceLoader {
      */
     public static Media loadMedia(final String path) {
         final File file = new File(path);
+        return loadMedia(file);
+    }
+
+    /**
+     * @param file
+     * @return
+     */
+    public static Media loadMedia(final File file) {
         return new Media(file.toURI().toString());
     }
 

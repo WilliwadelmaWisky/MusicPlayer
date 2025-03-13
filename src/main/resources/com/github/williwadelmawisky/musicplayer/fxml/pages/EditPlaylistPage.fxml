@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<fx:root type="com.github.williwadelmawisky.musicplayer.scene.pages.EditPlaylistPage"
+<fx:root type="EditPlaylistPage"
          xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
 >
     <MenuBar>

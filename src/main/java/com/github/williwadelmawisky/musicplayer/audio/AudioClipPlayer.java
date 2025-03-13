@@ -59,7 +59,7 @@ public class AudioClipPlayer {
         final boolean wasPlaying = _audioStatus == AudioStatus.PLAYING;
         if (wasPlaying) _mediaPlayer.stop();
 
-        final Media media = ResourceLoader.loadMedia(audioClip.getFilePath());
+        final Media media = ResourceLoader.loadMedia(audioClip.getFile());
         _mediaPlayer = new MediaPlayer(media);
         _mediaPlayer.setVolume(_volume);
         _mediaPlayer.setOnReady(() -> onMediaReady(audioClip, media, wasPlaying));
@@ -129,7 +129,7 @@ public class AudioClipPlayer {
      * @param play
      */
     private void onMediaReady(final AudioClip audioClip, final Media media, final boolean play) {
-        OnAudioClipStarted.invoke(this, new OnAudioClipStartedEventArgs(audioClip));
+        OnAudioClipStarted.invoke(this, new OnAudioClipStartedEventArgs(audioClip, media.getDuration()));
         if (play) _mediaPlayer.play();
     }
 
@@ -158,12 +158,15 @@ public class AudioClipPlayer {
     public static class OnAudioClipStartedEventArgs extends EventArgs {
 
         public final AudioClip AudioClip;
+        public final Duration TotalDuration;
 
         /**
          * @param audioClip
+         * @param totalDuration
          */
-        public OnAudioClipStartedEventArgs(final AudioClip audioClip) {
+        public OnAudioClipStartedEventArgs(final AudioClip audioClip, final Duration totalDuration) {
             AudioClip = audioClip;
+            TotalDuration = totalDuration;
         }
     }
 

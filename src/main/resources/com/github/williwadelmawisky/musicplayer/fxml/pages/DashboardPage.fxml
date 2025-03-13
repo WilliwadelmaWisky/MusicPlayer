@@ -5,69 +5,22 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import com.github.williwadelmawisky.musicplayer.scene.controls.AudioControlPanel?>
+<?import com.github.williwadelmawisky.musicplayer.audiofx.AudioControlPanel?>
 <?import javafx.geometry.Insets?>
 
-<?import com.github.williwadelmawisky.musicplayer.scene.controls.SearchBar?>
+<?import com.github.williwadelmawisky.musicplayer.audiofx.SearchBar?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
-<?import com.github.williwadelmawisky.musicplayer.scene.controls.AudioClipSelectorTypeComboBox?>
-<fx:root type="com.github.williwadelmawisky.musicplayer.scene.pages.DashboardPage"
+<?import com.github.williwadelmawisky.musicplayer.audiofx.AudioClipSelectorTypeComboBox?>
+<fx:root type="DashboardPage"
          xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
 >
-    <MenuBar>
-        <Menu text="Media">
-            <MenuItem text="New Playlist" onAction="#onNewPlaylistButtonClicked" accelerator="Shortcut+N"/>
-            <SeparatorMenuItem/>
-            <MenuItem text="Save" accelerator="Shortcut+S"/>
-            <MenuItem text="Save As..." accelerator="Shortcut+Shift+S"/>
-            <SeparatorMenuItem/>
-            <MenuItem text="Open File..." onAction="#onOpenFileButtonClicked" accelerator="Shortcut+F"/>
-            <MenuItem text="Open Directory..." onAction="#onOpenDirectoryButtonClicked" accelerator="Shortcut+D"/>
-            <MenuItem text="Open Playlist..." onAction="#onOpenPlaylistButtonClicked" accelerator="Shortcut+O"/>
-            <SeparatorMenuItem/>
-            <MenuItem text="Import Playlist..."/>
-            <MenuItem text="Export Playlist..."/>
-            <SeparatorMenuItem/>
-            <MenuItem text="Quit" accelerator="Shortcut+Q"/>
-        </Menu>
-        <Menu text="Playback">
-            <MenuItem text="Play" fx:id="_playMenuItem" onAction="#onPlayButtonClicked"/>
-            <MenuItem text="Next Song" onAction="#onNextSongButtonClicked"/>
-            <MenuItem text="Previous Song" onAction="#onPreviousSongButtonClicked"/>
-        </Menu>
-        <Menu text="Audio">
-            <MenuItem text="Increase Volume" onAction="#onIncreaseVolumeButtonClicked"/>
-            <MenuItem text="Decrease Volume" onAction="#onDecreaseVolumeButtonClicked"/>
-            <MenuItem text="Mute Volume" onAction="#onMuteVolumeButtonClicked"/>
-        </Menu>
-        <Menu text="Window">
-            <MenuItem text="Dashboard" disable="true" accelerator="Shortcut+1"/>
-            <MenuItem text="Library" onAction="#onLibraryPageButtonClicked" accelerator="Shortcut+2"/>
-        </Menu>
-        <Menu text="Help">
-            <MenuItem text="Help..." accelerator="F1"/>
-            <MenuItem text="About..." accelerator="Shift+F1"/>
-        </Menu>
-    </MenuBar>
-    <VBox spacing="10" VBox.vgrow="ALWAYS" maxHeight="Infinity">
-        <padding>
-            <Insets topRightBottomLeft="10"/>
-        </padding>
-        <VBox spacing="5" VBox.vgrow="ALWAYS" maxHeight="Infinity">
-            <SearchBar onSearch="#onSearch"/>
-            <HBox spacing="5" alignment="CENTER_LEFT">
-                <AudioClipSelectorTypeComboBox fx:id="_audioClipSelectorTypeComboBox" onSelect="#onSequencerChanged" minWidth="150" maxWidth="150"/>
-                <Button text="Shuffle" onAction="#onShuffleButtonClicked"/>
-            </HBox>
-            <HBox alignment="CENTER_LEFT"  spacing="5">
-                <padding>
-                    <Insets top="10" left="5" right="5"/>
-                </padding>
-                <Label text="Song" minWidth="320" maxWidth="320"/>
-            </HBox>
-            <ListView fx:id="_songListView" VBox.vgrow="ALWAYS" maxHeight="Infinity"/>
-        </VBox>
-        <AudioControlPanel fx:id="_audioControlPanel" onNext="#onNextSongButtonClicked" onPrevious="#onPreviousSongButtonClicked"/>
+    <VBox spacing="5" VBox.vgrow="ALWAYS" maxHeight="Infinity">
+        <SearchBar onSearch="#onSearch"/>
+        <HBox spacing="5" alignment="CENTER_LEFT">
+            <AudioClipSelectorTypeComboBox fx:id="_audioClipSelectorTypeComboBox" onSelect="#onSequencerChanged"/>
+            <Button text="Shuffle" onAction="#onShuffleButtonClicked"/>
+        </HBox>
+        <ListView fx:id="_songListView" VBox.vgrow="ALWAYS" maxHeight="Infinity"/>
     </VBox>
 </fx:root>

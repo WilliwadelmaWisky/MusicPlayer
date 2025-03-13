@@ -8,8 +8,8 @@
 <?import javafx.geometry.Insets?>
 
 <?import org.controlsfx.control.SearchableComboBox?>
-<?import com.github.williwadelmawisky.musicplayer.scene.controls.ArtistSelector?>
-<fx:root type="com.github.williwadelmawisky.musicplayer.scene.pages.SongEditPage"
+<?import com.github.williwadelmawisky.musicplayer.audiofx.ArtistSelector?>
+<fx:root type="SongEditPage"
          xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
          spacing="10"
 >

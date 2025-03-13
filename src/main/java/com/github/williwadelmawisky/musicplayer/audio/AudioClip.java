@@ -1,6 +1,6 @@
 package com.github.williwadelmawisky.musicplayer.audio;
 
-import com.github.williwadelmawisky.musicplayer.database.Genre;
+import java.io.File;
 import java.util.UUID;
 
 /**
@@ -8,51 +8,46 @@ import java.util.UUID;
  */
 public class AudioClip {
 
-    private final UUID _id, _artistID;
-    private final String _name, _filePath;
-    private final Genre _genre;
+    private final AudioFile _audioFile;
 
 
     /**
-     * @param id
-     * @param name
-     * @param genre
-     * @param filePath
-     * @param artistID
+     * @param audioFile
      */
-    public AudioClip(final UUID id, final String name, final Genre genre, final String filePath, final UUID artistID) {
-        _id = id;
-        _name = name;
-        _genre = genre;
-        _filePath = filePath;
-        _artistID = artistID;
+    public AudioClip(final AudioFile audioFile) {
+        _audioFile = audioFile;
     }
 
 
     /**
      * @return
      */
-    public UUID getID() { return _id; }
+    public String getID() { return _audioFile.getFile().getAbsolutePath(); }
 
     /**
      * @return
      */
-    public String getName() { return _name; }
+    public File getFile() { return _audioFile.getFile(); }
 
     /**
      * @return
      */
-    public Genre getGenre() { return _genre; }
+    public String getName() { return _audioFile.getName(); }
 
     /**
      * @return
      */
-    public UUID getArtistID() { return _artistID; }
+    public String getArtist() { return _audioFile.getArtist(); }
 
     /**
      * @return
      */
-    public String getFilePath() { return _filePath; }
+    public Language getLangugage() { return _audioFile.getLanguage(); }
+
+    /**
+     * @return
+     */
+    public Genre getGenre() { return _audioFile.getGenre(); }
 
 
     /**

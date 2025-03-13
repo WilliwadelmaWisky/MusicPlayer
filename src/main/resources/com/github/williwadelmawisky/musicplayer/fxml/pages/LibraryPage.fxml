@@ -7,10 +7,10 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.geometry.Insets?>
-<?import com.github.williwadelmawisky.musicplayer.scene.controls.SearchBar?>
-<?import com.github.williwadelmawisky.musicplayer.scene.controls.SearchPrefixPanel?>
+<?import com.github.williwadelmawisky.musicplayer.audiofx.SearchBar?>
+<?import com.github.williwadelmawisky.musicplayer.audiofx.SearchPrefixPanel?>
 <?import org.controlsfx.control.GridView?>
-<fx:root type="com.github.williwadelmawisky.musicplayer.scene.pages.LibraryPage"
+<fx:root type="LibraryPage"
          xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
 >
     <MenuBar>
