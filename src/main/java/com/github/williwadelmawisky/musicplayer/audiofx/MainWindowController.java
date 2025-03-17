@@ -4,11 +4,6 @@ import com.github.williwadelmawisky.musicplayer.audio.*;
 import com.github.williwadelmawisky.musicplayer.utils.Files;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
@@ -20,8 +15,8 @@ import java.nio.file.Paths;
  */
 public class MainWindowController {
 
+    @FXML private AudioListView _audioListView;
     @FXML private AudioControlPanel _audioControlPanel;
-    @FXML private VBox _viewVBox;
 
     private AudioClipListPlayer _audioClipPlayer;
     private File _homeDirectory;
@@ -35,101 +30,8 @@ public class MainWindowController {
         _audioClipPlayer = new AudioClipListPlayer();
         _homeDirectory = Paths.get(System.getProperty("user.home"), ".WilliwadelmaWisky", "MusicPlayer").toFile();
 
+        _audioListView.bindTo(_audioClipPlayer);
         _audioControlPanel.bindTo(_audioClipPlayer);
-    }
-
-
-    /**
-     * @param controlPanel
-     */
-    public void setView(final ControlPanel controlPanel) {
-        controlPanel.bindTo();
-        if (_viewVBox.getChildren().getFirst() instanceof ControlPanel cp) {
-            _viewVBox.getChildren().removeFirst();
-            cp.unbind();
-        }
-
-        final Pane controlPanelRoot = (Pane) controlPanel;
-        VBox.setVgrow(controlPanelRoot, Priority.ALWAYS);
-        controlPanelRoot.setMaxHeight(Double.POSITIVE_INFINITY);
-        _viewVBox.getChildren().add(controlPanelRoot);
-    }
-
-
-    /**
-     * @param audioPlaylist
-     */
-    public void open(final AudioPlaylist audioPlaylist) {
-        _audioClipPlayer.getAudioClipList().clear();
-        audioPlaylist.forEach(audioFile -> {
-            final AudioClip audioClip = new AudioClip(audioFile);
-            _audioClipPlayer.getAudioClipList().add(audioClip);
-        });
-
-        _audioClipPlayer.getSelectionModel().clearAndSelect(0);
-    }
-
-    /**
-     * @param file
-     */
-    public void open(final File file) {
-        if (file.isDirectory()) {
-            openDirectory(file);
-            return;
-        }
-
-        final String[] extensions = new String[] { ".mp3", ".wav" };
-        if (Files.doesMatchExtension(file, extensions))
-            openFile(file);
-    }
-
-    /**
-     * @param file
-     */
-    private void openFile(final File file) {
-        _audioClipPlayer.getAudioClipList().clear();
-        addAudioFile(file);
-        _audioClipPlayer.getSelectionModel().clearAndSelect(0);
-    }
-
-    /**
-     * @param directory
-     */
-    private void openDirectory(final File directory) {
-        _audioClipPlayer.getAudioClipList().clear();
-        addDirectory(directory);
-        _audioClipPlayer.getSelectionModel().clearAndSelect(0);
-    }
-
-    /**
-     * @param file
-     */
-    private void addUnknownFile(final File file) {
-        if (file.isDirectory()) {
-            addDirectory(file);
-            return;
-        }
-
-        final String[] extensions = new String[] { ".mp3", ".wav" };
-        if (Files.doesMatchExtension(file, extensions))
-            addAudioFile(file);
-    }
-
-    /**
-     * @param file
-     */
-    private void addAudioFile(final File file) {
-        final AudioFile audioFile = new AudioFile(file);
-        final AudioClip audioClip = new AudioClip(audioFile);
-        _audioClipPlayer.getAudioClipList().add(audioClip);
-    }
-
-    /**
-     * @param directory
-     */
-    private void addDirectory(final File directory) {
-        final String[] extensions = new String[] { ".mp3", ".wav" };
-        Files.listFiles(directory, extensions, true, this::addAudioFile);
     }
 
 
@@ -159,7 +61,8 @@ public class MainWindowController {
         if (file == null || !file.exists())
             return;
 
-        openFile(file);
+        final AudioClipLoader audioClipLoader = new AudioClipLoader(_audioClipPlayer);
+        audioClipLoader.openFile(file);
     }
 
     /**
@@ -178,7 +81,8 @@ public class MainWindowController {
         if (directory == null || !directory.exists() || !directory.isDirectory())
             return;
 
-        openDirectory(directory);
+        final AudioClipLoader audioClipLoader = new AudioClipLoader(_audioClipPlayer);
+        audioClipLoader.openDirectory(directory);
     }
 
     /**
@@ -193,7 +97,24 @@ public class MainWindowController {
         if (playlist == null)
             return;
 
-        open(playlist);
+        final AudioClipLoader audioClipLoader = new AudioClipLoader(_audioClipPlayer);
+        audioClipLoader.openPlaylist(playlist);
+    }
+
+    /**
+     * @param e
+     */
+    @FXML
+    private void onImportPlaylistClicked(final ActionEvent e) {
+
+    }
+
+    /**
+     * @param e
+     */
+    @FXML
+    private void onExportPlaylistClicked(final ActionEvent e) {
+
     }
 
 
@@ -201,9 +122,24 @@ public class MainWindowController {
      * @param e
      */
     @FXML
-    private void onPlayButtonClicked(ActionEvent e) {
-        final AudioStatus audioStatus = _audioClipPlayer.getAudioStatus() == AudioStatus.PLAYING ? AudioStatus.PAUSED : AudioStatus.PLAYING;
-        _audioClipPlayer.setAudioStatus(audioStatus);
+    private void onPlayButtonClicked(final ActionEvent e) {
+        _audioClipPlayer.setAudioStatus(AudioStatus.PLAYING);
+    }
+
+    /**
+     * @param e
+     */
+    @FXML
+    private void onPauseButtonClicked(final ActionEvent e) {
+        _audioClipPlayer.setAudioStatus(AudioStatus.PAUSED);
+    }
+
+    /**
+     * @param e
+     */
+    @FXML
+    private void onStopButtonClicked(final ActionEvent e) {
+        _audioClipPlayer.setAudioStatus(AudioStatus.STOPPED);
     }
 
     /**

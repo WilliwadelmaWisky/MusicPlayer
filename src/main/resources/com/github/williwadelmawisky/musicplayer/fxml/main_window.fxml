@@ -8,6 +8,8 @@
 
 <?import com.github.williwadelmawisky.musicplayer.audiofx.AudioControlPanel?>
 <?import javafx.geometry.Insets?>
+<?import com.github.williwadelmawisky.musicplayer.audiofx.AudioListView?>
+
 <VBox fx:controller="com.github.williwadelmawisky.musicplayer.audiofx.MainWindowController"
       xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
 >
@@ -22,15 +24,15 @@
             <MenuItem text="Open Directory..." onAction="#onOpenDirectoryButtonClicked" accelerator="Shortcut+D"/>
             <MenuItem text="Open Playlist..." onAction="#onOpenPlaylistButtonClicked" accelerator="Shortcut+O"/>
             <SeparatorMenuItem/>
-            <MenuItem text="Import Playlist..."/>
-            <MenuItem text="Export Playlist..."/>
+            <MenuItem text="Import Playlist..." onAction="#onImportPlaylistClicked"/>
+            <MenuItem text="Export Playlist..." onAction="#onExportPlaylistClicked"/>
             <SeparatorMenuItem/>
             <MenuItem text="Quit" accelerator="Shortcut+Q"/>
         </Menu>
         <Menu text="Playback">
             <MenuItem text="Play" onAction="#onPlayButtonClicked"/>
-            <MenuItem text="Pause" onAction="#onPlayButtonClicked"/>
-            <MenuItem text="Stop" onAction="#onPlayButtonClicked"/>
+            <MenuItem text="Pause" onAction="#onPauseButtonClicked"/>
+            <MenuItem text="Stop" onAction="#onStopButtonClicked"/>
             <SeparatorMenuItem/>
             <MenuItem text="Next Song" onAction="#onNextSongButtonClicked"/>
             <MenuItem text="Previous Song" onAction="#onPreviousSongButtonClicked"/>
@@ -40,19 +42,16 @@
             <MenuItem text="Decrease Volume" onAction="#onDecreaseVolumeButtonClicked"/>
             <MenuItem text="Mute Volume" onAction="#onMuteVolumeButtonClicked"/>
         </Menu>
-        <Menu text="Window">
-            <MenuItem text="Dashboard" disable="true" accelerator="Shortcut+1"/>
-            <MenuItem text="Library" onAction="#onLibraryPageButtonClicked" accelerator="Shortcut+2"/>
-        </Menu>
         <Menu text="Help">
             <MenuItem text="Help..." accelerator="F1"/>
             <MenuItem text="About..." accelerator="Shift+F1"/>
         </Menu>
     </MenuBar>
-    <VBox fx:id="_viewVBox" spacing="10" VBox.vgrow="ALWAYS" maxHeight="Infinity">
+    <VBox spacing="10" VBox.vgrow="ALWAYS" maxHeight="Infinity">
         <padding>
             <Insets topRightBottomLeft="10"/>
         </padding>
+        <AudioListView fx:id="_audioListView" VBox.vgrow="ALWAYS" maxHeight="Infinity"/>
         <AudioControlPanel fx:id="_audioControlPanel"/>
     </VBox>
 </VBox>

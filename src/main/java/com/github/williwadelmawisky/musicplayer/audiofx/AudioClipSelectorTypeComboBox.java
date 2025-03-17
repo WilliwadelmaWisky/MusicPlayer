@@ -1,6 +1,7 @@
 package com.github.williwadelmawisky.musicplayer.audiofx;
 
 import com.github.williwadelmawisky.musicplayer.audio.*;
+import com.github.williwadelmawisky.musicplayer.fxutils.EnumComboBox;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,7 +16,7 @@ import java.util.List;
 /**
  *
  */
-public class AudioClipSelectorTypeComboBox extends ComboBox<String> {
+public class AudioClipSelectorTypeComboBox extends EnumComboBox<AudioClipSelectorType> {
 
     /**
      *
@@ -46,12 +47,7 @@ public class AudioClipSelectorTypeComboBox extends ComboBox<String> {
      *
      */
     public AudioClipSelectorTypeComboBox() {
-        super();
-
-        final List<String> nameList = Arrays.stream(AudioClipSelectorType.values()).map(Enum::name).toList();
-        final ObservableList<String> items = FXCollections.observableList(nameList);
-        setItems(items);
-        setValue(AudioClipSelectorType.ORDERED.name());
+        super(AudioClipSelectorType.class, AudioClipSelectorType.ORDERED);
         valueProperty().addListener(this::onValueChanged);
     }
 
@@ -72,11 +68,7 @@ public class AudioClipSelectorTypeComboBox extends ComboBox<String> {
      * @param oldVal
      * @param newVal
      */
-    private void onValueChanged(final ObservableValue<? extends String> observable, final String oldVal, final String newVal) {
-        if (_selectEventHandler == null)
-            return;
-
-        final AudioClipSelectorType audioClipSelectorType = AudioClipSelectorType.valueOf(newVal);
-        _selectEventHandler.handle(new SelectEvent(Event.ANY, audioClipSelectorType));
+    private void onValueChanged(final ObservableValue<? extends AudioClipSelectorType> observable, final AudioClipSelectorType oldVal, final AudioClipSelectorType newVal) {
+        if (_selectEventHandler != null) _selectEventHandler.handle(new SelectEvent(Event.ANY, newVal));
     }
 }

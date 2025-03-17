@@ -19,7 +19,7 @@ import java.util.UUID;
 /**
  *
  */
-public class SongEditPage extends VBox implements Page {
+public class AudioClipEditor extends VBox {
 
 
     @FXML private TextField _nameTextField;
@@ -30,18 +30,54 @@ public class SongEditPage extends VBox implements Page {
     private Action _onApply;
     private FetchGetHandler _fetchHandler;
 
+    /*
+    <fx:root type="SongEditPage"
+         xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+         spacing="10"
+>
+    <padding>
+        <Insets topRightBottomLeft="10"/>
+    </padding>
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" maxHeight="1000">
+        <VBox>
+            <padding>
+                <Insets topRightBottomLeft="5"/>
+            </padding>
+            <VBox spacing="5">
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Name" minWidth="80" maxWidth="80"/>
+                    <TextField promptText="Enter the songData name..." HBox.hgrow="ALWAYS" maxWidth="Infinity" fx:id="_nameTextField"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Genre" minWidth="80" maxWidth="80"/>
+                    <SearchableComboBox HBox.hgrow="ALWAYS" maxWidth="Infinity" fx:id="_genreComboBox"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Artist" minWidth="80" maxWidth="80"/>
+                    <ArtistSelector HBox.hgrow="ALWAYS" maxWidth="Infinity" fx:id="_artistSelector"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </ScrollPane>
+    <HBox spacing="5">
+        <Button text="Apply" onAction="#onApply"/>
+        <Button text="Cancel" onAction="#onCancel"/>
+    </HBox>
+</fx:root>
+     */
+
 
     /**
      * NEVER USE, EXISTS ONLY TO KEEP FXML HAPPY
      */
-    public SongEditPage() {}
+    public AudioClipEditor() {}
 
     /**
      * @param songData
      * @param fetchHandler
      * @param onApply
      */
-    public SongEditPage(final SongData songData, final FetchGetHandler fetchHandler, final Action onApply) {
+    public AudioClipEditor(final SongData songData, final FetchGetHandler fetchHandler, final Action onApply) {
         super();
 
         ResourceLoader.loadFxml("fxml/pages/SongEditPage.fxml", this);
