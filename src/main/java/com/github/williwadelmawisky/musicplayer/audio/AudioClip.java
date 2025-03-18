@@ -1,7 +1,6 @@
 package com.github.williwadelmawisky.musicplayer.audio;
 
 import java.io.File;
-import java.util.UUID;
 
 /**
  *
@@ -27,7 +26,7 @@ public class AudioClip {
     /**
      * @return
      */
-    public File getFile() { return _audioFile.getFile(); }
+    File getFile() { return _audioFile.getFile(); }
 
     /**
      * @return
@@ -51,6 +50,27 @@ public class AudioClip {
 
 
     /**
+     * @param name
+     */
+    public void setName(final String name) { _audioFile.setName(name); }
+
+    /**
+     * @param artist
+     */
+    public void setArtist(final String artist) { _audioFile.setArtist(artist); }
+
+    /**
+     * @param genre
+     */
+    public void setGenre(final Genre genre) { _audioFile.setGenre(genre); }
+
+    /**
+     * @param language
+     */
+    public void setLanguage(final Language language) { _audioFile.setLanguage(language); }
+
+
+    /**
      * @param obj
      * @return
      */
@@ -59,14 +79,14 @@ public class AudioClip {
         if (!(obj instanceof AudioClip))
             return false;
 
-        return equalsID(((AudioClip)obj)._id);
+        return equalsID(((AudioClip)obj).getID());
     }
 
     /**
      * @param id
      * @return
      */
-    public boolean equalsID(final UUID id) {
-        return _id.equals(id);
+    public boolean equalsID(final String id) {
+        return getID().equals(id);
     }
 }

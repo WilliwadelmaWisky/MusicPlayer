@@ -84,7 +84,7 @@ public class PlaylistChooser extends VBox {
      * @return
      */
     public AudioPlaylist showDialog() {
-        ModalWindow modalWindow = new ModalWindow(new Stage(), _title, this);
+        final ModalWindow modalWindow = new ModalWindow(new Stage(), _title, this);
         modalWindow.show();
         return _playlist;
     }

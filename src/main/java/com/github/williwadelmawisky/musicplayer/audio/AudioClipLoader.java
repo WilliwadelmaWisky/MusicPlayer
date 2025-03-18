@@ -44,13 +44,13 @@ public class AudioClipLoader {
 
         final String[] extensions = new String[] { ".mp3", ".wav" };
         if (Files.doesMatchExtension(file, extensions))
-            openFile(file);
+            openAudioFile(file);
     }
 
     /**
      * @param file
      */
-    public void openFile(final File file) {
+    public void openAudioFile(final File file) {
         _audioClipPlayer.getAudioClipList().clear();
         addAudioFile(file);
         _audioClipPlayer.getSelectionModel().clearAndSelect(0);

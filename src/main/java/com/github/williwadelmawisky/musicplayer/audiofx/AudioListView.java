@@ -67,6 +67,12 @@ public class AudioListView extends VBox {
 
 
     /**
+     * @return
+     */
+    public AudioClipSelectorType getSelectorType() { return _audioClipSelectorTypeComboBox.getValue(); }
+
+
+    /**
      * @param audioClipPlayer
      */
     public void bindTo(final AudioClipListPlayer audioClipPlayer) {

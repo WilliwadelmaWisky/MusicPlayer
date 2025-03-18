@@ -24,7 +24,7 @@ public class MainWindow {
 
         final Parent root = ResourceLoader.loadFxml("fxml/main_window.fxml", (MainWindowController controller) -> {
             if (file != null && file.exists())
-                controller.openUnknownFile(file);
+                controller.open(file);
         });
 
         final Scene scene = new Scene(root);

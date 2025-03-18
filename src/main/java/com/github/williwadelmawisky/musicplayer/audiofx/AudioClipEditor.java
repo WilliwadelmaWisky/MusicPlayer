@@ -1,34 +1,29 @@
 package com.github.williwadelmawisky.musicplayer.audiofx;
 
-import com.github.williwadelmawisky.musicplayer.ResourceLoader;
-import com.github.williwadelmawisky.musicplayer.database.*;
-import com.github.williwadelmawisky.musicplayer.routing.Page;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import com.github.williwadelmawisky.musicplayer.audio.AudioClip;
+import com.github.williwadelmawisky.musicplayer.audio.Genre;
+import com.github.williwadelmawisky.musicplayer.audio.Language;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.Parent;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import javafx.stage.Stage;
+import org.controlsfx.control.SearchableComboBox;
 
 /**
  *
  */
 public class AudioClipEditor extends VBox {
 
+    private final ListView<HBox> _listView;
+    private final TextField _nameTextField;
+    private final TextField _artistTextField;
+    private final SearchableComboBox<Genre> _genreComboBox;
+    private final SearchableComboBox<Language> _languageComboBox;
 
-    @FXML private TextField _nameTextField;
-    @FXML private ComboBox<String> _genreComboBox;
-    @FXML private ArtistSelector _artistSelector;
-
-    private SongData _songData;
-    private Action _onApply;
-    private FetchGetHandler _fetchHandler;
+    private String _title;
+    private AudioClip _audioClip;
 
     /*
     <fx:root type="SongEditPage"
@@ -68,82 +63,62 @@ public class AudioClipEditor extends VBox {
 
 
     /**
-     * NEVER USE, EXISTS ONLY TO KEEP FXML HAPPY
+     *
      */
-    public AudioClipEditor() {}
-
-    /**
-     * @param songData
-     * @param fetchHandler
-     * @param onApply
-     */
-    public AudioClipEditor(final SongData songData, final FetchGetHandler fetchHandler, final Action onApply) {
+    public AudioClipEditor() {
         super();
 
-        ResourceLoader.loadFxml("fxml/pages/SongEditPage.fxml", this);
+        _listView = new ListView<>();
 
-        _songData = songData;
-        _onApply = onApply;
-        _fetchHandler = fetchHandler;
+        _nameTextField = new TextField();
 
-        _nameTextField.setText(_songData.getName());
+        _artistTextField = new TextField();
 
-        Iterable<ArtistData> artists = fetchHandler.fetchGET(Database.TableType.ARTIST);
-        _artistSelector.setItems(artists);
-        _artistSelector.setValue(_songData.getArtistID());
+        _genreComboBox = new SearchableComboBox<>();
+        _genreComboBox.getItems().addAll(Genre.values());
 
-        List<String> values = Arrays.stream(Genre.values()).map(Enum::name).toList();
-        ObservableList<String> itemList = FXCollections.observableList(values);
-        _genreComboBox.setItems(itemList);
-        _genreComboBox.setValue(songData.getGenre().name());
+        _languageComboBox = new SearchableComboBox<>();
+        _languageComboBox.getItems().addAll(Language.values());
+    }
+
+    /**
+     * @param title
+     */
+    public AudioClipEditor(final String title) {
+        this();
+        setTitle(title);
     }
 
     /**
      * @param e
      */
-    @FXML
     private void onApply(ActionEvent e) {
-        final String songName = _nameTextField.getText().trim();
-        if (songName.isEmpty())
+        final String name = _nameTextField.getText().trim();
+        final String artist = _artistTextField.getText().trim();
+        final Genre genre = _genreComboBox.getValue();
+        final Language language = _languageComboBox.getValue();
+
+        if (name.isEmpty() || artist.isEmpty() || genre == null || language == null)
             return;
 
-        final UUID artistID = _artistSelector.getValue();
-        if (artistID == null)
-            return;
-
-        final Genre genre = Genre.valueOf(_genreComboBox.getValue());
-
-        _songData.setName(songName);
-        _songData.setArtistID(artistID);
-        _songData.setGenre(genre);
-
-        _onApply.invoke();
-    }
-
-    /**
-     * @param e
-     */
-    @FXML
-    private void onCancel(ActionEvent e) {
-
+        _audioClip.setName(name);
+        _audioClip.setArtist(artist);
+        _audioClip.setGenre(genre);
+        _audioClip.setLanguage(language);
     }
 
 
     /**
-     * @return
+     * @param title
      */
-    @Override
-    public Parent getRoot() {
-        return this;
-    }
+    public void setTitle(final String title) { _title = title; }
 
-    @Override
-    public void onLoad() {
 
-    }
-
-    @Override
-    public void onUnload() {
-
+    /**
+     *
+     */
+    public void showDialog() {
+        final ModalWindow modalWindow = new ModalWindow(new Stage(), _title, this);
+        modalWindow.show();
     }
 }

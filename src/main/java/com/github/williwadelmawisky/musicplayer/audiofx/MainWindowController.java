@@ -1,7 +1,6 @@
 package com.github.williwadelmawisky.musicplayer.audiofx;
 
 import com.github.williwadelmawisky.musicplayer.audio.*;
-import com.github.williwadelmawisky.musicplayer.utils.Files;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.stage.DirectoryChooser;
@@ -29,9 +28,19 @@ public class MainWindowController {
     private void initialize() {
         _audioClipPlayer = new AudioClipListPlayer();
         _homeDirectory = Paths.get(System.getProperty("user.home"), ".WilliwadelmaWisky", "MusicPlayer").toFile();
+        if (!_homeDirectory.exists()) _homeDirectory.mkdirs();
 
         _audioListView.bindTo(_audioClipPlayer);
         _audioControlPanel.bindTo(_audioClipPlayer);
+    }
+
+
+    /**
+     * @param file
+     */
+    public void open(final File file) {
+        final AudioClipLoader audioClipLoader = new AudioClipLoader(_audioClipPlayer);
+        audioClipLoader.openUnknownFile(file);
     }
 
 
@@ -62,7 +71,7 @@ public class MainWindowController {
             return;
 
         final AudioClipLoader audioClipLoader = new AudioClipLoader(_audioClipPlayer);
-        audioClipLoader.openFile(file);
+        audioClipLoader.openAudioFile(file);
     }
 
     /**
@@ -147,7 +156,7 @@ public class MainWindowController {
      */
     @FXML
     private void onNextSongButtonClicked(ActionEvent e) {
-        final AudioClipSelectorType audioClipSelectorType = AudioClipSelectorType.valueOf(_audioClipSelectorTypeComboBox.getValue());
+        final AudioClipSelectorType audioClipSelectorType = _audioListView.getSelectorType();
         audioClipSelectorType.getValue().next(_audioClipPlayer.getSelectionModel());
     }
 
@@ -156,7 +165,7 @@ public class MainWindowController {
      */
     @FXML
     private void onPreviousSongButtonClicked(ActionEvent e) {
-        final AudioClipSelectorType audioClipSelectorType = AudioClipSelectorType.valueOf(_audioClipSelectorTypeComboBox.getValue());
+        final AudioClipSelectorType audioClipSelectorType =  _audioListView.getSelectorType();
         audioClipSelectorType.getValue().previous(_audioClipPlayer.getSelectionModel());
     }
 
@@ -167,8 +176,8 @@ public class MainWindowController {
     @FXML
     private void onIncreaseVolumeButtonClicked(ActionEvent e) {
         final double incrementPercent = 5;
-        final double volume = ((int)(_audioClipPlayer.getVolumeProperty().getValue() * 100 / incrementPercent) + 1) * incrementPercent / 100;
-        _audioClipPlayer.getVolumeProperty().setValue(volume);
+        final double volume = ((int)(_audioClipPlayer.getVolume() * 100 / incrementPercent) + 1) * incrementPercent / 100;
+        _audioClipPlayer.setVolume(volume);
     }
 
     /**
@@ -177,8 +186,8 @@ public class MainWindowController {
     @FXML
     private void onDecreaseVolumeButtonClicked(ActionEvent e) {
         final double decrementPercent = 5;
-        final double volume = ((int)(_audioClipPlayer.getVolumeProperty().getValue() * 100 / decrementPercent) - 1) * decrementPercent / 100;
-        _audioClipPlayer.getVolumeProperty().setValue(volume);
+        final double volume = ((int)(_audioClipPlayer.getVolume() * 100 / decrementPercent) - 1) * decrementPercent / 100;
+        _audioClipPlayer.setVolume(volume);
     }
 
     /**
@@ -187,6 +196,6 @@ public class MainWindowController {
     @FXML
     private void onMuteVolumeButtonClicked(ActionEvent e) {
         final double volume = 0;
-        _audioClipPlayer.getVolumeProperty().setValue(volume);
+        _audioClipPlayer.setVolume(volume);
     }
 }
