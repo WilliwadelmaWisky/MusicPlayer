@@ -17,8 +17,8 @@
         <Menu text="Media">
             <MenuItem text="New Playlist" onAction="#onNewPlaylistButtonClicked" accelerator="Shortcut+N"/>
             <SeparatorMenuItem/>
-            <MenuItem text="Save" accelerator="Shortcut+S"/>
-            <MenuItem text="Save As..." accelerator="Shortcut+Shift+S"/>
+            <MenuItem text="Save" onAction="#onSaveButtonClicked" accelerator="Shortcut+S"/>
+            <MenuItem text="Save As..." onAction="#onSaveAsButtonClicked" accelerator="Shortcut+Shift+S"/>
             <SeparatorMenuItem/>
             <MenuItem text="Open File..." onAction="#onOpenFileButtonClicked" accelerator="Shortcut+F"/>
             <MenuItem text="Open Directory..." onAction="#onOpenDirectoryButtonClicked" accelerator="Shortcut+D"/>
@@ -27,15 +27,18 @@
             <MenuItem text="Import Playlist..." onAction="#onImportPlaylistClicked"/>
             <MenuItem text="Export Playlist..." onAction="#onExportPlaylistClicked"/>
             <SeparatorMenuItem/>
-            <MenuItem text="Quit" accelerator="Shortcut+Q"/>
+            <MenuItem text="Quit" onAction="#onQuitButtonClicked" accelerator="Shortcut+Q"/>
         </Menu>
         <Menu text="Playback">
             <MenuItem text="Play" onAction="#onPlayButtonClicked"/>
             <MenuItem text="Pause" onAction="#onPauseButtonClicked"/>
             <MenuItem text="Stop" onAction="#onStopButtonClicked"/>
             <SeparatorMenuItem/>
-            <MenuItem text="Next Song" onAction="#onNextSongButtonClicked"/>
-            <MenuItem text="Previous Song" onAction="#onPreviousSongButtonClicked"/>
+            <MenuItem text="Forward" onAction="#onForwardButtonClicked"/>
+            <MenuItem text="Backward" onAction="#onBackwardButtonClicked"/>
+            <SeparatorMenuItem/>
+            <MenuItem text="Next" onAction="#onNextButtonClicked"/>
+            <MenuItem text="Previous" onAction="#onPreviousButtonClicked"/>
         </Menu>
         <Menu text="Audio">
             <MenuItem text="Increase Volume" onAction="#onIncreaseVolumeButtonClicked"/>

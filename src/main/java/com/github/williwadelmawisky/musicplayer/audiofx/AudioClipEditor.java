@@ -101,10 +101,10 @@ public class AudioClipEditor extends VBox {
         if (name.isEmpty() || artist.isEmpty() || genre == null || language == null)
             return;
 
-        _audioClip.setName(name);
-        _audioClip.setArtist(artist);
-        _audioClip.setGenre(genre);
-        _audioClip.setLanguage(language);
+        _audioClip.getName().setValue(name);
+        _audioClip.getArtist().setValue(artist);
+        _audioClip.getGenre().setValue(genre);
+        _audioClip.getLanguage().setValue(language);
     }
 
 

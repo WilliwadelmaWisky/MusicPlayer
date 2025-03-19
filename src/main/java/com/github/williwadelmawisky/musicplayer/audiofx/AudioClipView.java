@@ -2,6 +2,7 @@ package com.github.williwadelmawisky.musicplayer.audiofx;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
 import com.github.williwadelmawisky.musicplayer.audio.AudioClip;
+import com.github.williwadelmawisky.musicplayer.utils.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -32,11 +33,10 @@ public class AudioClipView extends HBox {
         imageView.setImage(ResourceLoader.loadImage("img/logo.png"));
         this.getChildren().add(imageView);
 
-        _nameLabel = new Label();
+        _nameLabel = new Label("");
         HBox.setHgrow(_nameLabel, Priority.ALWAYS);
         _nameLabel.setMaxWidth(Double.POSITIVE_INFINITY);
 
-        setAudioClip(null);
         setAlignment(Pos.CENTER_LEFT);
         setSpacing(5);
         setOnContextMenuRequested(this::onContextMenuRequested);
@@ -62,6 +62,10 @@ public class AudioClipView extends HBox {
      */
     public void setAudioClip(final AudioClip audioClip) {
         _audioClip = audioClip;
+
+        audioClip.getName().OnChanged.addListener(this::onAudioClipNameChanged);
+        audioClip.getArtist().OnChanged.addListener(this::onAudioClipArtistChanged);
+
         updateView(audioClip);
     }
 
@@ -70,15 +74,27 @@ public class AudioClipView extends HBox {
      * @param audioClip
      */
     private void updateView(final AudioClip audioClip) {
-        if (audioClip == null) {
-            _nameLabel.setText("");
-            return;
-        }
-
-        final String name = audioClip.getName();
-        final String artist = audioClip.getArtist();
+        final String name = audioClip.getName().getValue();
+        final String artist = audioClip.getArtist().getValue();
         final String text = artist.isEmpty() ? name : name + " - " + artist;
         _nameLabel.setText(text);
+    }
+
+
+    /**
+     * @param sender
+     * @param args
+     */
+    private void onAudioClipNameChanged(final Object sender, final ObservableValue.OnChangedEventArgs<String> args) {
+        updateView(_audioClip);
+    }
+
+    /**
+     * @param sender
+     * @param args
+     */
+    private void onAudioClipArtistChanged(final Object sender, final ObservableValue.OnChangedEventArgs<String> args) {
+        updateView(_audioClip);
     }
 
 

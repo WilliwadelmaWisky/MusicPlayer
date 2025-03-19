@@ -190,8 +190,8 @@ public class AudioListView extends VBox {
     private void onSearch(final SearchField.SearchEvent e) {
         _listView.getItems().clear();
         _audioClipPlayer.getAudioClipList().forEach(audioClip -> {
-            final boolean matchName = audioClip.getName().toLowerCase().contains(e.getSearchString());
-            final boolean matchArtist = audioClip.getArtist().toLowerCase().contains(e.getSearchString());
+            final boolean matchName = audioClip.getName().getValue().toLowerCase().contains(e.getSearchString());
+            final boolean matchArtist = audioClip.getArtist().getValue().toLowerCase().contains(e.getSearchString());
 
             if (matchName || matchArtist) {
                 final AudioClipView audioClipView = new AudioClipView(audioClip);

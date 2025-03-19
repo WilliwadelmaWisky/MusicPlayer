@@ -17,8 +17,20 @@ public class MainWindowController {
     @FXML private AudioListView _audioListView;
     @FXML private AudioControlPanel _audioControlPanel;
 
+    private final File _homeDirectory;
     private AudioClipListPlayer _audioClipPlayer;
-    private File _homeDirectory;
+    private String _playlistName;
+
+
+    /**
+     *
+     */
+    public MainWindowController() {
+        _playlistName = null;
+        _homeDirectory = Paths.get(System.getProperty("user.home"), ".WilliwadelmaWisky", "MusicPlayer").toFile();
+        if (!_homeDirectory.exists())
+            _homeDirectory.mkdirs();
+    }
 
 
     /**
@@ -27,8 +39,6 @@ public class MainWindowController {
     @FXML
     private void initialize() {
         _audioClipPlayer = new AudioClipListPlayer();
-        _homeDirectory = Paths.get(System.getProperty("user.home"), ".WilliwadelmaWisky", "MusicPlayer").toFile();
-        if (!_homeDirectory.exists()) _homeDirectory.mkdirs();
 
         _audioListView.bindTo(_audioClipPlayer);
         _audioControlPanel.bindTo(_audioClipPlayer);
@@ -41,6 +51,7 @@ public class MainWindowController {
     public void open(final File file) {
         final AudioClipLoader audioClipLoader = new AudioClipLoader(_audioClipPlayer);
         audioClipLoader.openUnknownFile(file);
+        _playlistName = null;
     }
 
 
@@ -48,8 +59,35 @@ public class MainWindowController {
      * @param e
      */
     @FXML
-    private void onNewPlaylistButtonClicked(ActionEvent e) {
+    private void onNewPlaylistButtonClicked(final ActionEvent e) {
         _audioClipPlayer.getAudioClipList().clear();
+        _playlistName = null;
+    }
+
+    /**
+     * @param e
+     */
+    @FXML
+    private void onSaveButtonClicked(final ActionEvent e) {
+        if (_playlistName == null) {
+            onSaveAsButtonClicked(e);
+            return;
+        }
+
+        //final File saveFile = Paths.get(_homeDirectory.getAbsolutePath(), _playlistName + ".txt").toFile();
+        //Files.write(saveFile, "");
+    }
+
+    /**
+     * @param e
+     */
+    @FXML
+    private void onSaveAsButtonClicked(final ActionEvent e) {
+        final PlaylistEditor playlistEditor = new PlaylistEditor();
+        playlistEditor.setTitle("Save a playlist");
+        playlistEditor.setInitialDirectory(_homeDirectory);
+
+        playlistEditor.showDialog();
     }
 
     /**
@@ -72,6 +110,7 @@ public class MainWindowController {
 
         final AudioClipLoader audioClipLoader = new AudioClipLoader(_audioClipPlayer);
         audioClipLoader.openAudioFile(file);
+        _playlistName = null;
     }
 
     /**
@@ -92,6 +131,7 @@ public class MainWindowController {
 
         final AudioClipLoader audioClipLoader = new AudioClipLoader(_audioClipPlayer);
         audioClipLoader.openDirectory(directory);
+        _playlistName = null;
     }
 
     /**
@@ -108,6 +148,7 @@ public class MainWindowController {
 
         final AudioClipLoader audioClipLoader = new AudioClipLoader(_audioClipPlayer);
         audioClipLoader.openPlaylist(playlist);
+        _playlistName = playlist.getName();
     }
 
     /**
@@ -123,6 +164,14 @@ public class MainWindowController {
      */
     @FXML
     private void onExportPlaylistClicked(final ActionEvent e) {
+
+    }
+
+    /**
+     * @param e
+     */
+    @FXML
+    private void onQuitButtonClicked(final ActionEvent e) {
 
     }
 
@@ -155,7 +204,23 @@ public class MainWindowController {
      * @param e
      */
     @FXML
-    private void onNextSongButtonClicked(ActionEvent e) {
+    private void onForwardButtonClicked(final ActionEvent e) {
+
+    }
+
+    /**
+     * @param e
+     */
+    @FXML
+    private void onBackwardButtonClicked(final ActionEvent e) {
+
+    }
+
+    /**
+     * @param e
+     */
+    @FXML
+    private void onNextButtonClicked(final ActionEvent e) {
         final AudioClipSelectorType audioClipSelectorType = _audioListView.getSelectorType();
         audioClipSelectorType.getValue().next(_audioClipPlayer.getSelectionModel());
     }
@@ -164,7 +229,7 @@ public class MainWindowController {
      * @param e
      */
     @FXML
-    private void onPreviousSongButtonClicked(ActionEvent e) {
+    private void onPreviousButtonClicked(final ActionEvent e) {
         final AudioClipSelectorType audioClipSelectorType =  _audioListView.getSelectorType();
         audioClipSelectorType.getValue().previous(_audioClipPlayer.getSelectionModel());
     }
@@ -174,7 +239,7 @@ public class MainWindowController {
      * @param e
      */
     @FXML
-    private void onIncreaseVolumeButtonClicked(ActionEvent e) {
+    private void onIncreaseVolumeButtonClicked(final ActionEvent e) {
         final double incrementPercent = 5;
         final double volume = ((int)(_audioClipPlayer.getVolume() * 100 / incrementPercent) + 1) * incrementPercent / 100;
         _audioClipPlayer.setVolume(volume);
@@ -184,7 +249,7 @@ public class MainWindowController {
      * @param e
      */
     @FXML
-    private void onDecreaseVolumeButtonClicked(ActionEvent e) {
+    private void onDecreaseVolumeButtonClicked(final ActionEvent e) {
         final double decrementPercent = 5;
         final double volume = ((int)(_audioClipPlayer.getVolume() * 100 / decrementPercent) - 1) * decrementPercent / 100;
         _audioClipPlayer.setVolume(volume);
@@ -194,7 +259,7 @@ public class MainWindowController {
      * @param e
      */
     @FXML
-    private void onMuteVolumeButtonClicked(ActionEvent e) {
+    private void onMuteVolumeButtonClicked(final ActionEvent e) {
         final double volume = 0;
         _audioClipPlayer.setVolume(volume);
     }

@@ -2,6 +2,7 @@ package com.github.williwadelmawisky.musicplayer.audiofx;
 
 import com.github.williwadelmawisky.musicplayer.audio.AudioClipListPlayer;
 import com.github.williwadelmawisky.musicplayer.audio.AudioClipPlayer;
+import com.github.williwadelmawisky.musicplayer.utils.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -93,7 +94,27 @@ public class AudioControlPanel extends VBox {
      * @param args
      */
     private void onAudioClipStarted(final Object sender, final AudioClipPlayer.OnAudioClipStartedEventArgs args) {
-        _titleLabel.setText(args.AudioClip.getName());
-        _artistLabel.setText(args.AudioClip.getArtist());
+        _titleLabel.setText(args.AudioClip.getName().getValue());
+        _artistLabel.setText(args.AudioClip.getArtist().getValue());
+
+        args.AudioClip.getName().OnChanged.addListener(this::onAudioClipNameChanged);
+        args.AudioClip.getArtist().OnChanged.addListener(this::onAudioClipArtistChanged);
+    }
+
+
+    /**
+     * @param sender
+     * @param args
+     */
+    private void onAudioClipNameChanged(final Object sender, final ObservableValue.OnChangedEventArgs<String> args) {
+        _titleLabel.setText(args.Value);
+    }
+
+    /**
+     * @param sender
+     * @param args
+     */
+    private void onAudioClipArtistChanged(final Object sender, final ObservableValue.OnChangedEventArgs<String> args) {
+        _artistLabel.setText(args.Value);
     }
 }
