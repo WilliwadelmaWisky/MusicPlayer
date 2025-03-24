@@ -14,7 +14,7 @@ import java.nio.file.Paths;
  */
 public class MainWindowController {
 
-    @FXML private AudioListView _audioListView;
+    @FXML private AudioClipListView _audioClipListView;
     @FXML private AudioControlPanel _audioControlPanel;
 
     private final File _homeDirectory;
@@ -40,7 +40,7 @@ public class MainWindowController {
     private void initialize() {
         _audioClipPlayer = new AudioClipListPlayer();
 
-        _audioListView.bindTo(_audioClipPlayer);
+        _audioClipListView.bindTo(_audioClipPlayer);
         _audioControlPanel.bindTo(_audioClipPlayer);
     }
 
@@ -221,7 +221,7 @@ public class MainWindowController {
      */
     @FXML
     private void onNextButtonClicked(final ActionEvent e) {
-        final AudioClipSelectorType audioClipSelectorType = _audioListView.getSelectorType();
+        final AudioClipSelectorType audioClipSelectorType = _audioClipListView.getSelectorType();
         audioClipSelectorType.getValue().next(_audioClipPlayer.getSelectionModel());
     }
 
@@ -230,7 +230,7 @@ public class MainWindowController {
      */
     @FXML
     private void onPreviousButtonClicked(final ActionEvent e) {
-        final AudioClipSelectorType audioClipSelectorType =  _audioListView.getSelectorType();
+        final AudioClipSelectorType audioClipSelectorType =  _audioClipListView.getSelectorType();
         audioClipSelectorType.getValue().previous(_audioClipPlayer.getSelectionModel());
     }
 

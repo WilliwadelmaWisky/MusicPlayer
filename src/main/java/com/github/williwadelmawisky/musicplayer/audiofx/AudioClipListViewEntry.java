@@ -14,7 +14,7 @@ import javafx.scene.layout.*;
 /**
  *
  */
-public class AudioClipView extends HBox {
+public class AudioClipListViewEntry extends HBox {
 
     private final Label _nameLabel;
     private AudioClip _audioClip;
@@ -23,7 +23,7 @@ public class AudioClipView extends HBox {
     /**
      *
      */
-    public AudioClipView() {
+    public AudioClipListViewEntry() {
         super();
 
         final ImageView imageView = new ImageView();
@@ -33,7 +33,7 @@ public class AudioClipView extends HBox {
         imageView.setImage(ResourceLoader.loadImage("img/logo.png"));
         this.getChildren().add(imageView);
 
-        _nameLabel = new Label("");
+        _nameLabel = new Label();
         HBox.setHgrow(_nameLabel, Priority.ALWAYS);
         _nameLabel.setMaxWidth(Double.POSITIVE_INFINITY);
 
@@ -45,7 +45,7 @@ public class AudioClipView extends HBox {
     /**
      * @param audioClip
      */
-    public AudioClipView(final AudioClip audioClip) {
+    public AudioClipListViewEntry(final AudioClip audioClip) {
         this();
         setAudioClip(audioClip);
     }
@@ -67,6 +67,17 @@ public class AudioClipView extends HBox {
         audioClip.getArtist().OnChanged.addListener(this::onAudioClipArtistChanged);
 
         updateView(audioClip);
+    }
+
+    /**
+     *
+     */
+    public void destroy() {
+        if (_audioClip == null)
+            return;
+
+        _audioClip.getName().OnChanged.removeListener(this::onAudioClipNameChanged);
+        _audioClip.getArtist().OnChanged.removeListener(this::onAudioClipArtistChanged);
     }
 
 

@@ -23,9 +23,9 @@ import java.util.*;
 /**
  *
  */
-public class AudioListView extends VBox {
+public class AudioClipListView extends VBox {
 
-    private final ListView<AudioClipView> _listView;
+    private final ListView<AudioClipListViewEntry> _listView;
     private final AudioClipSelectorTypeComboBox _audioClipSelectorTypeComboBox;
 
     private AudioClipListPlayer _audioClipPlayer;
@@ -34,7 +34,7 @@ public class AudioListView extends VBox {
     /**
      *
      */
-    public AudioListView() {
+    public AudioClipListView() {
         super();
         setSpacing(5);
 
@@ -89,8 +89,8 @@ public class AudioListView extends VBox {
      * @param args
      */
     private void onAudioClipAdded(final Object sender, final ObservableList.OnItemAddedEventArgs<AudioClip> args) {
-        final AudioClipView audioClipView = new AudioClipView(args.Item);
-        _listView.getItems().add(audioClipView);
+        final AudioClipListViewEntry audioClipListViewEntry = new AudioClipListViewEntry(args.Item);
+        _listView.getItems().add(audioClipListViewEntry);
     }
 
     /**
@@ -98,10 +98,11 @@ public class AudioListView extends VBox {
      * @param args
      */
     private void onAudioClipRemoved(final Object sender, final ObservableList.OnItemRemovedEventArgs<AudioClip> args) {
-        int index = Lists.indexFunc(_listView.getItems(), audioClipView -> args.Item.equals(audioClipView.getAudioClip()));
+        int index = Lists.indexFunc(_listView.getItems(), audioClipListViewEntry -> args.Item.equals(audioClipListViewEntry.getAudioClip()));
         if (index == -1)
             return;
 
+        _listView.getItems().get(index).destroy();
         _listView.getItems().remove(index);
     }
 
@@ -110,6 +111,7 @@ public class AudioListView extends VBox {
      * @param args
      */
     private void onAudioClipListCleared(final Object sender, final ObservableList.OnClearedEventArgs args) {
+        _listView.getItems().forEach(AudioClipListViewEntry::destroy);
         _listView.getItems().clear();
     }
 
@@ -118,10 +120,11 @@ public class AudioListView extends VBox {
      * @param args
      */
     private void onAudioClipListSorted(final Object sender, final ObservableList.OnSortedEventArgs args) {
+        _listView.getItems().forEach(AudioClipListViewEntry::destroy);
         _listView.getItems().clear();
         _audioClipPlayer.getAudioClipList().forEach(audioClip -> {
-            final AudioClipView audioClipView = new AudioClipView(audioClip);
-            _listView.getItems().add(audioClipView);
+            final AudioClipListViewEntry audioClipListViewEntry = new AudioClipListViewEntry(audioClip);
+            _listView.getItems().add(audioClipListViewEntry);
         });
     }
 
@@ -130,7 +133,7 @@ public class AudioListView extends VBox {
      * @param args
      */
     private void onAudioClipSelected(final Object sender, final SelectionModel.OnSelectedEventArgs<AudioClip> args) {
-        int index = Lists.indexFunc(_listView.getItems(), audioClipView -> args.Item.equals(audioClipView.getAudioClip()));
+        int index = Lists.indexFunc(_listView.getItems(), audioClipListViewEntry -> args.Item.equals(audioClipListViewEntry.getAudioClip()));
         if (index == -1)
             return;
 
@@ -142,11 +145,11 @@ public class AudioListView extends VBox {
      * @param e
      */
     private void onListViewClicked(final MouseEvent e) {
-        final AudioClipView audioClipView = _listView.getSelectionModel().getSelectedItem();
-        if (audioClipView == null)
+        final AudioClipListViewEntry audioClipListViewEntry = _listView.getSelectionModel().getSelectedItem();
+        if (audioClipListViewEntry == null)
             return;
 
-        final int index = _audioClipPlayer.getAudioClipList().indexOf(audioClip -> audioClip.equals(audioClipView.getAudioClip()));
+        final int index = _audioClipPlayer.getAudioClipList().indexOf(audioClip -> audioClip.equals(audioClipListViewEntry.getAudioClip()));
         _audioClipPlayer.getSelectionModel().clearAndSelect(index);
     }
 
@@ -173,14 +176,14 @@ public class AudioListView extends VBox {
     /**
      * @param e
      */
-    private void onShuffleButtonClicked(ActionEvent e) {
+    private void onShuffleButtonClicked(final ActionEvent e) {
         _audioClipPlayer.getAudioClipList().shuffle();
     }
 
     /**
      * @param e
      */
-    private void onSequencerChanged(AudioClipSelectorTypeComboBox.SelectEvent e) {
+    private void onSequencerChanged(final AudioClipSelectorTypeComboBox.SelectEvent e) {
         _audioClipPlayer.setAudioClipSelectorType(e.getAudioClipSelectorType());
     }
 
@@ -188,14 +191,15 @@ public class AudioListView extends VBox {
      * @param e
      */
     private void onSearch(final SearchField.SearchEvent e) {
+        _listView.getItems().forEach(AudioClipListViewEntry::destroy);
         _listView.getItems().clear();
         _audioClipPlayer.getAudioClipList().forEach(audioClip -> {
-            final boolean matchName = audioClip.getName().getValue().toLowerCase().contains(e.getSearchString());
-            final boolean matchArtist = audioClip.getArtist().getValue().toLowerCase().contains(e.getSearchString());
+            final boolean matchName = audioClip.getName().getValue().toLowerCase().contains(e.getSearchString().toLowerCase());
+            final boolean matchArtist = audioClip.getArtist().getValue().toLowerCase().contains(e.getSearchString().toLowerCase());
 
             if (matchName || matchArtist) {
-                final AudioClipView audioClipView = new AudioClipView(audioClip);
-                _listView.getItems().add(audioClipView);
+                final AudioClipListViewEntry audioClipListViewEntry = new AudioClipListViewEntry(audioClip);
+                _listView.getItems().add(audioClipListViewEntry);
             }
         });
     }

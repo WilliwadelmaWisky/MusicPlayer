@@ -1,18 +1,20 @@
 package com.github.williwadelmawisky.musicplayer.audiofx;
 
 import com.github.williwadelmawisky.musicplayer.ResourceLoader;
-import com.github.williwadelmawisky.musicplayer.audio.AudioClip;
 import com.github.williwadelmawisky.musicplayer.audio.AudioPlaylist;
 import javafx.geometry.Pos;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 
 /**
  *
  */
-public class AudioPlaylistView extends HBox {
+public class AudioPlaylistListViewEntry extends HBox {
 
     private final Label _nameLabel;
     private AudioPlaylist _audioPlaylist;
@@ -21,7 +23,7 @@ public class AudioPlaylistView extends HBox {
     /**
      *
      */
-    public AudioPlaylistView() {
+    public AudioPlaylistListViewEntry() {
         super();
 
         final ImageView imageView = new ImageView();
@@ -35,15 +37,15 @@ public class AudioPlaylistView extends HBox {
         HBox.setHgrow(_nameLabel, Priority.ALWAYS);
         _nameLabel.setMaxWidth(Double.POSITIVE_INFINITY);
 
-        setAudioPlaylist(null);
-        setAlignment(Pos.CENTER_LEFT);
         setSpacing(5);
+        setAlignment(Pos.CENTER_LEFT);
+        setOnContextMenuRequested(this::onContextMenuRequested);
     }
 
     /**
      * @param audioPlaylist
      */
-    public AudioPlaylistView(final AudioPlaylist audioPlaylist) {
+    public AudioPlaylistListViewEntry(final AudioPlaylist audioPlaylist) {
         this();
         setAudioPlaylist(audioPlaylist);
     }
@@ -60,15 +62,29 @@ public class AudioPlaylistView extends HBox {
      */
     public void setAudioPlaylist(final AudioPlaylist audioPlaylist) {
         _audioPlaylist = audioPlaylist;
-        updateView(audioPlaylist);
+        _nameLabel.setText(audioPlaylist.getName());
+    }
+
+    /**
+     *
+     */
+    public void destroy() {
+
     }
 
 
     /**
-     * @param audioPlaylist
+     * @param e
      */
-    private void updateView(final AudioPlaylist audioPlaylist) {
-        final String text = audioPlaylist != null ? audioPlaylist.getName() : "";
-        _nameLabel.setText(text);
+    private void onContextMenuRequested(final ContextMenuEvent e) {
+        final MenuItem editMenuItem = new MenuItem("Edit");
+        editMenuItem.setOnAction(actionEvent -> System.out.println("Edit"));
+
+        final MenuItem deleteMenuItem = new MenuItem("Delete");
+        deleteMenuItem.setOnAction(actionEvent -> System.out.println("Delete"));
+
+        final ContextMenu contextMenu = new ContextMenu();
+        contextMenu.getItems().addAll(editMenuItem, deleteMenuItem);
+        contextMenu.show(this, 0, 0);
     }
 }

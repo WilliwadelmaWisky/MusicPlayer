@@ -10,7 +10,7 @@ import java.awt.*;
 /**
  *
  */
-public class AudioProgressBar extends ProgressBar {
+public class AudioPlaybackProgressBar extends ProgressBar {
 
     private AudioClipPlayer _audioClipPlayer;
 
@@ -18,11 +18,11 @@ public class AudioProgressBar extends ProgressBar {
     /**
      *
      */
-    public AudioProgressBar() {
+    public AudioPlaybackProgressBar() {
         super();
 
-        updateView(0);
         this.setOnMouseClicked(this::onClicked);
+        this.setProgress(0);
     }
 
 
@@ -31,7 +31,6 @@ public class AudioProgressBar extends ProgressBar {
      */
     public void bindTo(final AudioClipPlayer audioClipPlayer) {
         _audioClipPlayer = audioClipPlayer;
-        updateView(0);
         audioClipPlayer.OnProgressUpdated.addListener(this::onProgressChanged);
     }
 
@@ -41,23 +40,20 @@ public class AudioProgressBar extends ProgressBar {
      * @param args
      */
     private void onProgressChanged(final Object sender, final AudioClipPlayer.OnProgressUpdatedEventArgs args) {
-        updateView(args.Progress);
+        setProgress(args.Progress);
     }
+
 
     /**
      * @param e
      */
     private void onClicked(final MouseEvent e) {
+        if (_audioClipPlayer == null)
+            return;
+
         final double mouseX = MouseInfo.getPointerInfo().getLocation().getX();
         final Bounds progressBarBounds = this.localToScreen(this.getBoundsInLocal());
         final double progress = (mouseX - progressBarBounds.getMinX()) / (progressBarBounds.getMaxX() - progressBarBounds.getMinX());
         _audioClipPlayer.rewind(progress);
-    }
-
-    /**
-     * @param progress
-     */
-    private void updateView(final double progress) {
-        setProgress(progress);
     }
 }

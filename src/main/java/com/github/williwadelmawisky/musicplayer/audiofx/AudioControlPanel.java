@@ -17,9 +17,11 @@ import javafx.scene.layout.VBox;
 public class AudioControlPanel extends VBox {
 
     private final Label _titleLabel, _artistLabel;
-    private final AudioProgressView _audioProgressView;
-    private final AudioButtonView _audioButtonView;
+    private final AudioPlaybackProgressView _audioPlaybackProgressView;
+    private final AudioPlaybackControlView _audioPlaybackControlView;
     private final VolumeSliderView _volumeSliderView;
+
+    private AudioClipListPlayer _audioClipPlayer;
 
 
     /**
@@ -28,10 +30,10 @@ public class AudioControlPanel extends VBox {
     public AudioControlPanel() {
         super();
 
-        _audioProgressView = new AudioProgressView();
-        _audioProgressView.setAlignment(Pos.BOTTOM_LEFT);
-        _audioProgressView.setSpacing(5);
-        this.getChildren().add(_audioProgressView);
+        _audioPlaybackProgressView = new AudioPlaybackProgressView();
+        _audioPlaybackProgressView.setAlignment(Pos.BOTTOM_LEFT);
+        _audioPlaybackProgressView.setSpacing(5);
+        this.getChildren().add(_audioPlaybackProgressView);
 
         final HBox hbox = new HBox();
         hbox.setSpacing(10);
@@ -54,11 +56,11 @@ public class AudioControlPanel extends VBox {
         _artistLabel = new Label();
         vbox.getChildren().add(_artistLabel);
 
-        _audioButtonView = new AudioButtonView();
-        _audioButtonView.setAlignment(Pos.CENTER);
-        HBox.setHgrow(_audioButtonView, Priority.ALWAYS);
-        _audioButtonView.setMaxWidth(Double.POSITIVE_INFINITY);
-        hbox.getChildren().add(_audioButtonView);
+        _audioPlaybackControlView = new AudioPlaybackControlView();
+        _audioPlaybackControlView.setAlignment(Pos.CENTER);
+        HBox.setHgrow(_audioPlaybackControlView, Priority.ALWAYS);
+        _audioPlaybackControlView.setMaxWidth(Double.POSITIVE_INFINITY);
+        hbox.getChildren().add(_audioPlaybackControlView);
 
         _volumeSliderView = new VolumeSliderView();
         _volumeSliderView.setAlignment(Pos.CENTER_LEFT);
@@ -81,11 +83,12 @@ public class AudioControlPanel extends VBox {
      * @param audioClipPlayer
      */
     public void bindTo(final AudioClipListPlayer audioClipPlayer) {
-        _audioProgressView.bindTo(audioClipPlayer);
-        _volumeSliderView.bindTo(audioClipPlayer);
-        _audioButtonView.bindTo(audioClipPlayer);
-
+        _audioClipPlayer = audioClipPlayer;
         audioClipPlayer.OnAudioClipStarted.addListener(this::onAudioClipStarted);
+
+        _audioPlaybackProgressView.bindTo(audioClipPlayer);
+        _volumeSliderView.bindTo(audioClipPlayer);
+        _audioPlaybackControlView.bindTo(audioClipPlayer);
     }
 
 

@@ -8,7 +8,7 @@
 
 <?import com.github.williwadelmawisky.musicplayer.audiofx.AudioControlPanel?>
 <?import javafx.geometry.Insets?>
-<?import com.github.williwadelmawisky.musicplayer.audiofx.AudioListView?>
+<?import com.github.williwadelmawisky.musicplayer.audiofx.AudioClipListView?>
 
 <VBox fx:controller="com.github.williwadelmawisky.musicplayer.audiofx.MainWindowController"
       xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
@@ -54,7 +54,7 @@
         <padding>
             <Insets topRightBottomLeft="10"/>
         </padding>
-        <AudioListView fx:id="_audioListView" VBox.vgrow="ALWAYS" maxHeight="Infinity"/>
+        <AudioClipListView fx:id="_audioClipListView" VBox.vgrow="ALWAYS" maxHeight="Infinity"/>
         <AudioControlPanel fx:id="_audioControlPanel"/>
     </VBox>
 </VBox>
