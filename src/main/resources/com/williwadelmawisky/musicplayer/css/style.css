@@ -1,0 +1,36 @@
+.label {
+    -fx-font-size: 14px;
+    -fx-font-family: "Arial";
+    -fx-text-fill: rgb(130, 130, 130);
+    -fx-font-weight: 500;
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+}
+
+.menu:hover > .label, .menu:showing > .label, .menu-item:hover > .label, .menu-item:focused > .label {
+    -fx-text-fill: white;
+}
+
+.button {
+    -fx-text-fill: white;
+    -fx-font-family: "Arial Narrow";
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(#61a2b1, #2A5058);
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
+.button:hover {
+    -fx-background-color: linear-gradient(#2A5058, #61a2b1);
+}
+
+.h1 {
+    -fx-font-size: 35px;
+    -fx-font-family: "Impact";
+    -fx-text-fill: linear-gradient(to left, #61a2b1, #2A5058);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 0, 0, 0, 1);
+    -fx-font-weight: 900;
+}
+
+.content-box {
+    -fx-background-color: rgb(220, 220, 220);
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 0, 0, 2, 2);
+}

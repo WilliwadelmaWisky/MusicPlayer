@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import com.williwadelmawisky.musicplayer.audiofx.AudioClipControlPanel?>
+<?import javafx.geometry.Insets?>
+<?import com.williwadelmawisky.musicplayer.audiofx.AudioClipListView?>
+
+<VBox fx:controller="com.williwadelmawisky.musicplayer.audiofx.MainWindowController"
+      xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+>
+    <MenuBar>
+        <Menu text="Media">
+            <MenuItem text="New Playlist" onAction="#onNewPlaylistButtonClicked" accelerator="Shortcut+N"/>
+            <SeparatorMenuItem/>
+            <MenuItem text="Save" onAction="#onSaveButtonClicked" accelerator="Shortcut+S"/>
+            <MenuItem text="Save As..." onAction="#onSaveAsButtonClicked" accelerator="Shortcut+Shift+S"/>
+            <SeparatorMenuItem/>
+            <MenuItem text="Open File..." onAction="#onOpenFileButtonClicked" accelerator="Shortcut+F"/>
+            <MenuItem text="Open Directory..." onAction="#onOpenDirectoryButtonClicked" accelerator="Shortcut+D"/>
+            <MenuItem text="Open Playlist..." onAction="#onOpenPlaylistButtonClicked" accelerator="Shortcut+O"/>
+            <SeparatorMenuItem/>
+            <MenuItem text="Import Playlist..." onAction="#onImportPlaylistClicked"/>
+            <MenuItem text="Export Playlist..." onAction="#onExportPlaylistClicked"/>
+            <SeparatorMenuItem/>
+            <MenuItem text="Quit" onAction="#onQuitButtonClicked" accelerator="Shortcut+Q"/>
+        </Menu>
+        <Menu text="Playback" fx:id="_playbackMenu">
+            <MenuItem text="Play" fx:id="_playMenuItem"/>
+            <MenuItem text="Stop" onAction="#onStopButtonClicked"/>
+            <SeparatorMenuItem/>
+            <MenuItem text="Skip Forward" onAction="#onSkipForwardButtonClicked"/>
+            <MenuItem text="Skip Backward" onAction="#onSkipBackwardButtonClicked"/>
+            <SeparatorMenuItem/>
+            <MenuItem text="Next" onAction="#onNextButtonClicked"/>
+            <MenuItem text="Previous" onAction="#onPreviousButtonClicked"/>
+        </Menu>
+        <Menu text="Audio">
+            <MenuItem text="Increase Volume" onAction="#onIncreaseVolumeButtonClicked"/>
+            <MenuItem text="Decrease Volume" onAction="#onDecreaseVolumeButtonClicked"/>
+            <MenuItem text="Mute Volume" onAction="#onMuteVolumeButtonClicked"/>
+        </Menu>
+        <Menu text="Help">
+            <MenuItem text="Help..." accelerator="F1"/>
+            <MenuItem text="About..." accelerator="Shift+F1"/>
+        </Menu>
+    </MenuBar>
+    <VBox spacing="10" VBox.vgrow="ALWAYS" maxHeight="Infinity">
+        <padding>
+            <Insets topRightBottomLeft="10"/>
+        </padding>
+        <AudioClipListView fx:id="_audioClipListView" VBox.vgrow="ALWAYS" maxHeight="Infinity"/>
+        <AudioClipControlPanel fx:id="_audioClipControlPanel"/>
+    </VBox>
+</VBox>

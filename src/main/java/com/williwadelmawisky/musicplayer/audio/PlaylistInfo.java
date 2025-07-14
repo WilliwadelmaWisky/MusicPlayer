@@ -1,0 +1,71 @@
+package com.williwadelmawisky.musicplayer.audio;
+
+import com.williwadelmawisky.musicplayer.json.JSON;
+import com.williwadelmawisky.musicplayer.json.SerializeField;
+import com.williwadelmawisky.musicplayer.util.ObservableList;
+
+import java.util.function.Consumer;
+
+/**
+ *
+ */
+public class PlaylistInfo implements Saveable {
+
+    @SerializeField private String[] FilePaths;
+
+
+    /**
+     *
+     */
+    public PlaylistInfo() {
+        FilePaths = new String[0];
+    }
+
+    /**
+     * @param audioClipList
+     */
+    public PlaylistInfo(final ObservableList<AudioClip> audioClipList) {
+        FilePaths = new String[audioClipList.length()];
+        for (int i = 0; i < audioClipList.length(); i++) {
+            FilePaths[i] = audioClipList.get(i).getAbsoluteFilePath();
+        }
+    }
+
+
+    /**
+     * @return
+     */
+    public int length() { return FilePaths.length; }
+
+    /**
+     * @param index
+     * @return
+     */
+    public String get(final int index) { return FilePaths[index]; }
+
+    /**
+     * @param action
+     */
+    public void forEach(final Consumer<String> action) {
+        for (String filePath : FilePaths)
+            action.accept(filePath);
+    }
+
+
+    /**
+     * @return
+     */
+    @Override
+    public String serialize() {
+        return JSON.toJSON(this);
+    }
+
+    /**
+     * @param s
+     */
+    @Override
+    public boolean deserialize(String s) {
+        JSON.fromJSON(s, this);
+        return true;
+    }
+}
