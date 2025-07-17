@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import com.williwadelmawisky.musicplayer.util.fx.SearchField?>
+
+<?import com.williwadelmawisky.musicplayer.audiofx.PreferenceListView?>
+<fx:root type="com.williwadelmawisky.musicplayer.audiofx.PreferenceChooser"
+         xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+>
+    <SearchField onSearch="#onSearch"/>
+    <ScrollPane hbarPolicy="NEVER" fitToWidth="true" VBox.vgrow="ALWAYS" maxHeight="Infinity">
+        <PreferenceListView fx:id="_listView"/>
+    </ScrollPane>
+</fx:root>

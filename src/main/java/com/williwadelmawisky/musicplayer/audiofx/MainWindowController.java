@@ -10,12 +10,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextInputDialog;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 /**
  *
@@ -40,6 +42,7 @@ public class MainWindowController {
     @FXML private AudioClipControlPanel _audioClipControlPanel;
 
     private AudioClipPlayer _audioClipPlayer;
+    private SaveManager _saveManager;
     private String _name;
 
 
@@ -48,6 +51,7 @@ public class MainWindowController {
      */
     void onCreated(final AudioClipPlayer audioClipPlayer) {
         _audioClipPlayer = audioClipPlayer;
+        _saveManager = new SaveManager();
 
         _audioClipPlayer.OnPlay.addListener(this::onPlay_AudioClipPlayer);
         _audioClipPlayer.OnPause.addListener(this::onPause_AudioClipPlayer);
@@ -88,8 +92,9 @@ public class MainWindowController {
             return;
         }
 
+        final PlaylistInfo playlistInfo = new PlaylistInfo(_audioClipPlayer.AudioClipList);
         final File saveFile = Paths.get(CONFIG_DIRECTORY.getAbsolutePath(), _name + ".json").toFile();
-        Files.write(saveFile, "");
+        _saveManager.save(playlistInfo, saveFile);
     }
 
     /**
@@ -97,11 +102,22 @@ public class MainWindowController {
      */
     @FXML
     private void onSaveAsButtonClicked(final ActionEvent e) {
-        final PlaylistEditor playlistEditor = new PlaylistEditor();
-        playlistEditor.setTitle("Save a playlist");
-        playlistEditor.setInitialDirectory(CONFIG_DIRECTORY);
+        final TextInputDialog textInputDialog = new TextInputDialog("new playlist");
+        textInputDialog.setTitle("Save the playlist");
+        textInputDialog.setHeaderText(null);
+        textInputDialog.setGraphic(null);
 
-        playlistEditor.showDialog();
+        final Optional<String> result = textInputDialog.showAndWait();
+        if (result.isEmpty())
+            return;
+
+        final String playlistName = result.get().trim();
+        if (playlistName.isEmpty())
+            return;
+
+        final PlaylistInfo playlistInfo = new PlaylistInfo(_audioClipPlayer.AudioClipList);
+        final File saveFile = Paths.get(CONFIG_DIRECTORY.getAbsolutePath(), playlistName + ".json").toFile();
+        _saveManager.save(playlistInfo, saveFile);
     }
 
     /**

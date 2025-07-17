@@ -1,6 +1,7 @@
 package com.williwadelmawisky.musicplayer.audio;
 
 import com.williwadelmawisky.musicplayer.json.JSON;
+import com.williwadelmawisky.musicplayer.json.PrettyModifier;
 import com.williwadelmawisky.musicplayer.json.SerializeField;
 import com.williwadelmawisky.musicplayer.util.ObservableList;
 
@@ -57,7 +58,8 @@ public class PlaylistInfo implements Saveable {
      */
     @Override
     public String serialize() {
-        return JSON.toJSON(this);
+        final PrettyModifier prettyModifier = new PrettyModifier();
+        return prettyModifier.modify(JSON.toJSON(this));
     }
 
     /**

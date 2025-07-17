@@ -47,6 +47,8 @@
         <Menu text="Help">
             <MenuItem text="Help..." accelerator="F1"/>
             <MenuItem text="About..." accelerator="Shift+F1"/>
+            <SeparatorMenuItem/>
+            <MenuItem text="Preferences..."/>
         </Menu>
     </MenuBar>
     <VBox spacing="10" VBox.vgrow="ALWAYS" maxHeight="Infinity">

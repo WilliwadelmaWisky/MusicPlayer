@@ -53,7 +53,7 @@ public class Writer {
         stringBuilder.append('{');
 
         for (Field field : Fields.getFields(obj, Fields::isSerializable)) {
-            stringBuilder.append(field.getName());
+            stringBuilder.append('\"').append(field.getName()).append('\"');
             stringBuilder.append(':');
             writeObjectField(obj, field, stringBuilder);
             stringBuilder.append(',');
@@ -94,8 +94,8 @@ public class Writer {
     private void writeObjectField(final Object obj, final Field field, final StringBuilder stringBuilder) {
         try {
             if (field.getType().isArray()) writeArray(field.get(obj), stringBuilder);
-            else if (field.getType() == boolean.class) stringBuilder.append('\"').append(field.getBoolean(obj)).append('\"');
-            else if (field.getType() == Boolean.class) stringBuilder.append('\"').append(field.get(obj)).append('\"');
+            else if (field.getType() == boolean.class) stringBuilder.append(field.getBoolean(obj));
+            else if (field.getType() == Boolean.class) stringBuilder.append(field.get(obj));
             else if (field.getType() == byte.class) stringBuilder.append(field.getByte(obj));
             else if (field.getType() == Byte.class) stringBuilder.append(field.get(obj));
             else if (field.getType() == short.class) stringBuilder.append(field.getShort(obj));
@@ -114,7 +114,7 @@ public class Writer {
             else {
                 final Object innerObject = field.get(obj);
                 if (innerObject.getClass().isArray()) writeArray(innerObject, stringBuilder);
-                else if (innerObject.getClass() == Boolean.class) stringBuilder.append('\"').append(innerObject).append('\"');
+                else if (innerObject.getClass() == Boolean.class) stringBuilder.append(innerObject);
                 else if (innerObject.getClass() == Byte.class) stringBuilder.append(innerObject);
                 else if (innerObject.getClass() == Short.class) stringBuilder.append(innerObject);
                 else if (innerObject.getClass() == Integer.class) stringBuilder.append(innerObject);
@@ -139,8 +139,8 @@ public class Writer {
      */
     private void writeArrayElement(final Object obj, final int index, final StringBuilder stringBuilder) {
         if (obj.getClass().getComponentType().isArray()) writeArray(Array.get(obj, index), stringBuilder);
-        else if (obj.getClass().getComponentType() == boolean.class) stringBuilder.append('\"').append(Array.getBoolean(obj, index)).append('\"');
-        else if (obj.getClass().getComponentType() == Boolean.class) stringBuilder.append('\"').append(Array.get(obj, index)).append('\"');
+        else if (obj.getClass().getComponentType() == boolean.class) stringBuilder.append(Array.getBoolean(obj, index));
+        else if (obj.getClass().getComponentType() == Boolean.class) stringBuilder.append(Array.get(obj, index));
         else if (obj.getClass().getComponentType() == byte.class) stringBuilder.append(Array.getByte(obj, index));
         else if (obj.getClass().getComponentType() == Byte.class) stringBuilder.append(Array.get(obj, index));
         else if (obj.getClass().getComponentType() == short.class) stringBuilder.append(Array.getShort(obj, index));
@@ -159,7 +159,7 @@ public class Writer {
         else {
             final Object innerObject = Array.get(obj, index);
             if (innerObject.getClass().isArray()) writeArray(innerObject, stringBuilder);
-            else if (innerObject.getClass() == Boolean.class) stringBuilder.append('\"').append(innerObject).append('\"');
+            else if (innerObject.getClass() == Boolean.class) stringBuilder.append(innerObject);
             else if (innerObject.getClass() == Byte.class) stringBuilder.append(innerObject);
             else if (innerObject.getClass() == Short.class) stringBuilder.append(innerObject);
             else if (innerObject.getClass() == Integer.class) stringBuilder.append(innerObject);
