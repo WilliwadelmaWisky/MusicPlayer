@@ -1,4 +1,4 @@
-package com.williwadelmawisky.musicplayer.json;
+package com.williwadelmawisky.musicplayer.util.json;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;

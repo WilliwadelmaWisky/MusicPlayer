@@ -1,4 +1,4 @@
-package com.williwadelmawisky.musicplayer.json;
+package com.williwadelmawisky.musicplayer.util.json;
 
 /**
  * The <code>Token</code> represents a since token genereated by the <code>Tokenizer</code>.

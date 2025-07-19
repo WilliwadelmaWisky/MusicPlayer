@@ -33,39 +33,47 @@ public class ProgressControlPanel extends HBox {
         _playbackPositionLabel.setAlignment(Pos.CENTER_LEFT);
         _playbackPositionLabel.setMinWidth(40);
         _playbackPositionLabel.setMaxWidth(40);
-        this.getChildren().add(_playbackPositionLabel);
+        getChildren().add(_playbackPositionLabel);
 
         _slider = new Slider();
-        HBox.setHgrow(_slider, Priority.ALWAYS);
-        _slider.setMaxWidth(Double.POSITIVE_INFINITY);
         _slider.setMin(0);
         _slider.setMax(1);
-        _slider.valueProperty().addListener(this::onValueChanged_Slider);
-        this.getChildren().add(_slider);
+        HBox.setHgrow(_slider, Priority.ALWAYS);
+        _slider.setMaxWidth(Double.POSITIVE_INFINITY);
+        getChildren().add(_slider);
 
         _totalDurationLabel = new Label();
         _totalDurationLabel.setAlignment(Pos.CENTER_RIGHT);
         _totalDurationLabel.setMinWidth(40);
         _totalDurationLabel.setMaxWidth(40);
-        this.getChildren().add(_totalDurationLabel);
+        getChildren().add(_totalDurationLabel);
+
+        updateView(0, Duration.UNKNOWN, Duration.UNKNOWN);
+        setDisable(true);
+        _slider.valueProperty().addListener(this::onValueChanged_Slider);
     }
 
 
     /**
      * @param audioClip
      */
-    public void bindTo(final AudioClip audioClip) {
+    public void setAudioClip(final AudioClip audioClip) {
         _audioClip = audioClip;
 
-        _playbackPositionLabel.setText(Durations.durationToString(Duration.ZERO));
-        _totalDurationLabel.setText(Durations.durationToString(audioClip.getTotalDuration()));
+        final double normalizedPlaybackPosition = _audioClip.isReady() ? _audioClip.getPlaybackPosition().toMillis() / _audioClip.getTotalDuration().toMillis() : 0;
+        updateView(normalizedPlaybackPosition, _audioClip.getPlaybackPosition(), _audioClip.getTotalDuration());
+        setDisable(false);
+
         _audioClip.OnProgressChanged.addListener(this::onProgressChanged_AudioClip);
     }
 
     /**
      *
      */
-    public void unbind() {
+    public void clear() {
+        updateView(0, Duration.UNKNOWN, Duration.UNKNOWN);
+        setDisable(true);
+
         if (_audioClip == null)
             return;
 
@@ -74,12 +82,55 @@ public class ProgressControlPanel extends HBox {
 
 
     /**
+     * @param progress
+     */
+    private void updateView(final Progress progress) {
+        updateView(progress.NormalizedPlaybackPosition, progress.PlaybackPosition, progress.TotalDuration);
+    }
+
+    /**
+     * @param normalizedPlaybackPosition
+     * @param playbackPosition
+     * @param totalDuration
+     */
+    private void updateView(final double normalizedPlaybackPosition, final Duration playbackPosition, final Duration totalDuration) {
+        updatePlaybackPositionLabel(playbackPosition);
+        updateTotalDurationLabel(totalDuration);
+        updateSlider(normalizedPlaybackPosition);
+    }
+
+    /**
+     * @param playbackPosition
+     */
+    private void updatePlaybackPositionLabel(final Duration playbackPosition) {
+        _playbackPositionLabel.setText(Durations.durationToString(playbackPosition));
+    }
+
+    /**
+     * @param totalDuration
+     */
+    private void updateTotalDurationLabel(final Duration totalDuration) {
+        _totalDurationLabel.setText(Durations.durationToString(totalDuration));
+    }
+
+    /**
+     * @param normalizedPlaybackPosition
+     */
+    private void updateSlider(final double normalizedPlaybackPosition) {
+        _slider.setValue(normalizedPlaybackPosition);
+    }
+
+
+    /**
      * @param sender
      * @param args
      */
     private void onProgressChanged_AudioClip(final Object sender, final EventArgs_SingleValue<Progress> args) {
-        _playbackPositionLabel.setText(Durations.durationToString(args.Value.PlaybackPosition));
-        _slider.setValue(args.Value.NormalizedPlaybackPosition);
+        if (Math.abs(_slider.getValue() - args.Value.NormalizedPlaybackPosition) <= 1e-6)
+            return;
+
+        updatePlaybackPositionLabel(args.Value.PlaybackPosition);
+        updateSlider(args.Value.NormalizedPlaybackPosition);
     }
 
     /**

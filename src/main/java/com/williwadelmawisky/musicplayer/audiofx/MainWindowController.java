@@ -1,11 +1,10 @@
 package com.williwadelmawisky.musicplayer.audiofx;
 
 import com.williwadelmawisky.musicplayer.audio.*;
-import com.williwadelmawisky.musicplayer.json.JSON;
 import com.williwadelmawisky.musicplayer.util.event.EventArgs;
-import com.williwadelmawisky.musicplayer.util.Files;
 import com.williwadelmawisky.musicplayer.util.SelectionModel;
 import com.williwadelmawisky.musicplayer.util.event.EventArgs_SingleValue;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Menu;
@@ -92,9 +91,8 @@ public class MainWindowController {
             return;
         }
 
-        final PlaylistInfo playlistInfo = new PlaylistInfo(_audioClipPlayer.AudioClipList);
         final File saveFile = Paths.get(CONFIG_DIRECTORY.getAbsolutePath(), _name + ".json").toFile();
-        _saveManager.save(playlistInfo, saveFile);
+        savePlaylist(saveFile);
     }
 
     /**
@@ -115,9 +113,8 @@ public class MainWindowController {
         if (playlistName.isEmpty())
             return;
 
-        final PlaylistInfo playlistInfo = new PlaylistInfo(_audioClipPlayer.AudioClipList);
         final File saveFile = Paths.get(CONFIG_DIRECTORY.getAbsolutePath(), playlistName + ".json").toFile();
-        _saveManager.save(playlistInfo, saveFile);
+        savePlaylist(saveFile);
     }
 
     /**
@@ -181,7 +178,7 @@ public class MainWindowController {
     @FXML
     private void onImportPlaylistClicked(final ActionEvent e) {
         final FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open a playlist json file");
+        fileChooser.setTitle("Import a playlist from a json file");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON files (.json)", "*.json"));
 
         final File initialDirectory = HOME_DIRECTORY;
@@ -189,13 +186,8 @@ public class MainWindowController {
             fileChooser.setInitialDirectory(initialDirectory);
 
         final File file = fileChooser.showOpenDialog(_audioClipControlPanel.getScene().getWindow());
-        if (file == null || !file.exists())
-            return;
-
-        final String jsonString = Files.read(file);
-        final PlaylistInfo playlist = new PlaylistInfo();
-        JSON.fromJSON(jsonString, playlist);
-        _audioClipPlayer.load(playlist);
+        if (file != null && file.exists())
+            loadPlaylist(file);
     }
 
     /**
@@ -204,7 +196,7 @@ public class MainWindowController {
     @FXML
     private void onExportPlaylistClicked(final ActionEvent e) {
         final FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open a playlist json file");
+        fileChooser.setTitle("Export a playlist as a json file");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON files (.json)", "*.json"));
 
         final File initialDirectory = HOME_DIRECTORY;
@@ -212,12 +204,8 @@ public class MainWindowController {
             fileChooser.setInitialDirectory(initialDirectory);
 
         final File file = fileChooser.showSaveDialog(_audioClipControlPanel.getScene().getWindow());
-        if (file == null || !file.exists())
-            return;
-
-        final PlaylistInfo playlist = new PlaylistInfo(_audioClipPlayer.AudioClipList);
-        final SaveManager saveManager = new SaveManager();
-        saveManager.save(playlist, file);
+        if (file != null && file.exists())
+            savePlaylist(file);
     }
 
     /**
@@ -334,8 +322,8 @@ public class MainWindowController {
      * @param args
      */
     private void onSelected_SelectionModel(final Object sender, final SelectionModel.OnSelectedEventArgs<AudioClip> args) {
-        _audioClipControlPanel.unbind();
-        _audioClipControlPanel.bindTo(args.Item);
+        _audioClipControlPanel.clear();
+        _audioClipControlPanel.setAudioClip(args.Item);
     }
 
     /**
@@ -343,7 +331,7 @@ public class MainWindowController {
      * @param args
      */
     private void onCleared_SelectionModel(final Object sender, final EventArgs args) {
-        _audioClipControlPanel.unbind();
+        _audioClipControlPanel.clear();
     }
 
 
@@ -368,5 +356,29 @@ public class MainWindowController {
         final FileReader fileReader = new FileReader(file);
         fileReader.read(_audioClipPlayer::add);
         return !_audioClipPlayer.isEmpty();
+    }
+
+    
+    /**
+     * @param file
+     * @return
+     */
+    private boolean savePlaylist(final File file) {
+        final PlaylistInfo playlistInfo = new PlaylistInfo(_audioClipPlayer.AudioClipList);
+        return _saveManager.save(playlistInfo, file);
+    }
+
+    /**
+     * @param file
+     * @return
+     */
+    private boolean loadPlaylist(final File file) {
+        final PlaylistInfo playlistInfo = new PlaylistInfo();
+        boolean success = _saveManager.load(playlistInfo, file);
+        if (!success)
+            return false;
+
+        _audioClipPlayer.load(playlistInfo);
+        return true;
     }
 }

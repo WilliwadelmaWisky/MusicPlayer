@@ -67,17 +67,17 @@ public class AudioClip {
     /**
      * @return
      */
+    private String getID() { return _absoluteFilePath; }
+
+    /**
+     * @return
+     */
     public boolean isReady() { return _isReady; }
 
     /**
      * @return
      */
-    public boolean isPlaying() { return _mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING; }
-
-    /**
-     * @return
-     */
-    public String getID() { return _absoluteFilePath; }
+    public boolean isPlaying() { return _status == Status.PLAYING; }
 
     /**
      * @return
@@ -88,6 +88,11 @@ public class AudioClip {
      * @return
      */
     public Status getStatus() { return _status; }
+
+    /**
+     * @return
+     */
+    public Duration getPlaybackPosition() { return _isReady ? _mediaPlayer.getCurrentTime() : Duration.ZERO; }
 
     /**
      * @return

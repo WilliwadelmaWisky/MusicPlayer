@@ -1,4 +1,4 @@
-package com.williwadelmawisky.musicplayer.json;
+package com.williwadelmawisky.musicplayer.util.json;
 
 /**
  * The <code>Tokenizer</code> provides a method to read a string token by token.

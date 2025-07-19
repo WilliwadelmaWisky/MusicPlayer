@@ -14,6 +14,9 @@ public abstract class Durations {
      * @return
      */
     public static String durationToString(final Duration duration) {
+        if (duration.isUnknown())
+            return "-- : --";
+
         final int MINUTE_TO_SECOND = 60;
         final int seconds = (int)(duration.toSeconds() - (int)duration.toMinutes() * MINUTE_TO_SECOND);
         return (int)duration.toMinutes() + ":" + Strings.padLeft(String.valueOf(seconds), 2, '0');
@@ -26,8 +29,11 @@ public abstract class Durations {
      */
     public static Duration sum(final List<Duration> durations) {
         Duration totalDuration = Duration.ZERO;
-        for (Duration duration : durations)
-            totalDuration = totalDuration.add(duration);
+        for (Duration duration : durations) {
+            if (!duration.isUnknown())
+                totalDuration = totalDuration.add(duration);
+        }
+
 
         return totalDuration;
     }

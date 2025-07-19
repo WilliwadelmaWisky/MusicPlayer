@@ -1,4 +1,4 @@
-package com.williwadelmawisky.musicplayer.json;
+package com.williwadelmawisky.musicplayer.util.json;
 
 /**
  * The <code>InvalidSyntaxException</code> represents an error while trying to read a JSON string.

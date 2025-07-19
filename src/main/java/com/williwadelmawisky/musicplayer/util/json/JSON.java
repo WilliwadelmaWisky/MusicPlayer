@@ -1,4 +1,4 @@
-package com.williwadelmawisky.musicplayer.json;
+package com.williwadelmawisky.musicplayer.util.json;
 
 /**
  * <code>JSON</code> class contains static methods for creating and parsing a JSON string very easily.

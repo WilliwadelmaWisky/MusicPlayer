@@ -1,4 +1,4 @@
-package com.williwadelmawisky.musicplayer.json;
+package com.williwadelmawisky.musicplayer.util.json;
 
 /**
  * The <code>PrettyModifier</code> provides a method to format a JSON string to be easier to read by adding whitespaces and linebreaks.

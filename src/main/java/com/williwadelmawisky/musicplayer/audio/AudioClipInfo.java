@@ -1,7 +1,7 @@
 package com.williwadelmawisky.musicplayer.audio;
 
-import com.williwadelmawisky.musicplayer.json.JSON;
-import com.williwadelmawisky.musicplayer.json.SerializeField;
+import com.williwadelmawisky.musicplayer.util.json.JSON;
+import com.williwadelmawisky.musicplayer.util.json.SerializeField;
 
 /**
  *

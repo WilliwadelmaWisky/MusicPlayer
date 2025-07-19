@@ -1,4 +1,4 @@
-package com.williwadelmawisky.musicplayer.json;
+package com.williwadelmawisky.musicplayer.util.json;
 
 /**
  * The <code>NotSerializableException</code> represents an error while trying to write a unserializable object, such as one of the primitive types or an array.

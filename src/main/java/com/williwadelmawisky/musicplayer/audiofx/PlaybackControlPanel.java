@@ -5,7 +5,6 @@ import com.williwadelmawisky.musicplayer.audio.AudioClip;
 import com.williwadelmawisky.musicplayer.util.event.EventArgs;
 import com.williwadelmawisky.musicplayer.util.fx.GraphicButton;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
@@ -17,21 +16,6 @@ public class PlaybackControlPanel extends HBox {
 
     private static final String PLAY_ICON_PATH = "img/play_icon.png";
     private static final String PAUSE_ICON_PATH = "img/pause_icon.png";
-
-    /**
-     *
-     */
-    private static final class AudioPlaybackButton extends GraphicButton {
-
-        private static final double WIDTH = 15;
-
-        /**
-         * @param image
-         */
-        public AudioPlaybackButton(final Image image) {
-            super(image, WIDTH);
-        }
-    }
 
     private final AudioPlaybackButton _playButton;
     private final AudioPlaybackButton _previousButton;
@@ -48,26 +32,31 @@ public class PlaybackControlPanel extends HBox {
         super();
 
         _previousButton = new AudioPlaybackButton(ResourceLoader.loadImage("img/previous_icon.png"));
-        _previousButton.setOnAction(this::onPreviousButtonClicked);
-        this.getChildren().add(_previousButton);
+        getChildren().add(_previousButton);
 
         _playButton = new AudioPlaybackButton(ResourceLoader.loadImage("img/play_icon.png"));
-        _playButton.setOnAction(this::onPlayButtonClicked);
-        this.getChildren().add(_playButton);
+        getChildren().add(_playButton);
 
         _nextButton = new AudioPlaybackButton(ResourceLoader.loadImage("img/next_icon.png"));
-        _nextButton.setOnAction(this::onNextButtonClicked);
-        this.getChildren().add(_nextButton);
+        getChildren().add(_nextButton);
 
         setSpacing(5);
+        setDisable(true);
+
+        _previousButton.setOnAction(this::onClicked_PreviousButton);
+        _playButton.setOnAction(this::onClicked_PlayButton);
+        _nextButton.setOnAction(this::onClicked_NextButton);
     }
 
 
     /**
      * @param audioClip
      */
-    public void bindTo(final AudioClip audioClip) {
+    public void setAudioClip(final AudioClip audioClip) {
         _audioClip = audioClip;
+
+        updateImage(_audioClip.isPlaying());
+        setDisable(false);
 
         _audioClip.OnPlay.addListener(this::onPlay_AudioClip);
         _audioClip.OnPause.addListener(this::onPause_AudioClip);
@@ -77,13 +66,39 @@ public class PlaybackControlPanel extends HBox {
     /**
      *
      */
-    public void unbind() {
+    public void clear() {
+        updateImage(false);
+        setDisable(true);
         if (_audioClip == null)
             return;
 
         _audioClip.OnPlay.removeListener(this::onPlay_AudioClip);
         _audioClip.OnPause.removeListener(this::onPause_AudioClip);
         _audioClip.OnStop.removeListener(this::onStop_AudioClip);
+    }
+
+
+    /**
+     * @param image
+     */
+    private void updateImage(final Image image) {
+        _playButton.setImage(image);
+    }
+
+    /**
+     * @param imageResourcePath
+     */
+    private void updateImage(final String imageResourcePath) {
+        final Image image = ResourceLoader.loadImage(imageResourcePath);
+        updateImage(image);
+    }
+
+    /**
+     * @param isPlaying
+     */
+    private void updateImage(final boolean isPlaying) {
+        final String imageResourcePath = isPlaying ? PAUSE_ICON_PATH : PLAY_ICON_PATH;
+        updateImage(imageResourcePath);
     }
 
 
@@ -111,7 +126,7 @@ public class PlaybackControlPanel extends HBox {
     /**
      * @param e
      */
-    private void onPlayButtonClicked(final ActionEvent e) {
+    private void onClicked_PlayButton(final ActionEvent e) {
         if (_audioClip == null)
             return;
 
@@ -124,15 +139,15 @@ public class PlaybackControlPanel extends HBox {
     /**
      * @param e
      */
-    private void onPreviousButtonClicked(final ActionEvent e) {
-        if (_audioClip != null && _onNext != null)
+    private void onClicked_PreviousButton(final ActionEvent e) {
+        if (_audioClip != null && _onPrevious != null)
             _onPrevious.handle(e);
     }
 
     /**
      * @param e
      */
-    private void onNextButtonClicked(final ActionEvent e) {
+    private void onClicked_NextButton(final ActionEvent e) {
         if (_audioClip != null && _onNext != null)
             _onNext.handle(e);
     }
@@ -143,12 +158,7 @@ public class PlaybackControlPanel extends HBox {
      * @param args
      */
     private void onPlay_AudioClip(final Object sender, final EventArgs args) {
-        final Image image = ResourceLoader.loadImage(PAUSE_ICON_PATH);
-        _playButton.setImage(image);
-
-        _playButton.setDisable(false);
-        _previousButton.setDisable(false);
-        _nextButton.setDisable(false);
+        updateImage(true);
     }
 
     /**
@@ -156,12 +166,7 @@ public class PlaybackControlPanel extends HBox {
      * @param args
      */
     private void onPause_AudioClip(final Object sender, final EventArgs args) {
-        final Image image = ResourceLoader.loadImage(PLAY_ICON_PATH);
-        _playButton.setImage(image);
-
-        _playButton.setDisable(false);
-        _previousButton.setDisable(false);
-        _nextButton.setDisable(false);
+        updateImage(false);
     }
 
     /**
@@ -169,11 +174,22 @@ public class PlaybackControlPanel extends HBox {
      * @param args
      */
     private void onStop_AudioClip(final Object sender, final EventArgs args) {
-        final Image image = ResourceLoader.loadImage(PLAY_ICON_PATH);
-        _playButton.setImage(image);
+        updateImage(false);
+    }
 
-        _playButton.setDisable(true);
-        _previousButton.setDisable(true);
-        _nextButton.setDisable(true);
+
+    /**
+     *
+     */
+    private static final class AudioPlaybackButton extends GraphicButton {
+
+        private static final double WIDTH = 15;
+
+        /**
+         * @param image
+         */
+        public AudioPlaybackButton(final Image image) {
+            super(image, WIDTH);
+        }
     }
 }

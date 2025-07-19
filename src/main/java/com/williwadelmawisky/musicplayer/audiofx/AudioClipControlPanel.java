@@ -19,7 +19,8 @@ import java.io.File;
  */
 public class AudioClipControlPanel extends VBox {
 
-    private final Label _titleLabel, _artistLabel;
+    private final Label _titleLabel;
+    private final Label _artistLabel;
     private final ProgressControlPanel _progressControlPanel;
     private final PlaybackControlPanel _playbackControlPanel;
     private final VolumeControlPanel _volumeControlPanel;
@@ -62,11 +63,9 @@ public class AudioClipControlPanel extends VBox {
         vbox.getChildren().add(_artistLabel);
 
         _playbackControlPanel = new PlaybackControlPanel();
-        _playbackControlPanel.setAlignment(Pos.CENTER);
         HBox.setHgrow(_playbackControlPanel, Priority.ALWAYS);
+        _playbackControlPanel.setAlignment(Pos.CENTER);
         _playbackControlPanel.setMaxWidth(Double.POSITIVE_INFINITY);
-        _playbackControlPanel.setOnPrevious(_onPrevious);
-        _playbackControlPanel.setOnNext(_onNext);
         hbox.getChildren().add(_playbackControlPanel);
 
         _volumeControlPanel = new VolumeControlPanel();
@@ -80,51 +79,40 @@ public class AudioClipControlPanel extends VBox {
         rightRegion.setMaxHeight(40);
         hbox.getChildren().add(rightRegion);
 
-        getStyleClass().add("content-box");
-        setPadding(new Insets(10));
         setSpacing(10);
+        setPadding(new Insets(10));
+        getStyleClass().add("content-box");
+        _playbackControlPanel.setOnNext(this::onNext_PlaybackControlPanel);
+        _playbackControlPanel.setOnPrevious(this::onPrevious_PlaybackControlPanel);
     }
 
-
-    /**
-     *
-     */
-    public void unbind() {
-
-    }
 
     /**
      * @param audioClip
      */
-    public void bindTo(final AudioClip audioClip) {
+    public void setAudioClip(final AudioClip audioClip) {
         _audioClip = audioClip;
 
-        File file = new File(audioClip.getAbsoluteFilePath());
+        File file = new File(_audioClip.getAbsoluteFilePath());
         _titleLabel.setText(file.getName());
-        //_artistLabel.setText(_audioClip.Artist.getValue());
-        //_audioClip.Name.OnChanged.addListener(this::onAudioClipNameChanged);
-        //_audioClip.Artist.OnChanged.addListener(this::onAudioClipArtistChanged);
 
-        _progressControlPanel.bindTo(audioClip);
-        _volumeControlPanel.bindTo(audioClip);
-        _playbackControlPanel.bindTo(audioClip);
-    }
-
-
-    /**
-     * @param sender
-     * @param args
-     */
-    private void onAudioClipNameChanged(final Object sender, final ObservableValue.OnChangedEventArgs<String> args) {
-        _titleLabel.setText(args.Value);
+        _progressControlPanel.setAudioClip(audioClip);
+        _volumeControlPanel.setAudioClip(audioClip);
+        _playbackControlPanel.setAudioClip(audioClip);
     }
 
     /**
-     * @param sender
-     * @param args
+     *
      */
-    private void onAudioClipArtistChanged(final Object sender, final ObservableValue.OnChangedEventArgs<String> args) {
-        _artistLabel.setText(args.Value);
+    public void clear() {
+        _titleLabel.setText("");
+
+        _progressControlPanel.clear();
+        _volumeControlPanel.clear();
+        _playbackControlPanel.clear();
+
+        if (_audioClip == null)
+            return;
     }
 
 
@@ -148,4 +136,19 @@ public class AudioClipControlPanel extends VBox {
      * @param onNext
      */
     public void setOnNext(final EventHandler<ActionEvent> onNext) { _onNext = onNext; }
+
+
+    /**
+     * @param e
+     */
+    private void onPrevious_PlaybackControlPanel(final ActionEvent e) {
+        _onPrevious.handle(e);
+    }
+
+    /**
+     * @param e
+     */
+    private void onNext_PlaybackControlPanel(final ActionEvent e) {
+        _onNext.handle(e);
+    }
 }
