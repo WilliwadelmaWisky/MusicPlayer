@@ -5,12 +5,15 @@ import com.williwadelmawisky.musicplayer.audio.AudioClip;
 import com.williwadelmawisky.musicplayer.util.Durations;
 import com.williwadelmawisky.musicplayer.util.Files;
 import com.williwadelmawisky.musicplayer.util.event.EventArgs;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.layout.*;
 
 import java.io.File;
@@ -20,8 +23,12 @@ import java.io.File;
  */
 public class AudioClipListViewEntry extends HBox {
 
-    private final Label _nameLabel, _durationLabel;
+    private final Label _nameLabel;
+    private final Label _durationLabel;
+    private final ContextMenu _contextMenu;
+
     private AudioClip _audioClip;
+    private EventHandler<ContextMenuEvent> _onDelete;
 
 
     /**
@@ -29,10 +36,6 @@ public class AudioClipListViewEntry extends HBox {
      */
     public AudioClipListViewEntry() {
         super();
-
-        setAlignment(Pos.CENTER_LEFT);
-        setSpacing(5);
-        setOnContextMenuRequested(this::onContextMenuRequested);
 
         final ImageView imageView = new ImageView();
         imageView.setPreserveRatio(true);
@@ -50,6 +53,15 @@ public class AudioClipListViewEntry extends HBox {
         _durationLabel.setAlignment(Pos.CENTER_RIGHT);
         _durationLabel.setMinWidth(50);
         getChildren().add(_durationLabel);
+
+        _contextMenu = new ContextMenu();
+        final MenuItem deleteMenuItem = new MenuItem("Delete");
+        _contextMenu.getItems().addAll(deleteMenuItem);
+
+        setSpacing(5);
+        setAlignment(Pos.CENTER_LEFT);
+        setOnContextMenuRequested(this::onContextMenuRequested);
+        deleteMenuItem.setOnAction(this::onDelete_ContextMenuItem);
     }
 
     /**
@@ -62,20 +74,13 @@ public class AudioClipListViewEntry extends HBox {
 
 
     /**
-     * @return
-     */
-    public AudioClip getAudioClip() { return _audioClip; }
-
-
-    /**
      * @param audioClip
      */
     void onCreated(final AudioClip audioClip) {
         _audioClip = audioClip;
 
-        _audioClip.OnReady.addListener(this::onReady_AudioClip);
-
         updateView(audioClip);
+        _audioClip.OnReady.addListener(this::onReady_AudioClip);
     }
 
     /**
@@ -87,6 +92,22 @@ public class AudioClipListViewEntry extends HBox {
 
         _audioClip.OnReady.removeListener(this::onReady_AudioClip);
     }
+
+
+    /**
+     * @return
+     */
+    public AudioClip getAudioClip() { return _audioClip; }
+
+    /**
+     * @return
+     */
+    public EventHandler<ContextMenuEvent> getOnDelete() { return _onDelete; }
+
+    /**
+     * @param onDelete
+     */
+    public void setOnDelete(final EventHandler<ContextMenuEvent> onDelete) { _onDelete = onDelete; }
 
 
     /**
@@ -107,16 +128,25 @@ public class AudioClipListViewEntry extends HBox {
     /**
      * @param e
      */
-    private void onContextMenuRequested(final ContextMenuEvent e) {
-        final MenuItem editMenuItem = new MenuItem("Edit");
-        editMenuItem.setOnAction(actionEvent -> System.out.println("Edit"));
+    private void onContextMenuRequested(final javafx.scene.input.ContextMenuEvent e) {
+        if (_contextMenu.isShowing())
+            _contextMenu.hide();
 
-        final MenuItem deleteMenuItem = new MenuItem("Delete");
-        deleteMenuItem.setOnAction(actionEvent -> System.out.println("Delete"));
+        final double x = e.getScreenX() - e.getX() + 20;
+        final double y = e.getScreenY() - e.getY() + this.getHeight();
+        _contextMenu.show(this, x, y);
+    }
 
-        final ContextMenu contextMenu = new ContextMenu();
-        contextMenu.getItems().addAll(editMenuItem, deleteMenuItem);
-        contextMenu.show(this, 0, 0);
+
+    /**
+     * @param e
+     */
+    private void onDelete_ContextMenuItem(final ActionEvent e) {
+        if (_onDelete == null)
+            return;
+
+        final ContextMenuEvent contextMenuEvent = new ContextMenuEvent(e.getEventType(), this);
+        _onDelete.handle(contextMenuEvent);
     }
 
 
@@ -127,5 +157,23 @@ public class AudioClipListViewEntry extends HBox {
     private void onReady_AudioClip(final Object sender, final EventArgs args) {
         final String durationString = Durations.durationToString(_audioClip.getTotalDuration());
         _durationLabel.setText(durationString);
+    }
+
+
+    /**
+     *
+     */
+    public static final class ContextMenuEvent extends Event {
+
+        public final AudioClipListViewEntry ListViewEntry;
+
+        /**
+         * @param eventType
+         * @param listViewEntry
+         */
+        public ContextMenuEvent(final EventType<? extends Event> eventType, final AudioClipListViewEntry listViewEntry) {
+            super(eventType);
+            ListViewEntry = listViewEntry;
+        }
     }
 }

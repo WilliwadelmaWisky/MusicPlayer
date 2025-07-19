@@ -3,6 +3,7 @@ package com.williwadelmawisky.musicplayer.audiofx;
 import com.williwadelmawisky.musicplayer.audio.AudioClip;
 import com.williwadelmawisky.musicplayer.audio.AudioClipPlayer;
 import com.williwadelmawisky.musicplayer.audio.AudioClipSelector;
+import com.williwadelmawisky.musicplayer.util.Files;
 import com.williwadelmawisky.musicplayer.util.Lists;
 import com.williwadelmawisky.musicplayer.util.ObservableList;
 import com.williwadelmawisky.musicplayer.util.SelectionModel;
@@ -29,6 +30,7 @@ import java.util.*;
  */
 public class AudioClipListView extends VBox {
 
+    private final SearchField _searchField;
     private final ListView<AudioClipListViewEntry> _listView;
     private final AudioClipSelectorModeComboBox _audioClipSelectorModeComboBox;
 
@@ -40,16 +42,14 @@ public class AudioClipListView extends VBox {
      */
     public AudioClipListView() {
         super();
-        setSpacing(5);
 
-        final SearchField searchField = new SearchField();
-        searchField.setOnSearch(this::onSearch_SearchField);
-        this.getChildren().add(searchField);
+        _searchField = new SearchField();
+        getChildren().add(_searchField);
 
         final HBox hbox = new HBox();
         hbox.setAlignment(Pos.CENTER_LEFT);
         hbox.setSpacing(5);
-        this.getChildren().add(hbox);
+        getChildren().add(hbox);
 
         _audioClipSelectorModeComboBox = new AudioClipSelectorModeComboBox();
         hbox.getChildren().add(_audioClipSelectorModeComboBox);
@@ -58,24 +58,37 @@ public class AudioClipListView extends VBox {
         shuffleButton.setOnAction(this::onClicked_ShuffleButton);
         hbox.getChildren().add(shuffleButton);
 
+        final HBox labelHBox = new HBox();
         final Label nameLabel = new Label("Name");
-        this.getChildren().add(nameLabel);
+        HBox.setHgrow(nameLabel, Priority.ALWAYS);
+        nameLabel.setMaxWidth(Double.POSITIVE_INFINITY);
+        final Label durationLabel = new Label("Duration");
+        labelHBox.getChildren().addAll(nameLabel, durationLabel);
+        getChildren().add(labelHBox);
 
         _listView = new ListView<>();
         VBox.setVgrow(_listView, Priority.ALWAYS);
         _listView.setMaxHeight(Double.POSITIVE_INFINITY);
         _listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        getChildren().add(_listView);
+
+        setSpacing(5);
+        _searchField.setOnSearch(this::onSearch_SearchField);
         _listView.setOnMouseClicked(this::onClicked_ListView);
         _listView.setOnDragOver(this::onDragOver_ListView);
         _listView.setOnDragDropped(this::onDragDrop_ListView);
-        this.getChildren().add(_listView);
+
+        _listView.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+            if (e.isSecondaryButtonDown())
+                e.consume();
+        });
     }
 
 
     /**
      * @param audioClipPlayer
      */
-    public void bindTo(final AudioClipPlayer audioClipPlayer) {
+    public void setAudioClipPlayer(final AudioClipPlayer audioClipPlayer) {
         _audioClipPlayer = audioClipPlayer;
 
         _audioClipPlayer.AudioClipList.OnItemAdded.addListener(this::onAdded_AudioClipList);
@@ -90,7 +103,7 @@ public class AudioClipListView extends VBox {
     /**
      *
      */
-    public void unbind() {
+    public void clear() {
         if (_audioClipPlayer == null)
             return;
 
@@ -115,6 +128,7 @@ public class AudioClipListView extends VBox {
      */
     private void addEntry(final AudioClip audioClip) {
         final AudioClipListViewEntry audioClipListViewEntry = new AudioClipListViewEntry(audioClip);
+        audioClipListViewEntry.setOnDelete(this::onDelete_ListViewEntry);
         _listView.getItems().add(audioClipListViewEntry);
     }
 
@@ -185,6 +199,7 @@ public class AudioClipListView extends VBox {
         _listView.getSelectionModel().clearAndSelect(index);
     }
 
+
     /**
      * @param e
      */
@@ -222,6 +237,15 @@ public class AudioClipListView extends VBox {
     /**
      * @param e
      */
+    private void onDelete_ListViewEntry(final AudioClipListViewEntry.ContextMenuEvent e) {
+        System.out.println("Delete: " + e.getSource());
+        _audioClipPlayer.remove(e.ListViewEntry.getAudioClip());
+    }
+
+
+    /**
+     * @param e
+     */
     private void onClicked_ShuffleButton(final ActionEvent e) {
         _audioClipPlayer.AudioClipList.shuffle();
     }
@@ -234,8 +258,7 @@ public class AudioClipListView extends VBox {
 
         _audioClipPlayer.AudioClipList.forEach(audioClip -> {
             final File audioFile = new File(audioClip.getAbsoluteFilePath());
-            final boolean matchName = audioFile.getName().toLowerCase().contains(e.getSearchString().toLowerCase());
-            //final boolean matchArtist = audioClip.getArtist().getValue().toLowerCase().contains(e.getSearchString().toLowerCase());
+            final boolean matchName = Files.getNameWithoutExtension(audioFile).toLowerCase().contains(e.getSearchString().toLowerCase());
 
             if (matchName) {
                 addEntry(audioClip);

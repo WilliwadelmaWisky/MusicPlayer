@@ -59,7 +59,7 @@ public class MainWindowController {
         _audioClipPlayer.SelectionModel.OnSelected.addListener(this::onSelected_SelectionModel);
         _audioClipPlayer.SelectionModel.OnCleared.addListener(this::onCleared_SelectionModel);
 
-        _audioClipListView.bindTo(_audioClipPlayer);
+        _audioClipListView.setAudioClipPlayer(_audioClipPlayer);
         _audioClipControlPanel.setOnPrevious(this::onPrevious_AudioControlPanel);
         _audioClipControlPanel.setOnNext(this::onNext_AudioControlPanel);
     }

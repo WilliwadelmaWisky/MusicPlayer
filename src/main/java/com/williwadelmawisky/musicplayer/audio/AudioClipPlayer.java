@@ -329,7 +329,7 @@ public class AudioClipPlayer {
         unsubscribeAudioClipEvents(args.Item);
         updateTotalDuration(calculateTotalDuration());
 
-        if (SelectionModel.getSelectedItem().equals(args.Item))
+        if (args.Item.equals(SelectionModel.getSelectedItem()))
             AudioClipSelector.next();
     }
 
