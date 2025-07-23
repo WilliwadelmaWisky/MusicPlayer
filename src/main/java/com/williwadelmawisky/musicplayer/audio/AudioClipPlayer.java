@@ -289,7 +289,14 @@ public class AudioClipPlayer {
      */
     private void onStop_AudioClip(final Object sender, final EventArgs args) {
         OnStop.invoke(this, new EventArgs_SingleValue<>(_activeAudioClip));
+        if (_activeAudioClip == null)
+            return;
+
+        if (!_activeAudioClip.equals(SelectionModel.getSelectedItem()))
+            return;
+
         _activeAudioClip = null;
+        SelectionModel.clear();
     }
 
     /**

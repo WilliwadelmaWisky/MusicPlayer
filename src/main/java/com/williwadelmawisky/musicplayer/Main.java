@@ -33,9 +33,9 @@ public class Main extends Application {
             CONFIG_DIRECTORY.mkdirs();
 
         stage.setTitle("Music Player");
-        stage.setWidth(720);
-        stage.setMinWidth(720);
-        stage.setHeight(500);
+        stage.setWidth(640);
+        stage.setMinWidth(640);
+        stage.setHeight(400);
         stage.setMinHeight(300);
 
         final MainWindow mainWindow = new MainWindow(stage, _audioClipPlayer);

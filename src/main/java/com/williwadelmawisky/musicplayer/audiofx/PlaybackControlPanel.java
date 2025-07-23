@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 
 /**
  *
@@ -20,6 +21,7 @@ public class PlaybackControlPanel extends HBox {
     private final AudioPlaybackButton _playButton;
     private final AudioPlaybackButton _previousButton;
     private final AudioPlaybackButton _nextButton;
+    private final AudioPlaybackButton _stopButton;
     private EventHandler<ActionEvent> _onPrevious;
     private EventHandler<ActionEvent> _onNext;
     private AudioClip _audioClip;
@@ -31,16 +33,17 @@ public class PlaybackControlPanel extends HBox {
     public PlaybackControlPanel() {
         super();
 
-        _previousButton = new AudioPlaybackButton(ResourceLoader.loadImage("img/previous_icon.png"));
-        getChildren().add(_previousButton);
-
         _playButton = new AudioPlaybackButton(ResourceLoader.loadImage("img/play_icon.png"));
-        getChildren().add(_playButton);
-
+        _stopButton = new AudioPlaybackButton(ResourceLoader.loadImage("img/pause_icon.png"));
+        _previousButton = new AudioPlaybackButton(ResourceLoader.loadImage("img/previous_icon.png"));
         _nextButton = new AudioPlaybackButton(ResourceLoader.loadImage("img/next_icon.png"));
-        getChildren().add(_nextButton);
+
+        final Region region = new Region();
+        region.setMinWidth(10);
+        region.setMaxWidth(10);
 
         setSpacing(5);
+        getChildren().addAll(_playButton, region, _previousButton, _stopButton, _nextButton);
         setDisable(true);
 
         _previousButton.setOnAction(this::onClicked_PreviousButton);

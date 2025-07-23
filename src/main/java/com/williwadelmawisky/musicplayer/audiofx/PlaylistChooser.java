@@ -53,7 +53,7 @@ public class PlaylistChooser extends VBox {
     /**
      * @return
      */
-    public PlaylistInfo showDialog() {
+    public PlaylistInfo showOpenDialog() {
         final List<File> playlistFileList = new ArrayList<>();
         Files.listFiles(PLAYLIST_SAVE_DIRECTORY, ALLOWED_EXTENSIONS, false, playlistFileList::add);
         _playlistListView.setData(playlistFileList);

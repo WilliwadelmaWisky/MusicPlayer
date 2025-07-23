@@ -19,8 +19,6 @@ import java.io.File;
  */
 public class AudioClipControlPanel extends VBox {
 
-    private final Label _titleLabel;
-    private final Label _artistLabel;
     private final ProgressControlPanel _progressControlPanel;
     private final PlaybackControlPanel _playbackControlPanel;
     private final VolumeControlPanel _volumeControlPanel;
@@ -43,43 +41,24 @@ public class AudioClipControlPanel extends VBox {
 
         final HBox hbox = new HBox();
         hbox.setSpacing(10);
+        hbox.setPadding(new Insets(0, 50, 0, 50));
         this.getChildren().add(hbox);
 
-        final Region leftRegion = new Region();
-        leftRegion.setMinWidth(40);
-        leftRegion.setMaxHeight(40);
-        hbox.getChildren().add(leftRegion);
-
-        final VBox vbox = new VBox();
-        vbox.setSpacing(2);
-        vbox.setMinWidth(200);
-        vbox.setMinWidth(200);
-        hbox.getChildren().add(vbox);
-
-        _titleLabel = new Label();
-        vbox.getChildren().add(_titleLabel);
-
-        _artistLabel = new Label();
-        vbox.getChildren().add(_artistLabel);
-
         _playbackControlPanel = new PlaybackControlPanel();
-        HBox.setHgrow(_playbackControlPanel, Priority.ALWAYS);
-        _playbackControlPanel.setAlignment(Pos.CENTER);
-        _playbackControlPanel.setMaxWidth(Double.POSITIVE_INFINITY);
         hbox.getChildren().add(_playbackControlPanel);
+
+        final Region region = new Region();
+        HBox.setHgrow(region, Priority.ALWAYS);
+        region.setMaxWidth(Double.POSITIVE_INFINITY);
+        hbox.getChildren().add(region);
 
         _volumeControlPanel = new VolumeControlPanel();
         _volumeControlPanel.setAlignment(Pos.CENTER_LEFT);
-        _volumeControlPanel.setMinWidth(200);
-        _volumeControlPanel.setMaxWidth(200);
+        _volumeControlPanel.setMinWidth(250);
+        _volumeControlPanel.setMaxWidth(250);
         hbox.getChildren().add(_volumeControlPanel);
 
-        final Region rightRegion = new Region();
-        rightRegion.setMinWidth(40);
-        rightRegion.setMaxHeight(40);
-        hbox.getChildren().add(rightRegion);
-
-        setSpacing(10);
+        setSpacing(15);
         setPadding(new Insets(10));
         getStyleClass().add("content-box");
         _playbackControlPanel.setOnNext(this::onNext_PlaybackControlPanel);
@@ -93,9 +72,6 @@ public class AudioClipControlPanel extends VBox {
     public void setAudioClip(final AudioClip audioClip) {
         _audioClip = audioClip;
 
-        File file = new File(_audioClip.getAbsoluteFilePath());
-        _titleLabel.setText(file.getName());
-
         _progressControlPanel.setAudioClip(audioClip);
         _volumeControlPanel.setAudioClip(audioClip);
         _playbackControlPanel.setAudioClip(audioClip);
@@ -105,8 +81,6 @@ public class AudioClipControlPanel extends VBox {
      *
      */
     public void clear() {
-        _titleLabel.setText("");
-
         _progressControlPanel.clear();
         _volumeControlPanel.clear();
         _playbackControlPanel.clear();

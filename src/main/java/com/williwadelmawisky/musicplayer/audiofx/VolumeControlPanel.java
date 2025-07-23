@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 
 /**
  *
@@ -32,18 +33,18 @@ public class VolumeControlPanel extends HBox {
         imageView.setPickOnBounds(true);
         imageView.setPreserveRatio(true);
         imageView.setImage(ResourceLoader.loadImage("img/volume_icon.png"));
-        getChildren().add(imageView);
 
         _slider = new Slider();
+        HBox.setHgrow(_slider, Priority.ALWAYS);
+        _slider.setMaxWidth(Double.POSITIVE_INFINITY);
         _slider.setMin(0);
         _slider.setMax(1);
-        getChildren().add(_slider);
 
         _label = new Label();
         _label.setMinWidth(30);
-        getChildren().add(_label);
 
         setSpacing(5);
+        getChildren().addAll(imageView, _slider, _label);
         updateView(DEFAULT_VOLUME);
         _slider.valueProperty().addListener(this::onValueChanged_Slider);
     }

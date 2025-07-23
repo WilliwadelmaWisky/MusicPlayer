@@ -1,12 +1,14 @@
 package com.williwadelmawisky.musicplayer.audiofx;
 
 import com.williwadelmawisky.musicplayer.audio.*;
+import com.williwadelmawisky.musicplayer.util.Durations;
 import com.williwadelmawisky.musicplayer.util.event.EventArgs;
 import com.williwadelmawisky.musicplayer.util.SelectionModel;
 import com.williwadelmawisky.musicplayer.util.event.EventArgs_SingleValue;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextInputDialog;
@@ -39,6 +41,7 @@ public class MainWindowController {
     @FXML private MenuItem _playMenuItem;
     @FXML private AudioClipListView _audioClipListView;
     @FXML private AudioClipControlPanel _audioClipControlPanel;
+    @FXML private Label _totalDurationLabel;
 
     private AudioClipPlayer _audioClipPlayer;
     private SaveManager _saveManager;
@@ -55,6 +58,7 @@ public class MainWindowController {
         _audioClipPlayer.OnPlay.addListener(this::onPlay_AudioClipPlayer);
         _audioClipPlayer.OnPause.addListener(this::onPause_AudioClipPlayer);
         _audioClipPlayer.OnStop.addListener(this::onStop_AudioClipPlayer);
+        _audioClipPlayer.OnTotalDurationChanged.addListener(this::onTotalDurationChanged_AudioClipPlayer);
         _audioClipPlayer.AudioClipList.OnChanged.addListener(this::onChanged_AudioClipList);
         _audioClipPlayer.SelectionModel.OnSelected.addListener(this::onSelected_SelectionModel);
         _audioClipPlayer.SelectionModel.OnCleared.addListener(this::onCleared_SelectionModel);
@@ -165,11 +169,11 @@ public class MainWindowController {
         final PlaylistChooser playlistChooser = new PlaylistChooser();
         playlistChooser.setTitle("Open a playlist");
 
-        final PlaylistInfo playlist = playlistChooser.showDialog();
-        if (playlist == null)
+        final PlaylistInfo playlistInfo = playlistChooser.showOpenDialog();
+        if (playlistInfo == null)
             return;
 
-        _audioClipPlayer.load(playlist);
+        _audioClipPlayer.load(playlistInfo);
     }
 
     /**
@@ -221,9 +225,7 @@ public class MainWindowController {
      * @param e
      */
     @FXML
-    private void onStopButtonClicked(final ActionEvent e) {
-        _audioClipPlayer.stop();
-    }
+    private void onStopButtonClicked(final ActionEvent e) { _audioClipPlayer.stop(); }
 
     /**
      * @param e
@@ -307,6 +309,15 @@ public class MainWindowController {
         _playMenuItem.setOnAction(e -> {});
         _playMenuItem.setDisable(true);
     }
+
+    /**
+     * @param sender
+     * @param args
+     */
+    private void onTotalDurationChanged_AudioClipPlayer(final Object sender, final EventArgs_SingleValue<Duration> args) {
+        _totalDurationLabel.setText("PLAYLIST [" + Durations.durationToString(args.Value) + "]");
+    }
+
 
     /**
      * @param sender

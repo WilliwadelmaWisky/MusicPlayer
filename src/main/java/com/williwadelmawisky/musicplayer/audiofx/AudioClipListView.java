@@ -96,6 +96,7 @@ public class AudioClipListView extends VBox {
         _audioClipPlayer.AudioClipList.OnCleared.addListener(this::onCleared_AudioClipList);
         _audioClipPlayer.AudioClipList.OnSorted.addListener(this::onSorted_AudioClipList);
         _audioClipPlayer.SelectionModel.OnSelected.addListener(this::onSelected_SelectionModel);
+        _audioClipPlayer.SelectionModel.OnCleared.addListener(this::onCleared_SelectionModel);
 
         _audioClipSelectorModeComboBox.bindTo(_audioClipPlayer.AudioClipSelector);
     }
@@ -112,6 +113,7 @@ public class AudioClipListView extends VBox {
         _audioClipPlayer.AudioClipList.OnCleared.removeListener(this::onCleared_AudioClipList);
         _audioClipPlayer.AudioClipList.OnSorted.removeListener(this::onSorted_AudioClipList);
         _audioClipPlayer.SelectionModel.OnSelected.removeListener(this::onSelected_SelectionModel);
+        _audioClipPlayer.SelectionModel.OnCleared.removeListener(this::onCleared_SelectionModel);
 
         _audioClipSelectorModeComboBox.unbind();
     }
@@ -184,6 +186,12 @@ public class AudioClipListView extends VBox {
     private void onSorted_AudioClipList(final Object sender, final EventArgs args) {
         clearEntries();
         _audioClipPlayer.AudioClipList.forEach(this::addEntry);
+
+        int index = Lists.indexFunc(_listView.getItems(), audioClipListViewEntry -> audioClipListViewEntry.getAudioClip().equals(_audioClipPlayer.SelectionModel.getSelectedItem()));
+        if (index == -1)
+            return;
+
+        _listView.getSelectionModel().clearAndSelect(index);
     }
 
 
@@ -197,6 +205,14 @@ public class AudioClipListView extends VBox {
             return;
 
         _listView.getSelectionModel().clearAndSelect(index);
+    }
+
+    /**
+     * @param sender
+     * @param args
+     */
+    private void onCleared_SelectionModel(final Object sender, final EventArgs args) {
+        _listView.getSelectionModel().clearSelection();
     }
 
 
