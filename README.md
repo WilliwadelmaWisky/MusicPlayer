@@ -1,5 +1,3 @@
-<a id="readme-top"></a>
-
 # Music Player
 ![Version](https://img.shields.io/badge/java-21+-blue.svg?style=flat)
 ![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat)
@@ -16,7 +14,7 @@ Libraries used to make the application:
 - ControlsFX
 - BootstrapFX
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#music-player">back to top</a>)</p>
 
 ## Usage
 
@@ -24,7 +22,7 @@ Libraries used to make the application:
 
 *For more examples and usage, please refer to the Wiki.*
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#music-player">back to top</a>)</p>
 
 ## Getting Started
 > [!IMPORTANT]
@@ -41,16 +39,16 @@ Libraries used to make the application:
 > [!NOTE]
 > In some linux distributions there are some problems with `.mp3` files (at least on Debian based). You might want to consider converting the `.mp3` files to `.wav`.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#music-player">back to top</a>)</p>
 
 ## License
 Distributed under the MIT License. See <a href="./LICENSE">LICENSE</a> for more information.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#music-player">back to top</a>)</p>
 
 ## Version History
 
 - 0.1
     - Initial release
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#music-player">back to top</a>)</p>
