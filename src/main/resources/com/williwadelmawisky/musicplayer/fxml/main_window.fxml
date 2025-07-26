@@ -5,10 +5,12 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<?import com.williwadelmawisky.musicplayer.audiofx.AudioClipControlPanel?>
 <?import javafx.geometry.Insets?>
+
 <?import com.williwadelmawisky.musicplayer.audiofx.AudioClipListView?>
+<?import com.williwadelmawisky.musicplayer.audiofx.ProgressControlPanel?>
+<?import com.williwadelmawisky.musicplayer.audiofx.PlaybackControlPanel?>
+<?import com.williwadelmawisky.musicplayer.audiofx.VolumeControlPanel?>
 
 <VBox fx:controller="com.williwadelmawisky.musicplayer.audiofx.MainWindowController"
       xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
@@ -62,14 +64,20 @@
         <padding>
             <Insets topRightBottomLeft="10"/>
         </padding>
-        <HBox spacing="10" VBox.vgrow="ALWAYS" maxHeight="Infinity">
-            <ScrollPane fitToWidth="true" minWidth="150">
-                <VBox>
-                    <Label fx:id="_totalDurationLabel"/>
-                </VBox>
-            </ScrollPane>
-            <AudioClipListView fx:id="_audioClipListView" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-        </HBox>
-        <AudioClipControlPanel fx:id="_audioClipControlPanel"/>
+        <AudioClipListView fx:id="_audioClipListView" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+        <VBox spacing="10" styleClass="content-box">
+            <padding>
+                <Insets topRightBottomLeft="10"/>
+            </padding>
+            <ProgressControlPanel fx:id="_progressControlPanel"/>
+            <HBox spacing="10">
+                <padding>
+                    <Insets left="50" right="50"/>
+                </padding>
+                <PlaybackControlPanel fx:id="_playbackControlPanel" onNext="#onNextButtonClicked" onPrevious="#onPreviousButtonClicked"/>
+                <Region HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                <VolumeControlPanel fx:id="_volumeControlPanel" minWidth="250" maxWidth="250"/>
+            </HBox>
+        </VBox>
     </VBox>
 </VBox>

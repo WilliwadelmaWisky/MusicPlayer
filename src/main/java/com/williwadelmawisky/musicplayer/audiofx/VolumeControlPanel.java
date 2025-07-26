@@ -4,6 +4,7 @@ import com.williwadelmawisky.musicplayer.ResourceLoader;
 import com.williwadelmawisky.musicplayer.audio.AudioClip;
 import com.williwadelmawisky.musicplayer.util.event.EventArgs_SingleValue;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.ImageView;
@@ -14,8 +15,6 @@ import javafx.scene.layout.Priority;
  *
  */
 public class VolumeControlPanel extends HBox {
-
-    private static final double DEFAULT_VOLUME = 0.5;
 
     private final Label _label;
     private final Slider _slider;
@@ -43,9 +42,11 @@ public class VolumeControlPanel extends HBox {
         _label = new Label();
         _label.setMinWidth(30);
 
+        updateView(0.5);
         setSpacing(5);
+        setAlignment(Pos.CENTER_LEFT);
         getChildren().addAll(imageView, _slider, _label);
-        updateView(DEFAULT_VOLUME);
+
         _slider.valueProperty().addListener(this::onValueChanged_Slider);
     }
 
@@ -73,7 +74,7 @@ public class VolumeControlPanel extends HBox {
     /**
      * @param volume
      */
-    private void updateView(final double volume) {
+    void updateView(final double volume) {
         updateSlider(volume);
         updateLabel(volume);
     }

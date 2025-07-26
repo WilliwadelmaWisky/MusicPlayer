@@ -33,23 +33,23 @@ public class ProgressControlPanel extends HBox {
         _playbackPositionLabel.setAlignment(Pos.CENTER_LEFT);
         _playbackPositionLabel.setMinWidth(40);
         _playbackPositionLabel.setMaxWidth(40);
-        getChildren().add(_playbackPositionLabel);
 
         _slider = new Slider();
         _slider.setMin(0);
         _slider.setMax(1);
         HBox.setHgrow(_slider, Priority.ALWAYS);
         _slider.setMaxWidth(Double.POSITIVE_INFINITY);
-        getChildren().add(_slider);
 
         _totalDurationLabel = new Label();
         _totalDurationLabel.setAlignment(Pos.CENTER_RIGHT);
         _totalDurationLabel.setMinWidth(40);
         _totalDurationLabel.setMaxWidth(40);
-        getChildren().add(_totalDurationLabel);
 
         updateView(0, Duration.UNKNOWN, Duration.UNKNOWN);
         setDisable(true);
+        setSpacing(5);
+        getChildren().addAll(_playbackPositionLabel, _slider, _totalDurationLabel);
+
         _slider.valueProperty().addListener(this::onValueChanged_Slider);
     }
 
@@ -60,8 +60,7 @@ public class ProgressControlPanel extends HBox {
     public void setAudioClip(final AudioClip audioClip) {
         _audioClip = audioClip;
 
-        final double normalizedPlaybackPosition = _audioClip.isReady() ? _audioClip.getPlaybackPosition().toMillis() / _audioClip.getTotalDuration().toMillis() : 0;
-        updateView(normalizedPlaybackPosition, _audioClip.getPlaybackPosition(), _audioClip.getTotalDuration());
+        updateView(0, Duration.ZERO, _audioClip.getTotalDuration());
         setDisable(false);
 
         _audioClip.OnProgressChanged.addListener(this::onProgressChanged_AudioClip);
@@ -78,6 +77,7 @@ public class ProgressControlPanel extends HBox {
             return;
 
         _audioClip.OnProgressChanged.removeListener(this::onProgressChanged_AudioClip);
+        _audioClip = null;
     }
 
 
@@ -139,13 +139,14 @@ public class ProgressControlPanel extends HBox {
      * @param newValue
      */
     private void onValueChanged_Slider(final ObservableValue<? extends Number> observable, final Number oldValue, final Number newValue) {
-        if (_audioClip == null)
+        if (_audioClip == null || _audioClip.getStatus() == AudioClip.Status.STOPPED)
             return;
 
         final double delta = Math.abs(oldValue.doubleValue() - newValue.doubleValue());
-        if (delta > 0.05) {
-            System.out.println("ProgressSlider Clicked");
+        final double SKIP_THRESHOLD = 0.05;
+        if (delta > SKIP_THRESHOLD || _audioClip.getStatus() == AudioClip.Status.PAUSED) {
             _audioClip.seek(newValue.doubleValue());
+            updatePlaybackPositionLabel(_audioClip.getTotalDuration().multiply(newValue.doubleValue()));
         }
     }
 }

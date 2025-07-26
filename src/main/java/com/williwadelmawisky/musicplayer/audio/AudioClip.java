@@ -135,7 +135,7 @@ public class AudioClip {
      * @return
      */
     public boolean play() {
-        if (!isReady() || isPlaying())
+        if (!isReady() || _status == Status.PLAYING)
             return false;
 
         _mediaPlayer.play();
@@ -148,7 +148,7 @@ public class AudioClip {
      * @return
      */
     public boolean pause() {
-        if (!isReady() || _mediaPlayer.getStatus() == MediaPlayer.Status.PAUSED)
+        if (!isReady() || _status == Status.PAUSED)
             return false;
 
         _mediaPlayer.pause();
@@ -161,7 +161,7 @@ public class AudioClip {
      * @return
      */
     public boolean stop() {
-        if (!isReady())
+        if (!isReady() || _status == Status.STOPPED)
             return false;
 
         _mediaPlayer.stop();
@@ -176,7 +176,7 @@ public class AudioClip {
      * @return
      */
     public boolean seek(final double normalizedPlaybackPosition) {
-        if (!(isPlaying() || _mediaPlayer.getStatus() == MediaPlayer.Status.PAUSED))
+        if (_status == Status.STOPPED)
             return false;
 
         final double clampedNormalizedPlaybackPosition = Math.clamp(normalizedPlaybackPosition, 0, 1);
@@ -193,7 +193,7 @@ public class AudioClip {
      * @return
      */
     public boolean seek(final Duration playbackPosition) {
-        if (!(isPlaying() || _mediaPlayer.getStatus() == MediaPlayer.Status.PAUSED))
+        if (_status == Status.STOPPED)
             return false;
 
         final Duration clampedPlaybackPosition = Durations.clamp(playbackPosition, Duration.ZERO, _mediaPlayer.getTotalDuration());
@@ -244,7 +244,6 @@ public class AudioClip {
     private void onEndOfMedia_MediaPlayer() {
         _mediaPlayer.stop();
         _status = Status.STOPPED;
-        OnStop.invoke(this, EventArgs.EMPTY);
         OnFinish.invoke(this, EventArgs.EMPTY);
     }
 

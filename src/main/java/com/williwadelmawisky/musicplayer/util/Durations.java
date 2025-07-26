@@ -24,6 +24,15 @@ public abstract class Durations {
 
 
     /**
+     * @param duration
+     * @return
+     */
+    public static boolean isZero(final Duration duration) {
+        return Math.abs(duration.toMillis()) <= 1e-6;
+    }
+
+
+    /**
      * @param durations
      * @return
      */

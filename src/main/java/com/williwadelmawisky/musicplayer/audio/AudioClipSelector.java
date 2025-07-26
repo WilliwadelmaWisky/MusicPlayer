@@ -65,7 +65,7 @@ public class AudioClipSelector {
             case REPEATED -> index = _selectionModel.getSelectedIndex();
         }
 
-        _selectionModel.select(index);
+        _selectionModel.clearAndSelect(index);
     }
 
     /**
@@ -89,6 +89,6 @@ public class AudioClipSelector {
         }
 
 
-        _selectionModel.select(index);
+        _selectionModel.clearAndSelect(index);
     }
 }

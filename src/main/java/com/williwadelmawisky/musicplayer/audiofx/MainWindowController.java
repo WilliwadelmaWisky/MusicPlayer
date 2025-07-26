@@ -8,7 +8,6 @@ import com.williwadelmawisky.musicplayer.util.event.EventArgs_SingleValue;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextInputDialog;
@@ -40,8 +39,9 @@ public class MainWindowController {
     @FXML private Menu _playbackMenu;
     @FXML private MenuItem _playMenuItem;
     @FXML private AudioClipListView _audioClipListView;
-    @FXML private AudioClipControlPanel _audioClipControlPanel;
-    @FXML private Label _totalDurationLabel;
+    @FXML private ProgressControlPanel _progressControlPanel;
+    @FXML private PlaybackControlPanel _playbackControlPanel;
+    @FXML private VolumeControlPanel _volumeControlPanel;
 
     private AudioClipPlayer _audioClipPlayer;
     private SaveManager _saveManager;
@@ -55,17 +55,19 @@ public class MainWindowController {
         _audioClipPlayer = audioClipPlayer;
         _saveManager = new SaveManager();
 
+        _playbackMenu.setDisable(_audioClipPlayer.AudioClipList.isEmpty());
+        _volumeControlPanel.updateView(_audioClipPlayer.getVolume());
+
         _audioClipPlayer.OnPlay.addListener(this::onPlay_AudioClipPlayer);
         _audioClipPlayer.OnPause.addListener(this::onPause_AudioClipPlayer);
         _audioClipPlayer.OnStop.addListener(this::onStop_AudioClipPlayer);
         _audioClipPlayer.OnTotalDurationChanged.addListener(this::onTotalDurationChanged_AudioClipPlayer);
+        _audioClipPlayer.OnVolumeChanged.addListener(this::onVolumeChanged_AudioClipPlayer);
         _audioClipPlayer.AudioClipList.OnChanged.addListener(this::onChanged_AudioClipList);
         _audioClipPlayer.SelectionModel.OnSelected.addListener(this::onSelected_SelectionModel);
         _audioClipPlayer.SelectionModel.OnCleared.addListener(this::onCleared_SelectionModel);
 
         _audioClipListView.setAudioClipPlayer(_audioClipPlayer);
-        _audioClipControlPanel.setOnPrevious(this::onPrevious_AudioControlPanel);
-        _audioClipControlPanel.setOnNext(this::onNext_AudioControlPanel);
     }
 
     /**
@@ -135,7 +137,7 @@ public class MainWindowController {
         if (initialDirectory.exists() && initialDirectory.isDirectory())
             fileChooser.setInitialDirectory(initialDirectory);
 
-        final File file = fileChooser.showOpenDialog(_audioClipControlPanel.getScene().getWindow());
+        final File file = fileChooser.showOpenDialog(_playbackControlPanel.getScene().getWindow());
         if (file == null || !file.exists())
             return;
 
@@ -154,7 +156,7 @@ public class MainWindowController {
         if (initialDirectory.exists() && initialDirectory.isDirectory())
             directoryChooser.setInitialDirectory(initialDirectory);
 
-        final File directory = directoryChooser.showDialog(_audioClipControlPanel.getScene().getWindow());
+        final File directory = directoryChooser.showDialog(_playbackControlPanel.getScene().getWindow());
         if (directory == null || !directory.exists() || !directory.isDirectory())
             return;
 
@@ -189,7 +191,7 @@ public class MainWindowController {
         if (initialDirectory.exists() && initialDirectory.isDirectory())
             fileChooser.setInitialDirectory(initialDirectory);
 
-        final File file = fileChooser.showOpenDialog(_audioClipControlPanel.getScene().getWindow());
+        final File file = fileChooser.showOpenDialog(_playbackControlPanel.getScene().getWindow());
         if (file != null && file.exists())
             loadPlaylist(file);
     }
@@ -207,7 +209,7 @@ public class MainWindowController {
         if (initialDirectory.exists() && initialDirectory.isDirectory())
             fileChooser.setInitialDirectory(initialDirectory);
 
-        final File file = fileChooser.showSaveDialog(_audioClipControlPanel.getScene().getWindow());
+        final File file = fileChooser.showSaveDialog(_playbackControlPanel.getScene().getWindow());
         if (file != null && file.exists())
             savePlaylist(file);
     }
@@ -314,8 +316,17 @@ public class MainWindowController {
      * @param sender
      * @param args
      */
+    private void onVolumeChanged_AudioClipPlayer(final Object sender, final EventArgs_SingleValue<Double> args) {
+        if (!_audioClipPlayer.isActive())
+            _volumeControlPanel.updateView(args.Value);
+    }
+
+    /**
+     * @param sender
+     * @param args
+     */
     private void onTotalDurationChanged_AudioClipPlayer(final Object sender, final EventArgs_SingleValue<Duration> args) {
-        _totalDurationLabel.setText("PLAYLIST [" + Durations.durationToString(args.Value) + "]");
+        updatePlaybackMenuText(args.Value);
     }
 
 
@@ -333,8 +344,9 @@ public class MainWindowController {
      * @param args
      */
     private void onSelected_SelectionModel(final Object sender, final SelectionModel.OnSelectedEventArgs<AudioClip> args) {
-        _audioClipControlPanel.clear();
-        _audioClipControlPanel.setAudioClip(args.Item);
+        _progressControlPanel.setAudioClip(args.Item);
+        _playbackControlPanel.setAudioClip(args.Item);
+        _volumeControlPanel.setAudioClip(args.Item);
     }
 
     /**
@@ -342,19 +354,19 @@ public class MainWindowController {
      * @param args
      */
     private void onCleared_SelectionModel(final Object sender, final EventArgs args) {
-        _audioClipControlPanel.clear();
+        _progressControlPanel.clear();
+        _playbackControlPanel.clear();
+        _volumeControlPanel.clear();
     }
 
 
     /**
-     * @param e
+     * @param duration
      */
-    private void onPrevious_AudioControlPanel(final ActionEvent e) { _audioClipPlayer.previous(); }
-
-    /**
-     * @param e
-     */
-    private void onNext_AudioControlPanel(final ActionEvent e) { _audioClipPlayer.next(); }
+    private void updatePlaybackMenuText(final Duration duration) {
+        final String textString = Durations.isZero(duration) ? "Playback" : String.format("Playback (%s)", Durations.durationToString(duration));
+        _playbackMenu.setText(textString);
+    }
 
 
     /**

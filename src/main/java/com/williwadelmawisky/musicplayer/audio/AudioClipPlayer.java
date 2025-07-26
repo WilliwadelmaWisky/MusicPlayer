@@ -22,7 +22,7 @@ public class AudioClipPlayer {
     public final EventHandler<EventArgs_SingleValue<Progress>> OnProgressChanged;
 
     public final ObservableList<AudioClip> AudioClipList;
-    public final com.williwadelmawisky.musicplayer.util.SelectionModel<AudioClip> SelectionModel;
+    public final SelectionModel<AudioClip> SelectionModel;
     public final AudioClipSelector AudioClipSelector;
     private AudioClip _activeAudioClip;
     private Duration _totalDuration;
@@ -60,6 +60,11 @@ public class AudioClipPlayer {
      * @return
      */
     public double getVolume() { return _volume; }
+
+    /**
+     * @return
+     */
+    public boolean isActive() { return _activeAudioClip != null; }
 
 
     /**
@@ -134,7 +139,7 @@ public class AudioClipPlayer {
      * @return
      */
     public boolean play() {
-        if (_activeAudioClip == null)
+        if (!isActive())
             return false;
 
         return _activeAudioClip.play();
@@ -144,7 +149,7 @@ public class AudioClipPlayer {
      * @return
      */
     public boolean pause() {
-        if (_activeAudioClip == null)
+        if (!isActive())
             return false;
 
         return _activeAudioClip.pause();
@@ -154,7 +159,7 @@ public class AudioClipPlayer {
      * @return
      */
     public boolean stop() {
-        if (_activeAudioClip == null)
+        if (!isActive())
             return false;
 
         return _activeAudioClip.stop();
@@ -166,7 +171,7 @@ public class AudioClipPlayer {
      * @return
      */
     public boolean seek(final double progress) {
-        if (_activeAudioClip == null)
+        if (!isActive())
             return false;
 
         return _activeAudioClip.seek(progress);
@@ -177,7 +182,7 @@ public class AudioClipPlayer {
      * @return
      */
     public boolean seek(final Duration playbackPosition) {
-        if (_activeAudioClip == null)
+        if (!isActive())
             return false;
 
         return _activeAudioClip.seek(playbackPosition);
@@ -188,7 +193,7 @@ public class AudioClipPlayer {
      * @return
      */
     public boolean skipForward(final Duration amount) {
-        if (_activeAudioClip == null)
+        if (!isActive())
             return false;
 
         return _activeAudioClip.skipForward(amount);
@@ -199,7 +204,7 @@ public class AudioClipPlayer {
      * @return
      */
     public boolean skipBackward(final Duration amount) {
-        if (_activeAudioClip == null)
+        if (!isActive())
             return false;
 
         return _activeAudioClip.skipBackward(amount);
@@ -289,10 +294,8 @@ public class AudioClipPlayer {
      */
     private void onStop_AudioClip(final Object sender, final EventArgs args) {
         OnStop.invoke(this, new EventArgs_SingleValue<>(_activeAudioClip));
-        if (_activeAudioClip == null)
-            return;
 
-        if (!_activeAudioClip.equals(SelectionModel.getSelectedItem()))
+        if (!isActive() || !_activeAudioClip.equals(SelectionModel.getSelectedItem()))
             return;
 
         _activeAudioClip = null;
@@ -356,9 +359,6 @@ public class AudioClipPlayer {
      * @param args
      */
     private void onSelected_SelectionModel(final Object sender, final SelectionModel.OnSelectedEventArgs<AudioClip> args) {
-        if (args.Item.equals(_activeAudioClip))
-            return;
-
         if (_activeAudioClip != null)
             _activeAudioClip.stop();
 

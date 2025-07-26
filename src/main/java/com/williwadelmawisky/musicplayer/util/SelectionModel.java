@@ -64,6 +64,20 @@ public class SelectionModel<T> {
     }
 
     /**
+     * @param index
+     */
+    public void clearAndSelect(final int index) {
+        clear();
+
+        if (index < 0 || index >= _observableList.length())
+            return;
+
+        _selectedIndex = index;
+        _selectedItem = _observableList.get(_selectedIndex);
+        OnSelected.invoke(this, new OnSelectedEventArgs<>(_selectedItem));
+    }
+
+    /**
      *
      */
     public void clear() {
@@ -84,7 +98,7 @@ public class SelectionModel<T> {
             return;
         }
 
-        select(0);
+        clearAndSelect(0);
     }
 
 

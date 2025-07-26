@@ -225,7 +225,7 @@ public class AudioClipListView extends VBox {
             return;
 
         final int index = _audioClipPlayer.AudioClipList.indexOf(audioClip -> audioClip.equals(audioClipListViewEntry.getAudioClip()));
-        _audioClipPlayer.SelectionModel.select(index);
+        _audioClipPlayer.SelectionModel.clearAndSelect(index);
     }
 
     /**
