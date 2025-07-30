@@ -16,6 +16,6 @@ module com.github.williwadelmawisky.musicplayer {
     opens com.williwadelmawisky.musicplayer.util to javafx.fxml;
     exports com.williwadelmawisky.musicplayer.util.event;
     opens com.williwadelmawisky.musicplayer.util.event to javafx.fxml;
-    exports com.williwadelmawisky.musicplayer.util.fx;
-    opens com.williwadelmawisky.musicplayer.util.fx to javafx.fxml;
+    exports com.williwadelmawisky.musicplayer.utilfx;
+    opens com.williwadelmawisky.musicplayer.utilfx to javafx.fxml;
 }

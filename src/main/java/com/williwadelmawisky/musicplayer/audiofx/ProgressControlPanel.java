@@ -2,7 +2,7 @@ package com.williwadelmawisky.musicplayer.audiofx;
 
 import com.williwadelmawisky.musicplayer.audio.AudioClip;
 import com.williwadelmawisky.musicplayer.audio.Progress;
-import com.williwadelmawisky.musicplayer.util.Durations;
+import com.williwadelmawisky.musicplayer.utilfx.Durations;
 import com.williwadelmawisky.musicplayer.util.event.EventArgs_SingleValue;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;

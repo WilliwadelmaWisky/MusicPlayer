@@ -1,4 +1,4 @@
-package com.williwadelmawisky.musicplayer.util;
+package com.williwadelmawisky.musicplayer.audio;
 
 import java.util.Collection;
 

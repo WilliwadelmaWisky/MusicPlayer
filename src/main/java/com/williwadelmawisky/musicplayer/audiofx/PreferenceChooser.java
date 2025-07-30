@@ -1,7 +1,7 @@
 package com.williwadelmawisky.musicplayer.audiofx;
 
 import com.williwadelmawisky.musicplayer.ResourceLoader;
-import com.williwadelmawisky.musicplayer.util.fx.SearchField;
+import com.williwadelmawisky.musicplayer.utilfx.SearchField;
 import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
 

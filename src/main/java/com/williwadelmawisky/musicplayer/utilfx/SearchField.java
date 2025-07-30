@@ -1,4 +1,4 @@
-package com.williwadelmawisky.musicplayer.util.fx;
+package com.williwadelmawisky.musicplayer.utilfx;
 
 import javafx.event.ActionEvent;
 import javafx.event.Event;

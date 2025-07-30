@@ -3,7 +3,6 @@ package com.williwadelmawisky.musicplayer.audio;
 import com.williwadelmawisky.musicplayer.util.json.JSON;
 import com.williwadelmawisky.musicplayer.util.json.PrettyModifier;
 import com.williwadelmawisky.musicplayer.util.json.SerializeField;
-import com.williwadelmawisky.musicplayer.util.ObservableList;
 
 import java.util.function.Consumer;
 

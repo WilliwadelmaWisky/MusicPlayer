@@ -3,7 +3,7 @@ package com.williwadelmawisky.musicplayer.audiofx;
 import com.williwadelmawisky.musicplayer.ResourceLoader;
 import com.williwadelmawisky.musicplayer.audio.AudioClip;
 import com.williwadelmawisky.musicplayer.util.event.EventArgs;
-import com.williwadelmawisky.musicplayer.util.fx.GraphicButton;
+import com.williwadelmawisky.musicplayer.utilfx.GraphicButton;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;

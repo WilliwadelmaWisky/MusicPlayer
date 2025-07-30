@@ -3,7 +3,7 @@ package com.williwadelmawisky.musicplayer.audio;
 import java.io.File;
 
 import com.williwadelmawisky.musicplayer.ResourceLoader;
-import com.williwadelmawisky.musicplayer.util.Durations;
+import com.williwadelmawisky.musicplayer.utilfx.Durations;
 import com.williwadelmawisky.musicplayer.util.event.EventArgs;
 import com.williwadelmawisky.musicplayer.util.event.EventHandler;
 import com.williwadelmawisky.musicplayer.util.event.EventArgs_SingleValue;

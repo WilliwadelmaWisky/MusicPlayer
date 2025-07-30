@@ -1,8 +1,8 @@
 package com.williwadelmawisky.musicplayer.audiofx;
 
 import com.williwadelmawisky.musicplayer.audio.AudioClipSelector;
-import com.williwadelmawisky.musicplayer.util.ObservableValue;
-import com.williwadelmawisky.musicplayer.util.fx.EnumComboBox;
+import com.williwadelmawisky.musicplayer.audio.ObservableValue;
+import com.williwadelmawisky.musicplayer.utilfx.EnumComboBox;
 
 /**
  *

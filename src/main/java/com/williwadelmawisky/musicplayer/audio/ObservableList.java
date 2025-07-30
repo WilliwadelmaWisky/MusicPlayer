@@ -1,5 +1,6 @@
-package com.williwadelmawisky.musicplayer.util;
+package com.williwadelmawisky.musicplayer.audio;
 
+import com.williwadelmawisky.musicplayer.util.Lists;
 import com.williwadelmawisky.musicplayer.util.event.EventArgs;
 import com.williwadelmawisky.musicplayer.util.event.EventHandler;
 

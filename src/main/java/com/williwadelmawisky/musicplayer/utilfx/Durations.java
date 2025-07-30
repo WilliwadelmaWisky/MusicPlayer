@@ -1,5 +1,6 @@
-package com.williwadelmawisky.musicplayer.util;
+package com.williwadelmawisky.musicplayer.utilfx;
 
+import com.williwadelmawisky.musicplayer.util.Strings;
 import javafx.util.Duration;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.williwadelmawisky.musicplayer.audiofx;
 
-import com.williwadelmawisky.musicplayer.util.fx.SearchField;
+import com.williwadelmawisky.musicplayer.utilfx.SearchField;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.layout.Priority;

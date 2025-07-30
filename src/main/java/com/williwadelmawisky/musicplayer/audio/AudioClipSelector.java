@@ -1,8 +1,5 @@
 package com.williwadelmawisky.musicplayer.audio;
 
-import com.williwadelmawisky.musicplayer.util.ObservableValue;
-import com.williwadelmawisky.musicplayer.util.SelectionModel;
-
 import java.util.Random;
 
 /**

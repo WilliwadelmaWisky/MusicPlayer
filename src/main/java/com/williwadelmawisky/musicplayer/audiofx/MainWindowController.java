@@ -1,9 +1,9 @@
 package com.williwadelmawisky.musicplayer.audiofx;
 
 import com.williwadelmawisky.musicplayer.audio.*;
-import com.williwadelmawisky.musicplayer.util.Durations;
+import com.williwadelmawisky.musicplayer.utilfx.Durations;
 import com.williwadelmawisky.musicplayer.util.event.EventArgs;
-import com.williwadelmawisky.musicplayer.util.SelectionModel;
+import com.williwadelmawisky.musicplayer.audio.SelectionModel;
 import com.williwadelmawisky.musicplayer.util.event.EventArgs_SingleValue;
 
 import javafx.event.ActionEvent;

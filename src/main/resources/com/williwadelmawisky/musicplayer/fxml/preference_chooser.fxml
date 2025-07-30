@@ -5,7 +5,7 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import com.williwadelmawisky.musicplayer.util.fx.SearchField?>
+<?import com.williwadelmawisky.musicplayer.utilfx.SearchField?>
 
 <?import com.williwadelmawisky.musicplayer.audiofx.PreferenceListView?>
 <fx:root type="com.williwadelmawisky.musicplayer.audiofx.PreferenceChooser"
