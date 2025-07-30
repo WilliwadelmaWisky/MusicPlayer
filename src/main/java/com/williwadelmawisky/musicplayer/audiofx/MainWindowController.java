@@ -56,18 +56,19 @@ public class MainWindowController {
         _saveManager = new SaveManager();
 
         _playbackMenu.setDisable(_audioClipPlayer.AudioClipList.isEmpty());
-        _volumeControlPanel.updateView(_audioClipPlayer.getVolume());
+        _playbackControlPanel.setDisable(_audioClipPlayer.AudioClipList.isEmpty());
+
+        _audioClipListView.setAudioClipPlayer(_audioClipPlayer);
+        _playbackControlPanel.setAudioClipPlayer(_audioClipPlayer);
+        _volumeControlPanel.setAudioClipPlayer(_audioClipPlayer);
 
         _audioClipPlayer.OnPlay.addListener(this::onPlay_AudioClipPlayer);
         _audioClipPlayer.OnPause.addListener(this::onPause_AudioClipPlayer);
         _audioClipPlayer.OnStop.addListener(this::onStop_AudioClipPlayer);
-        _audioClipPlayer.OnTotalDurationChanged.addListener(this::onTotalDurationChanged_AudioClipPlayer);
-        _audioClipPlayer.OnVolumeChanged.addListener(this::onVolumeChanged_AudioClipPlayer);
+        _audioClipPlayer.TotalDurationProperty.OnChanged.addListener(this::onChanged_TotalDuration);
         _audioClipPlayer.AudioClipList.OnChanged.addListener(this::onChanged_AudioClipList);
         _audioClipPlayer.SelectionModel.OnSelected.addListener(this::onSelected_SelectionModel);
         _audioClipPlayer.SelectionModel.OnCleared.addListener(this::onCleared_SelectionModel);
-
-        _audioClipListView.setAudioClipPlayer(_audioClipPlayer);
     }
 
     /**
@@ -84,7 +85,7 @@ public class MainWindowController {
      */
     @FXML
     private void onNewPlaylistButtonClicked(final ActionEvent e) {
-        _audioClipPlayer.clear();
+        _audioClipPlayer.AudioClipList.clear();
     }
 
     /**
@@ -233,25 +234,25 @@ public class MainWindowController {
      * @param e
      */
     @FXML
-    private void onSkipForwardButtonClicked(final ActionEvent e) { _audioClipPlayer.skipForward(SKIP_FORWARD_AMOUNT); }
+    private void onSkipForwardButtonClicked(final ActionEvent e) { _audioClipPlayer.jumpForward(SKIP_FORWARD_AMOUNT); }
 
     /**
      * @param e
      */
     @FXML
-    private void onSkipBackwardButtonClicked(final ActionEvent e) { _audioClipPlayer.skipBackward(SKIP_BACKWARD_AMOUNT); }
+    private void onSkipBackwardButtonClicked(final ActionEvent e) { _audioClipPlayer.jumpBackward(SKIP_BACKWARD_AMOUNT); }
 
     /**
      * @param e
      */
     @FXML
-    private void onNextButtonClicked(final ActionEvent e) { _audioClipPlayer.next(); }
+    private void onNextButtonClicked(final ActionEvent e) { _audioClipPlayer.SelectionModel.selectNext(); }
 
     /**
      * @param e
      */
     @FXML
-    private void onPreviousButtonClicked(final ActionEvent e) { _audioClipPlayer.previous(); }
+    private void onPreviousButtonClicked(final ActionEvent e) { _audioClipPlayer.SelectionModel.selectPrevious(); }
 
 
     /**
@@ -259,7 +260,7 @@ public class MainWindowController {
      */
     @FXML
     private void onIncreaseVolumeButtonClicked(final ActionEvent e) {
-        final double volume = ((int)(_audioClipPlayer.getVolume() * 100.0 / INCREASE_VOLUME_AMOUNT) + 1) * INCREASE_VOLUME_AMOUNT / 100.0;
+        final double volume = ((int)(_audioClipPlayer.VolumeProperty.getValue() * 100.0 / INCREASE_VOLUME_AMOUNT) + 1) * INCREASE_VOLUME_AMOUNT / 100.0;
         _audioClipPlayer.setVolume(volume);
     }
 
@@ -268,7 +269,7 @@ public class MainWindowController {
      */
     @FXML
     private void onDecreaseVolumeButtonClicked(final ActionEvent e) {
-        final double volume = ((int)(_audioClipPlayer.getVolume() * 100.0 / DECRAESE_VOLUME_AMOUNT) - 1) * DECRAESE_VOLUME_AMOUNT / 100.0;
+        final double volume = ((int)(_audioClipPlayer.VolumeProperty.getValue() * 100.0 / DECRAESE_VOLUME_AMOUNT) - 1) * DECRAESE_VOLUME_AMOUNT / 100.0;
         _audioClipPlayer.setVolume(volume);
     }
 
@@ -316,37 +317,25 @@ public class MainWindowController {
      * @param sender
      * @param args
      */
-    private void onVolumeChanged_AudioClipPlayer(final Object sender, final EventArgs_SingleValue<Double> args) {
-        if (!_audioClipPlayer.isActive())
-            _volumeControlPanel.updateView(args.Value);
-    }
-
-    /**
-     * @param sender
-     * @param args
-     */
-    private void onTotalDurationChanged_AudioClipPlayer(final Object sender, final EventArgs_SingleValue<Duration> args) {
-        updatePlaybackMenuText(args.Value);
-    }
-
-
-    /**
-     * @param sender
-     * @param args
-     */
     private void onChanged_AudioClipList(final Object sender, final EventArgs args) {
         _playbackMenu.setDisable(_audioClipPlayer.AudioClipList.isEmpty());
     }
 
+    /**
+     * @param sender
+     * @param args
+     */
+    private void onChanged_TotalDuration(final Object sender, final ObservableValue.ChangeEventArgs<Duration> args) {
+        updatePlaybackMenuText(args.Value);
+    }
 
     /**
      * @param sender
      * @param args
      */
-    private void onSelected_SelectionModel(final Object sender, final SelectionModel.OnSelectedEventArgs<AudioClip> args) {
+    private void onSelected_SelectionModel(final Object sender, final SelectionModel.SelectEventArgs<AudioClip> args) {
         _progressControlPanel.setAudioClip(args.Item);
-        _playbackControlPanel.setAudioClip(args.Item);
-        _volumeControlPanel.setAudioClip(args.Item);
+        _playbackControlPanel.setDisable(false);
     }
 
     /**
@@ -355,8 +344,7 @@ public class MainWindowController {
      */
     private void onCleared_SelectionModel(final Object sender, final EventArgs args) {
         _progressControlPanel.clear();
-        _playbackControlPanel.clear();
-        _volumeControlPanel.clear();
+        _playbackControlPanel.setDisable(true);
     }
 
 
@@ -374,11 +362,7 @@ public class MainWindowController {
      */
     boolean load(final File file) {
         _name = null;
-
-        _audioClipPlayer.clear();
-        final FileReader fileReader = new FileReader(file);
-        fileReader.read(_audioClipPlayer::add);
-        return !_audioClipPlayer.isEmpty();
+        return _audioClipPlayer.load(file);
     }
 
     
@@ -401,7 +385,6 @@ public class MainWindowController {
         if (!success)
             return false;
 
-        _audioClipPlayer.load(playlistInfo);
-        return true;
+        return _audioClipPlayer.load(playlistInfo);
     }
 }

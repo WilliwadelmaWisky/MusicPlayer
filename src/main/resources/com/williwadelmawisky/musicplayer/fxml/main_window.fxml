@@ -74,7 +74,7 @@
                 <padding>
                     <Insets left="50" right="50"/>
                 </padding>
-                <PlaybackControlPanel fx:id="_playbackControlPanel" onNext="#onNextButtonClicked" onPrevious="#onPreviousButtonClicked"/>
+                <PlaybackControlPanel fx:id="_playbackControlPanel"/>
                 <Region HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
                 <VolumeControlPanel fx:id="_volumeControlPanel" minWidth="250" maxWidth="250"/>
             </HBox>

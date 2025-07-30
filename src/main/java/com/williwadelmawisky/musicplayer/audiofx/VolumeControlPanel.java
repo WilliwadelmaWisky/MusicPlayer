@@ -1,9 +1,8 @@
 package com.williwadelmawisky.musicplayer.audiofx;
 
 import com.williwadelmawisky.musicplayer.ResourceLoader;
-import com.williwadelmawisky.musicplayer.audio.AudioClip;
-import com.williwadelmawisky.musicplayer.util.event.EventArgs_SingleValue;
-import javafx.beans.value.ObservableValue;
+import com.williwadelmawisky.musicplayer.audio.AudioClipPlayer;
+import com.williwadelmawisky.musicplayer.audio.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -18,7 +17,7 @@ public class VolumeControlPanel extends HBox {
 
     private final Label _label;
     private final Slider _slider;
-    private AudioClip _audioClip;
+    private AudioClipPlayer _audioClipPlayer;
 
 
     /**
@@ -52,29 +51,30 @@ public class VolumeControlPanel extends HBox {
 
 
     /**
-     * @param audioClip
+     * @param audioClipPlayer
      */
-    public void setAudioClip(final AudioClip audioClip) {
-        _audioClip = audioClip;
-        _audioClip.setVolume(_slider.getValue());
-        _audioClip.OnVolumeChanged.addListener(this::onVolumeChanged_AudioClip);
+    public void setAudioClipPlayer(final AudioClipPlayer audioClipPlayer) {
+        _audioClipPlayer = audioClipPlayer;
+
+        updateView(_audioClipPlayer.VolumeProperty.getValue());
+        _audioClipPlayer.VolumeProperty.OnChanged.addListener(this::onChanged_VolumeProperty);
     }
 
     /**
      *
      */
     public void clear() {
-        if (_audioClip == null)
+        if (_audioClipPlayer == null)
             return;
 
-        _audioClip.OnVolumeChanged.removeListener(this::onVolumeChanged_AudioClip);
+        _audioClipPlayer.VolumeProperty.OnChanged.removeListener(this::onChanged_VolumeProperty);
     }
 
 
     /**
      * @param volume
      */
-    void updateView(final double volume) {
+    private void updateView(final double volume) {
         updateSlider(volume);
         updateLabel(volume);
     }
@@ -96,26 +96,23 @@ public class VolumeControlPanel extends HBox {
 
 
     /**
-     * @param sender
-     * @param args
-     */
-    private void onVolumeChanged_AudioClip(final Object sender, final EventArgs_SingleValue<Double> args) {
-        if (Math.abs(_slider.getValue() - args.Value) <= 1e-6)
-            return;
-
-        updateView(args.Value);
-    }
-
-    /**
      * @param observable
      * @param oldValue
      * @param newValue
      */
-    private void onValueChanged_Slider(final ObservableValue<? extends Number> observable, final Number oldValue, final Number newValue) {
+    private void onValueChanged_Slider(final javafx.beans.value.ObservableValue<? extends Number> observable, final Number oldValue, final Number newValue) {
         updateLabel(newValue.doubleValue());
-        if (_audioClip == null)
+        _audioClipPlayer.setVolume(newValue.doubleValue());
+    }
+
+    /**
+     * @param sender
+     * @param args
+     */
+    private void onChanged_VolumeProperty(final Object sender, final ObservableValue.ChangeEventArgs<Double> args) {
+        if (Math.abs(_slider.getValue() - args.Value) <= 1e-6)
             return;
 
-        _audioClip.setVolume(newValue.doubleValue());
+        updateView(args.Value);
     }
 }

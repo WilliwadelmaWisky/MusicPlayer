@@ -2,7 +2,9 @@ package com.williwadelmawisky.musicplayer.audiofx;
 
 import com.williwadelmawisky.musicplayer.ResourceLoader;
 import com.williwadelmawisky.musicplayer.audio.AudioClip;
+import com.williwadelmawisky.musicplayer.audio.AudioClipPlayer;
 import com.williwadelmawisky.musicplayer.util.event.EventArgs;
+import com.williwadelmawisky.musicplayer.util.event.EventArgs_SingleValue;
 import com.williwadelmawisky.musicplayer.utilfx.GraphicButton;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -22,9 +24,7 @@ public class PlaybackControlPanel extends HBox {
     private final AudioPlaybackButton _previousButton;
     private final AudioPlaybackButton _nextButton;
     private final AudioPlaybackButton _stopButton;
-    private EventHandler<ActionEvent> _onPrevious;
-    private EventHandler<ActionEvent> _onNext;
-    private AudioClip _audioClip;
+    private AudioClipPlayer _audioClipPlayer;
 
 
     /**
@@ -44,26 +44,26 @@ public class PlaybackControlPanel extends HBox {
 
         setSpacing(5);
         getChildren().addAll(_playButton, region, _previousButton, _stopButton, _nextButton);
-        setDisable(true);
 
-        _previousButton.setOnAction(this::onClicked_PreviousButton);
         _playButton.setOnAction(this::onClicked_PlayButton);
+        _stopButton.setOnAction(this::onClicked_StopButton);
+        _previousButton.setOnAction(this::onClicked_PreviousButton);
         _nextButton.setOnAction(this::onClicked_NextButton);
     }
 
 
     /**
-     * @param audioClip
+     * @param audioClipPlayer
      */
-    public void setAudioClip(final AudioClip audioClip) {
-        _audioClip = audioClip;
+    public void setAudioClipPlayer(final AudioClipPlayer audioClipPlayer) {
+        _audioClipPlayer = audioClipPlayer;
 
-        updateImage(_audioClip.isPlaying());
-        setDisable(false);
+        final boolean isPlaying = _audioClipPlayer.SelectionModel.hasValue() && _audioClipPlayer.SelectionModel.getValue().isPlaying();
+        updateImage(isPlaying);
 
-        _audioClip.OnPlay.addListener(this::onPlay_AudioClip);
-        _audioClip.OnPause.addListener(this::onPause_AudioClip);
-        _audioClip.OnStop.addListener(this::onStop_AudioClip);
+        _audioClipPlayer.OnPlay.addListener(this::onPlay_AudioClipPlayer);
+        _audioClipPlayer.OnPause.addListener(this::onPause_AudioClipPlayer);
+        _audioClipPlayer.OnStop.addListener(this::onStop_AudioClipPlayer);
     }
 
     /**
@@ -71,13 +71,13 @@ public class PlaybackControlPanel extends HBox {
      */
     public void clear() {
         updateImage(false);
-        setDisable(true);
-        if (_audioClip == null)
+
+        if (_audioClipPlayer == null)
             return;
 
-        _audioClip.OnPlay.removeListener(this::onPlay_AudioClip);
-        _audioClip.OnPause.removeListener(this::onPause_AudioClip);
-        _audioClip.OnStop.removeListener(this::onStop_AudioClip);
+        _audioClipPlayer.OnPlay.removeListener(this::onPlay_AudioClipPlayer);
+        _audioClipPlayer.OnPause.removeListener(this::onPause_AudioClipPlayer);
+        _audioClipPlayer.OnStop.removeListener(this::onStop_AudioClipPlayer);
     }
 
 
@@ -106,53 +106,35 @@ public class PlaybackControlPanel extends HBox {
 
 
     /**
-     * @return
-     */
-    public EventHandler<ActionEvent> getOnPrevious() { return _onPrevious; }
-
-    /**
-     * @return
-     */
-    public EventHandler<ActionEvent> getOnNext() { return _onNext; }
-
-    /**
-     * @param onPrevious
-     */
-    public void setOnPrevious(final EventHandler<ActionEvent> onPrevious) { _onPrevious = onPrevious; }
-
-    /**
-     * @param onNext
-     */
-    public void setOnNext(final EventHandler<ActionEvent> onNext) { _onNext = onNext; }
-
-
-    /**
      * @param e
      */
     private void onClicked_PlayButton(final ActionEvent e) {
-        if (_audioClip == null)
-            return;
-
-        switch (_audioClip.getStatus()) {
-            case PLAYING -> _audioClip.pause();
-            case PAUSED -> _audioClip.play();
+        final AudioClip audioClip = _audioClipPlayer.SelectionModel.getValue();
+        switch (audioClip.getStatus()) {
+            case PLAYING -> _audioClipPlayer.pause();
+            case PAUSED -> _audioClipPlayer.play();
         }
     }
 
     /**
      * @param e
      */
+    private void onClicked_StopButton(final ActionEvent e) {
+        _audioClipPlayer.stop();
+    }
+
+    /**
+     * @param e
+     */
     private void onClicked_PreviousButton(final ActionEvent e) {
-        if (_audioClip != null && _onPrevious != null)
-            _onPrevious.handle(e);
+        _audioClipPlayer.SelectionModel.selectPrevious();
     }
 
     /**
      * @param e
      */
     private void onClicked_NextButton(final ActionEvent e) {
-        if (_audioClip != null && _onNext != null)
-            _onNext.handle(e);
+        _audioClipPlayer.SelectionModel.selectNext();
     }
 
 
@@ -160,7 +142,7 @@ public class PlaybackControlPanel extends HBox {
      * @param sender
      * @param args
      */
-    private void onPlay_AudioClip(final Object sender, final EventArgs args) {
+    private void onPlay_AudioClipPlayer(final Object sender, final EventArgs_SingleValue<AudioClip> args) {
         updateImage(true);
     }
 
@@ -168,7 +150,7 @@ public class PlaybackControlPanel extends HBox {
      * @param sender
      * @param args
      */
-    private void onPause_AudioClip(final Object sender, final EventArgs args) {
+    private void onPause_AudioClipPlayer(final Object sender, final EventArgs_SingleValue<AudioClip> args) {
         updateImage(false);
     }
 
@@ -176,7 +158,7 @@ public class PlaybackControlPanel extends HBox {
      * @param sender
      * @param args
      */
-    private void onStop_AudioClip(final Object sender, final EventArgs args) {
+    private void onStop_AudioClipPlayer(final Object sender, final EventArgs_SingleValue<AudioClip> args) {
         updateImage(false);
     }
 

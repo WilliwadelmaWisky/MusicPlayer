@@ -14,9 +14,9 @@ import java.util.function.Predicate;
  */
 public class ObservableList<T> implements Iterable<T> {
 
-    public final EventHandler<OnItemAddedEventArgs<T>> OnItemAdded;
-    public final EventHandler<OnItemRemovedEventArgs<T>> OnItemRemoved;
-    public final EventHandler<OnClearedEventArgs<T>> OnCleared;
+    public final EventHandler<AddEventArgs<T>> OnItemAdded;
+    public final EventHandler<RemoveEventArgs<T>> OnItemRemoved;
+    public final EventHandler<ClearEventArgs<T>> OnCleared;
     public final EventHandler<EventArgs> OnChanged;
     public final EventHandler<EventArgs> OnSorted;
 
@@ -83,7 +83,7 @@ public class ObservableList<T> implements Iterable<T> {
             return false;
 
         _list.add(item);
-        OnItemAdded.invoke(this, new OnItemAddedEventArgs<>(item));
+        OnItemAdded.invoke(this, new AddEventArgs<>(item));
         OnChanged.invoke(this, EventArgs.EMPTY);
         return true;
     }
@@ -112,7 +112,7 @@ public class ObservableList<T> implements Iterable<T> {
         if (!_list.remove(item))
             return false;
 
-        OnItemRemoved.invoke(this, new OnItemRemovedEventArgs<>(item));
+        OnItemRemoved.invoke(this, new RemoveEventArgs<>(item));
         OnChanged.invoke(this, EventArgs.EMPTY);
         return true;
     }
@@ -121,11 +121,10 @@ public class ObservableList<T> implements Iterable<T> {
     /**
      *
      */
-    @SuppressWarnings("unchecked")
     public void clear() {
         final List<T> items = new ArrayList<>(_list);
         _list.clear();
-        OnCleared.invoke(this, new OnClearedEventArgs<>(items));
+        OnCleared.invoke(this, new ClearEventArgs<>(items));
         OnChanged.invoke(this, EventArgs.EMPTY);
     }
 
@@ -184,14 +183,14 @@ public class ObservableList<T> implements Iterable<T> {
     /**
      * @param <T>
      */
-    public static class OnItemAddedEventArgs<T> extends EventArgs {
+    public static class AddEventArgs<T> extends EventArgs {
 
         public final T Item;
 
         /**
          * @param item
          */
-        public OnItemAddedEventArgs(final T item) {
+        public AddEventArgs(final T item) {
             super();
 
             Item = item;
@@ -201,14 +200,14 @@ public class ObservableList<T> implements Iterable<T> {
     /**
      * @param <T>
      */
-    public static class OnItemRemovedEventArgs<T> extends EventArgs {
+    public static class RemoveEventArgs<T> extends EventArgs {
 
         public final T Item;
 
         /**
          * @param item
          */
-        public OnItemRemovedEventArgs(final T item) {
+        public RemoveEventArgs(final T item) {
             super();
 
             Item = item;
@@ -218,14 +217,14 @@ public class ObservableList<T> implements Iterable<T> {
     /**
      * @param <T>
      */
-    public static class OnClearedEventArgs<T> extends EventArgs {
+    public static class ClearEventArgs<T> extends EventArgs {
 
         public final List<T> Items;
 
         /**
          * @param items
          */
-        public OnClearedEventArgs(final List<T> items) {
+        public ClearEventArgs(final List<T> items) {
             Items = items;
         }
     }

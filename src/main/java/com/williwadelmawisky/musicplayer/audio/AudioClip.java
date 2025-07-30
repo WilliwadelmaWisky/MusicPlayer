@@ -92,12 +92,7 @@ public class AudioClip {
     /**
      * @return
      */
-    public Duration getPlaybackPosition() { return _isReady ? _mediaPlayer.getCurrentTime() : Duration.ZERO; }
-
-    /**
-     * @return
-     */
-    public Duration getTotalDuration() { return _isReady ? _mediaPlayer.getTotalDuration() : Duration.ZERO; }
+    public Duration getTotalDuration() { return _mediaPlayer.getTotalDuration(); }
 
     /**
      * @return
@@ -108,7 +103,7 @@ public class AudioClip {
     /**
      * @param volume
      */
-    public void setVolume(final double volume) {
+    void setVolume(final double volume) {
         final double clampedVolume = Math.clamp(volume, 0, 1);
         if (Math.abs(_mediaPlayer.getVolume() - clampedVolume) <= 1e-6)
             return;
@@ -134,7 +129,7 @@ public class AudioClip {
     /**
      * @return
      */
-    public boolean play() {
+    boolean play() {
         if (!isReady() || _status == Status.PLAYING)
             return false;
 
@@ -147,7 +142,7 @@ public class AudioClip {
     /**
      * @return
      */
-    public boolean pause() {
+    boolean pause() {
         if (!isReady() || _status == Status.PAUSED)
             return false;
 
@@ -160,7 +155,7 @@ public class AudioClip {
     /**
      * @return
      */
-    public boolean stop() {
+    boolean stop() {
         if (!isReady() || _status == Status.STOPPED)
             return false;
 
@@ -172,19 +167,26 @@ public class AudioClip {
 
 
     /**
+     * @param clampedNormalizedPlaybackPosition
+     * @param clampedPlaybackPosition
+     */
+    private void _seek(final double clampedNormalizedPlaybackPosition, final Duration clampedPlaybackPosition) {
+        _mediaPlayer.seek(clampedPlaybackPosition);
+        final Progress progress = new Progress(clampedNormalizedPlaybackPosition, clampedPlaybackPosition, _mediaPlayer.getTotalDuration());
+        OnProgressChanged.invoke(this, new EventArgs_SingleValue<>(progress));
+    }
+
+    /**
      * @param normalizedPlaybackPosition
      * @return
      */
     public boolean seek(final double normalizedPlaybackPosition) {
-        if (_status == Status.STOPPED)
+        if (!_isReady || _status == Status.STOPPED)
             return false;
 
         final double clampedNormalizedPlaybackPosition = Math.clamp(normalizedPlaybackPosition, 0, 1);
         final Duration clampedPlaybackPosition = _mediaPlayer.getTotalDuration().multiply(clampedNormalizedPlaybackPosition);
-        _mediaPlayer.seek(clampedPlaybackPosition);
-
-        final Progress progress = new Progress(clampedNormalizedPlaybackPosition, clampedPlaybackPosition, _mediaPlayer.getTotalDuration());
-        OnProgressChanged.invoke(this, new EventArgs_SingleValue<>(progress));
+        _seek(clampedNormalizedPlaybackPosition, clampedPlaybackPosition);
         return true;
     }
 
@@ -193,15 +195,12 @@ public class AudioClip {
      * @return
      */
     public boolean seek(final Duration playbackPosition) {
-        if (_status == Status.STOPPED)
+        if (!_isReady || _status == Status.STOPPED)
             return false;
 
         final Duration clampedPlaybackPosition = Durations.clamp(playbackPosition, Duration.ZERO, _mediaPlayer.getTotalDuration());
         final double clampedNormalizedPlaybackPosition = clampedPlaybackPosition.toMillis() / _mediaPlayer.getTotalDuration().toMillis();
-        _mediaPlayer.seek(clampedPlaybackPosition);
-
-        final Progress progress = new Progress(clampedNormalizedPlaybackPosition, clampedPlaybackPosition, _mediaPlayer.getTotalDuration());
-        OnProgressChanged.invoke(this, new EventArgs_SingleValue<>(progress));
+        _seek(clampedNormalizedPlaybackPosition, clampedPlaybackPosition);
         return true;
     }
 
@@ -209,8 +208,8 @@ public class AudioClip {
      * @param amount
      * @return
      */
-    public boolean skipForward(final Duration amount) {
-        if (!isReady())
+    public boolean jumpForward(final Duration amount) {
+        if (!_isReady || _status == Status.STOPPED)
             return false;
 
         final Duration playbackPosition = _mediaPlayer.getCurrentTime().add(amount);
@@ -221,12 +220,22 @@ public class AudioClip {
      * @param amount
      * @return
      */
-    public boolean skipBackward(final Duration amount) {
-        if (!isReady())
+    public boolean jumpBackward(final Duration amount) {
+        if (!_isReady || _status == Status.STOPPED)
             return false;
 
         final Duration playbackPosition = _mediaPlayer.getCurrentTime().subtract(amount);
         return seek(playbackPosition);
+    }
+
+    /**
+     * @return
+     */
+    public boolean jumpStart() {
+        if (!_isReady || _status == Status.STOPPED)
+            return false;
+
+        return seek(Duration.ZERO);
     }
 
 

@@ -8,17 +8,10 @@ import com.williwadelmawisky.musicplayer.util.event.EventHandler;
  */
 public class ObservableValue<T> {
 
-    public final EventHandler<OnChangedEventArgs<T>> OnChanged;
+    public final EventHandler<ChangeEventArgs<T>> OnChanged;
 
     private T _value;
 
-
-    /**
-     *
-     */
-    public ObservableValue() {
-        this(null);
-    }
 
     /**
      * @param defaultValue
@@ -28,6 +21,18 @@ public class ObservableValue<T> {
         OnChanged = new EventHandler<>();
     }
 
+    /**
+     *
+     */
+    public ObservableValue() {
+        this(null);
+    }
+
+
+    /**
+     * @return
+     */
+    public boolean hasValue() { return _value != null; }
 
     /**
      * @return
@@ -39,21 +44,21 @@ public class ObservableValue<T> {
      */
     public void setValue(final T value) {
         _value = value;
-        OnChanged.invoke(this, new OnChangedEventArgs<>(value));
+        OnChanged.invoke(this, new ChangeEventArgs<>(value));
     }
 
 
     /**
      * @param <T>
      */
-    public static final class OnChangedEventArgs<T> extends EventArgs {
+    public static final class ChangeEventArgs<T> extends EventArgs {
 
         public final T Value;
 
         /**
          * @param value
          */
-        public OnChangedEventArgs(final T value) {
+        public ChangeEventArgs(final T value) {
             Value = value;
         }
     }

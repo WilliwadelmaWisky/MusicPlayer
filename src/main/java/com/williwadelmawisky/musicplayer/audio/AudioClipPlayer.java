@@ -17,16 +17,11 @@ public class AudioClipPlayer {
     public final EventHandler<EventArgs_SingleValue<AudioClip>> OnPlay;
     public final EventHandler<EventArgs_SingleValue<AudioClip>> OnPause;
     public final EventHandler<EventArgs_SingleValue<AudioClip>> OnStop;
-    public final EventHandler<EventArgs_SingleValue<Double>> OnVolumeChanged;
-    public final EventHandler<EventArgs_SingleValue<Duration>> OnTotalDurationChanged;
-    public final EventHandler<EventArgs_SingleValue<Progress>> OnProgressChanged;
 
     public final ObservableList<AudioClip> AudioClipList;
     public final SelectionModel<AudioClip> SelectionModel;
-    public final AudioClipSelector AudioClipSelector;
-    private AudioClip _activeAudioClip;
-    private Duration _totalDuration;
-    private double _volume;
+    public final ObservableValue<Duration> TotalDurationProperty;
+    public final ObservableValue<Double> VolumeProperty;
 
 
     /**
@@ -34,19 +29,13 @@ public class AudioClipPlayer {
      */
     public AudioClipPlayer(final double volume) {
         AudioClipList = new UniqueObservableList<>();
-        SelectionModel = new SelectionModel<>(AudioClipList);
-        AudioClipSelector = new AudioClipSelector(SelectionModel);
+        SelectionModel = new SelectionModel<>(AudioClipList, SelectionMode.ORDERED);
+        VolumeProperty = new ObservableValue<>(Math.clamp(volume, 0, 1));
+        TotalDurationProperty = new ObservableValue<>(Duration.ZERO);
 
         OnPlay = new EventHandler<>();
         OnPause = new EventHandler<>();
         OnStop = new EventHandler<>();
-        OnVolumeChanged = new EventHandler<>();
-        OnTotalDurationChanged = new EventHandler<>();
-        OnProgressChanged = new EventHandler<>();
-
-        _volume = Math.clamp(volume, 0, 1);
-        _totalDuration = Duration.ZERO;
-        _activeAudioClip = null;
 
         AudioClipList.OnItemAdded.addListener(this::onAdded_AudioClipList);
         AudioClipList.OnItemRemoved.addListener(this::onRemoved_AudioClipList);
@@ -57,157 +46,115 @@ public class AudioClipPlayer {
 
 
     /**
-     * @return
-     */
-    public double getVolume() { return _volume; }
-
-    /**
-     * @return
-     */
-    public boolean isActive() { return _activeAudioClip != null; }
-
-
-    /**
      * @param volume
      */
     public void setVolume(final double volume) {
-        if (Math.abs(_volume - volume) <= 1e-6)
+        final double clampedVolume = Math.clamp(volume, 0, 1);;
+        if (Math.abs(VolumeProperty.getValue() - clampedVolume) <= 1e-6)
             return;
 
-        _volume = Math.clamp(volume, 0, 1);
-        OnVolumeChanged.invoke(this, new EventArgs_SingleValue<>(_volume));
-
-        if (_activeAudioClip != null)
-            _activeAudioClip.setVolume(_volume);
+        AudioClipList.forEach(audioClip -> audioClip.setVolume(clampedVolume));
+        VolumeProperty.setValue(clampedVolume);
     }
 
 
     /**
      * @param playlist
      */
-    public void load(final PlaylistInfo playlist) {
-        clear();
+    public boolean load(final PlaylistInfo playlist) {
+        AudioClipList.clear();
 
         for (int i = 0; i < playlist.length(); i++) {
             final String filePath = playlist.get(i);
             final AudioClip audioClip = new AudioClip(new File(filePath));
             AudioClipList.add(audioClip);
         }
+
+        return !AudioClipList.isEmpty();
     }
 
     /**
-     * @return
+     * @param file
      */
-    public boolean isEmpty() {
-        return AudioClipList.isEmpty();
-    }
-
-    /**
-     * @param audioClip
-     */
-    public void add(final AudioClip audioClip) {
-        AudioClipList.add(audioClip);
-    }
-
-    /**
-     * @param audioClip
-     */
-    public void remove(final AudioClip audioClip) {
-        AudioClipList.remove(audioClip);
-    }
-
-    /**
-     *
-     */
-    public void clear() {
+    public boolean load(final File file) {
         AudioClipList.clear();
+
+        final FileReader fileReader = new FileReader(file);
+        fileReader.read(AudioClipList::add);
+
+        return !AudioClipList.isEmpty();
     }
-
-
-    /**
-     *
-     */
-    public void next() { AudioClipSelector.next(); }
-
-    /**
-     *
-     */
-    public void previous() { AudioClipSelector.previous(); }
 
 
     /**
      * @return
      */
     public boolean play() {
-        if (!isActive())
+        if (!SelectionModel.hasValue())
             return false;
 
-        return _activeAudioClip.play();
+        final AudioClip audioClip = SelectionModel.getValue();
+        if (!audioClip.play())
+            return false;
+
+        OnPlay.invoke(this, new EventArgs_SingleValue<>(audioClip));
+        return true;
     }
 
     /**
      * @return
      */
     public boolean pause() {
-        if (!isActive())
+        if (!SelectionModel.hasValue())
             return false;
 
-        return _activeAudioClip.pause();
+        final AudioClip audioClip = SelectionModel.getValue();
+        if (audioClip.pause())
+            return false;
+
+        OnPause.invoke(this, new EventArgs_SingleValue<>(audioClip));
+        return true;
     }
 
     /**
      * @return
      */
     public boolean stop() {
-        if (!isActive())
+        if (!SelectionModel.hasValue())
             return false;
 
-        return _activeAudioClip.stop();
+        final AudioClip audioClip = SelectionModel.getValue();
+        if (audioClip.stop())
+            return false;
+
+        SelectionModel.clearSelection();
+        OnStop.invoke(this, new EventArgs_SingleValue<>(audioClip));
+        return true;
     }
 
 
     /**
-     * @param progress
+     * @param amount
      * @return
      */
-    public boolean seek(final double progress) {
-        if (!isActive())
+    public boolean jumpForward(final Duration amount) {
+        if (!SelectionModel.hasValue())
             return false;
 
-        return _activeAudioClip.seek(progress);
-    }
-
-    /**
-     * @param playbackPosition
-     * @return
-     */
-    public boolean seek(final Duration playbackPosition) {
-        if (!isActive())
-            return false;
-
-        return _activeAudioClip.seek(playbackPosition);
+        final AudioClip audioClip = SelectionModel.getValue();
+        return audioClip.jumpForward(amount);
     }
 
     /**
      * @param amount
      * @return
      */
-    public boolean skipForward(final Duration amount) {
-        if (!isActive())
+    public boolean jumpBackward(final Duration amount) {
+        if (!SelectionModel.hasValue())
             return false;
 
-        return _activeAudioClip.skipForward(amount);
-    }
-
-    /**
-     * @param amount
-     * @return
-     */
-    public boolean skipBackward(final Duration amount) {
-        if (!isActive())
-            return false;
-
-        return _activeAudioClip.skipBackward(amount);
+        final AudioClip audioClip = SelectionModel.getValue();
+        return audioClip.jumpBackward(amount);
     }
 
 
@@ -215,44 +162,9 @@ public class AudioClipPlayer {
      * @return
      */
     private Duration calculateTotalDuration() {
-        final List<AudioClip> audioClipList = AudioClipList.filter(audioClip -> !audioClip.getTotalDuration().equals(Duration.UNKNOWN));
+        final List<AudioClip> audioClipList = AudioClipList.filter(AudioClip::isReady);
         final List<Duration> durationList = audioClipList.stream().map(AudioClip::getTotalDuration).toList();
         return Durations.sum(durationList);
-    }
-
-    /**
-     * @param totalDuration
-     */
-    private void updateTotalDuration(final Duration totalDuration) {
-        _totalDuration = totalDuration;
-        OnTotalDurationChanged.invoke(this, new EventArgs_SingleValue<>(_totalDuration));
-    }
-
-
-    /**
-     * @param audioClip
-     */
-    private void subscribeAudioClipEvents(final AudioClip audioClip) {
-        audioClip.OnReady.addListener(this::onReady_AudioClip);
-        audioClip.OnFinish.addListener(this::onFinished_AudioClip);
-        audioClip.OnPlay.addListener(this::onPlay_AudioClip);
-        audioClip.OnPause.addListener(this::onPause_AudioClip);
-        audioClip.OnStop.addListener(this::onStop_AudioClip);
-        audioClip.OnProgressChanged.addListener(this::onProgressChanged_AudioClip);
-        audioClip.OnVolumeChanged.addListener(this::onVolumeChanged_AudioClip);
-    }
-
-    /**
-     * @param audioClip
-     */
-    private void unsubscribeAudioClipEvents(final AudioClip audioClip) {
-        audioClip.OnReady.removeListener(this::onReady_AudioClip);
-        audioClip.OnFinish.removeListener(this::onFinished_AudioClip);
-        audioClip.OnPlay.removeListener(this::onPlay_AudioClip);
-        audioClip.OnPause.removeListener(this::onPause_AudioClip);
-        audioClip.OnStop.removeListener(this::onStop_AudioClip);
-        audioClip.OnProgressChanged.removeListener(this::onProgressChanged_AudioClip);
-        audioClip.OnVolumeChanged.removeListener(this::onVolumeChanged_AudioClip);
     }
 
 
@@ -261,7 +173,8 @@ public class AudioClipPlayer {
      * @param args
      */
     private void onReady_AudioClip(final Object sender, final EventArgs args) {
-        updateTotalDuration(calculateTotalDuration());
+        final Duration totalDuration = calculateTotalDuration();
+        TotalDurationProperty.setValue(totalDuration);
     }
 
     /**
@@ -269,57 +182,7 @@ public class AudioClipPlayer {
      * @param args
      */
     private void onFinished_AudioClip(final Object sender, final EventArgs args) {
-        AudioClipSelector.next();
-    }
-
-    /**
-     * @param sender
-     * @param args
-     */
-    private void onPlay_AudioClip(final Object sender, final EventArgs args) {
-        OnPlay.invoke(this, new EventArgs_SingleValue<>(_activeAudioClip));
-    }
-
-    /**
-     * @param sender
-     * @param args
-     */
-    private void onPause_AudioClip(final Object sender, final EventArgs args) {
-        OnPause.invoke(this, new EventArgs_SingleValue<>(_activeAudioClip));
-    }
-
-    /**
-     * @param sender
-     * @param args
-     */
-    private void onStop_AudioClip(final Object sender, final EventArgs args) {
-        OnStop.invoke(this, new EventArgs_SingleValue<>(_activeAudioClip));
-
-        if (!isActive() || !_activeAudioClip.equals(SelectionModel.getSelectedItem()))
-            return;
-
-        _activeAudioClip = null;
-        SelectionModel.clear();
-    }
-
-    /**
-     * @param sender
-     * @param args
-     */
-    private void onVolumeChanged_AudioClip(final Object sender, final EventArgs_SingleValue<Double> args) {
-        if (Math.abs(_volume - args.Value) <= 1e-6)
-            return;
-
-        _volume = args.Value;
-        OnVolumeChanged.invoke(this, args);
-    }
-
-    /**
-     * @param sender
-     * @param args
-     */
-    private void onProgressChanged_AudioClip(final Object sender, final EventArgs_SingleValue<Progress> args) {
-        OnProgressChanged.invoke(this, args);
+        SelectionModel.selectNext();
     }
 
 
@@ -327,30 +190,36 @@ public class AudioClipPlayer {
      * @param sender
      * @param args
      */
-    private void onAdded_AudioClipList(final Object sender, final ObservableList.OnItemAddedEventArgs<AudioClip> args) {
-        subscribeAudioClipEvents(args.Item);
+    private void onAdded_AudioClipList(final Object sender, final ObservableList.AddEventArgs<AudioClip> args) {
+        final AudioClip audioClip = args.Item;
+
+        audioClip.setVolume(VolumeProperty.getValue());
+        audioClip.OnReady.addListener(this::onReady_AudioClip);
+        audioClip.OnFinish.addListener(this::onFinished_AudioClip);
     }
 
     /**
      * @param sender
      * @param args
      */
-    private void onRemoved_AudioClipList(final Object sender, final ObservableList.OnItemRemovedEventArgs<AudioClip> args) {
-        unsubscribeAudioClipEvents(args.Item);
-        updateTotalDuration(calculateTotalDuration());
+    private void onRemoved_AudioClipList(final Object sender, final ObservableList.RemoveEventArgs<AudioClip> args) {
+        final AudioClip audioClip = args.Item;
 
-        if (args.Item.equals(SelectionModel.getSelectedItem()))
-            AudioClipSelector.next();
+        TotalDurationProperty.setValue(calculateTotalDuration());
+        audioClip.OnReady.removeListener(this::onReady_AudioClip);
+        audioClip.OnFinish.removeListener(this::onFinished_AudioClip);
     }
 
     /**
      * @param sender
      * @param args
      */
-    private void onCleared_AudioClipList(final Object sender, final ObservableList.OnClearedEventArgs<AudioClip> args) {
-        args.Items.forEach(this::unsubscribeAudioClipEvents);
-        updateTotalDuration(Duration.ZERO);
-        SelectionModel.clear();
+    private void onCleared_AudioClipList(final Object sender, final ObservableList.ClearEventArgs<AudioClip> args) {
+        TotalDurationProperty.setValue(Duration.ZERO);
+        args.Items.forEach(audioClip -> {
+            audioClip.OnReady.removeListener(this::onReady_AudioClip);
+            audioClip.OnFinish.removeListener(this::onFinished_AudioClip);
+        });
     }
 
 
@@ -358,21 +227,17 @@ public class AudioClipPlayer {
      * @param sender
      * @param args
      */
-    private void onSelected_SelectionModel(final Object sender, final SelectionModel.OnSelectedEventArgs<AudioClip> args) {
-        if (_activeAudioClip != null)
-            _activeAudioClip.stop();
-
-        _activeAudioClip = args.Item;
-        _activeAudioClip.setVolume(_volume);
-        _activeAudioClip.play();
+    private void onSelected_SelectionModel(final Object sender, final SelectionModel.SelectEventArgs<AudioClip> args) {
+        final AudioClip audioClip = args.Item;
+        audioClip.play();
     }
 
     /**
      * @param sender
      * @param args
      */
-    private void onCleared_SelectionModel(final Object sender, final EventArgs args) {
-        if (_activeAudioClip != null)
-            _activeAudioClip.stop();
+    private void onCleared_SelectionModel(final Object sender, final SelectionModel.ClearEventArgs<AudioClip> args) {
+        final AudioClip audioClip = args.Item;
+        audioClip.stop();
     }
 }
