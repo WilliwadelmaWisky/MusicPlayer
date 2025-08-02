@@ -3,11 +3,7 @@
 ![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat)
 
 <p align="justify">
-    A simple cross-platform music player application built with java on top of javafx framework. The application is very simple to use and has a very similar interface to some well known options. In fact a lot of inspiration in the interface has been drawn from the these options. The application allows the user to create persistent playlists and to play them at will. The application contains all the basic functionality to be expected of a music player.
-</p>
-
-<p align="justify">
-    This functionality includes, for example, a few different modes of playing through the playlist (ordered, randomized, repeated), skip a song, jump to a certain timestamp and change the volume. There is also an option to play songs just by opening a file/directory and play the song(s) directly without the need of creating a playlist. The application also contains an extremely simple custom json parser. This helps with exporting and importing playlists in an easy-to-manage format.
+    A simple cross-platform music player application built with Java on top of JavaFX framework. The application is very simple to use and has a very similar interface to some well known options. In fact a lot of inspiration in the interface has been drawn from the these options. The application allows the user to create persistent playlists and to play them at will. The application contains all the basic functionality to be expected of a music player. This functionality includes a few different modes of playing through the playlist (ordered, randomized, repeated), skip a song, jump to a certain timestamp and change the volume just to name a few. There is also an option to play songs just by opening a file/directory and play the song(s) directly without the need of creating and saving a playlist on disk. The application also contains an extremely simple custom json serialization tool to help with saving and loading the playlists in an easy-to-manage format.
 </p>
 
 Libraries used to make the application:
@@ -38,6 +34,7 @@ Libraries used to make the application:
 1. Download the desired version of the application from releases. A zip directory is downloaded
 2. Unzip the downloaded directory to a location of your choosing. The directory contains `MusicPlayer-v0.1.0.jar` file (and some other files, license etc.), where the 0.1.0 is the version number and may wary.
 3. Run the `MusicPlayer-v0.1.0.jar` file either by double-clicking or by running the command below.
+
     ```sh
     java -jar MusicPlayer-v0.1.0.jar
     ```
