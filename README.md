@@ -14,6 +14,9 @@ Libraries used to make the application:
 - ControlsFX
 - BootstrapFX
 
+> [!IMPORTANT]
+> The application realies on JavaFX MediaPlayer which causes some problems in some linux distributions (at least on Debian based). These problems arise when the MediaPlayer is trying to read the contents of the `.mp3` file. To solve this issue you may want to consider converting the `.mp3` files to `.wav` using something like ffmpeg.
+
 <p align="right">(<a href="#music-player">back to top</a>)</p>
 
 ## Usage
@@ -25,19 +28,19 @@ Libraries used to make the application:
 <p align="right">(<a href="#music-player">back to top</a>)</p>
 
 ## Getting Started
-> [!IMPORTANT]
-> NOT READY TO BE USED YET!!!
+> [!NOTE]
+> The application is in usable state but there is currently no built jar file as the application is missing tests.
 
 ### Prerequisites
 - Install Java 21+
 
 ### Installation
-1. Download the application from releases.
-2. Unzip the downloaded directory to a location of your choosing. The directory should contain `MusicPlayer-v0.0.1.jar` file (and some other files, license etc.), where the 1.0.0 is the version number and may wary.
-3. Run the `MusicPlayer-v0.0.1.jar` file by double-clicking, in case the double-click does not work run one of the commands below depending on your operating system.
-
-> [!NOTE]
-> In some linux distributions there are some problems with `.mp3` files (at least on Debian based). You might want to consider converting the `.mp3` files to `.wav`.
+1. Download the desired version of the application from releases. A zip directory is downloaded
+2. Unzip the downloaded directory to a location of your choosing. The directory contains `MusicPlayer-v0.1.0.jar` file (and some other files, license etc.), where the 0.1.0 is the version number and may wary.
+3. Run the `MusicPlayer-v0.1.0.jar` file either by double-clicking or by running the command below.
+    ```sh
+    java -jar MusicPlayer-v0.1.0.jar
+    ```
 
 <p align="right">(<a href="#music-player">back to top</a>)</p>
 
