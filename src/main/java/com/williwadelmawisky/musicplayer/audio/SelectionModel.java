@@ -147,6 +147,9 @@ public class SelectionModel<T> {
      * @param args
      */
     private void onSorted_ObservableList(final Object sender, final EventArgs args) {
+        if (_selectedIndex ==  -1)
+            return;
+
         final int index = _observableList.indexOf(item -> item.equals(_selectedItem));
         if (index != -1) {
             _selectedIndex = index;

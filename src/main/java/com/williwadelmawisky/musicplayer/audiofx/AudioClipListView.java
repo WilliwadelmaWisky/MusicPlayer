@@ -2,19 +2,16 @@ package com.williwadelmawisky.musicplayer.audiofx;
 
 import com.williwadelmawisky.musicplayer.audio.AudioClip;
 import com.williwadelmawisky.musicplayer.audio.AudioClipPlayer;
-import com.williwadelmawisky.musicplayer.util.Files;
 import com.williwadelmawisky.musicplayer.util.Lists;
 import com.williwadelmawisky.musicplayer.audio.ObservableList;
 import com.williwadelmawisky.musicplayer.audio.SelectionModel;
 import com.williwadelmawisky.musicplayer.util.event.EventArgs;
-import com.williwadelmawisky.musicplayer.utilfx.SearchField;
-import javafx.event.ActionEvent;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
+
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.input.DragEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
@@ -29,9 +26,7 @@ import java.util.*;
  */
 public class AudioClipListView extends VBox {
 
-    private final SearchField _searchField;
     private final ListView<AudioClipListViewEntry> _listView;
-    private final SelectionModeComboBox _selectionModeComboBox;
 
     private AudioClipPlayer _audioClipPlayer;
 
@@ -42,41 +37,24 @@ public class AudioClipListView extends VBox {
     public AudioClipListView() {
         super();
 
-        _searchField = new SearchField();
-        getChildren().add(_searchField);
-
-        final HBox hbox = new HBox();
-        hbox.setAlignment(Pos.CENTER_LEFT);
-        hbox.setSpacing(5);
-        getChildren().add(hbox);
-
-        _selectionModeComboBox = new SelectionModeComboBox();
-        hbox.getChildren().add(_selectionModeComboBox);
-
-        final Button shuffleButton = new Button("Shuffle");
-        shuffleButton.setOnAction(this::onClicked_ShuffleButton);
-        hbox.getChildren().add(shuffleButton);
-
         final HBox labelHBox = new HBox();
         final Label nameLabel = new Label("Name");
         HBox.setHgrow(nameLabel, Priority.ALWAYS);
         nameLabel.setMaxWidth(Double.POSITIVE_INFINITY);
         final Label durationLabel = new Label("Duration");
         labelHBox.getChildren().addAll(nameLabel, durationLabel);
-        getChildren().add(labelHBox);
 
         _listView = new ListView<>();
         VBox.setVgrow(_listView, Priority.ALWAYS);
         _listView.setMaxHeight(Double.POSITIVE_INFINITY);
         _listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        getChildren().add(_listView);
 
         setSpacing(5);
-        _searchField.setOnSearch(this::onSearch_SearchField);
+        getChildren().addAll(labelHBox, _listView);
+
         _listView.setOnMouseClicked(this::onClicked_ListView);
         _listView.setOnDragOver(this::onDragOver_ListView);
         _listView.setOnDragDropped(this::onDragDrop_ListView);
-
         _listView.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
             if (e.isSecondaryButtonDown())
                 e.consume();
@@ -96,8 +74,6 @@ public class AudioClipListView extends VBox {
         _audioClipPlayer.AudioClipList.OnSorted.addListener(this::onSorted_AudioClipList);
         _audioClipPlayer.SelectionModel.OnSelected.addListener(this::onSelected_SelectionModel);
         _audioClipPlayer.SelectionModel.OnCleared.addListener(this::onCleared_SelectionModel);
-
-        _selectionModeComboBox.setSelectionModeProperty(_audioClipPlayer.SelectionModel.SelectionModeProperty);
     }
 
     /**
@@ -113,10 +89,22 @@ public class AudioClipListView extends VBox {
         _audioClipPlayer.AudioClipList.OnSorted.removeListener(this::onSorted_AudioClipList);
         _audioClipPlayer.SelectionModel.OnSelected.removeListener(this::onSelected_SelectionModel);
         _audioClipPlayer.SelectionModel.OnCleared.removeListener(this::onCleared_SelectionModel);
-
-        _selectionModeComboBox.unbind();
     }
 
+
+    /**
+     * @param audioClipList
+     */
+    public void generateEntries(final List<AudioClip> audioClipList) {
+        clearEntries();
+        audioClipList.forEach(this::addEntry);
+
+        int index = Lists.indexFunc(_listView.getItems(), audioClipListViewEntry -> audioClipListViewEntry.getAudioClip().equals(_audioClipPlayer.SelectionModel.getValue()));
+        if (index == -1)
+            return;
+
+        _listView.getSelectionModel().clearAndSelect(index);
+    }
 
     /**
      * @param audioClip
@@ -213,9 +201,11 @@ public class AudioClipListView extends VBox {
      * @param e
      */
     private void onClicked_ListView(final MouseEvent e) {
-        System.out.println(e);
+        if (e.getButton() != MouseButton.PRIMARY)
+            return;
+
         final AudioClipListViewEntry audioClipListViewEntry = _listView.getSelectionModel().getSelectedItem();
-        if (audioClipListViewEntry == null)
+        if (audioClipListViewEntry == null || audioClipListViewEntry.getAudioClip().equals(_audioClipPlayer.SelectionModel.getValue()))
             return;
 
         final int index = _audioClipPlayer.AudioClipList.indexOf(audioClip -> audioClip.equals(audioClipListViewEntry.getAudioClip()));
@@ -248,31 +238,6 @@ public class AudioClipListView extends VBox {
      * @param e
      */
     private void onDelete_ListViewEntry(final AudioClipListViewEntry.ContextMenuEvent e) {
-        System.out.println("Delete: " + e.getSource());
         _audioClipPlayer.AudioClipList.remove(e.ListViewEntry.getAudioClip());
-    }
-
-
-    /**
-     * @param e
-     */
-    private void onClicked_ShuffleButton(final ActionEvent e) {
-        _audioClipPlayer.AudioClipList.shuffle();
-    }
-
-    /**
-     * @param e
-     */
-    private void onSearch_SearchField(final SearchField.SearchEvent e) {
-        clearEntries();
-
-        _audioClipPlayer.AudioClipList.forEach(audioClip -> {
-            final File audioFile = new File(audioClip.getAbsoluteFilePath());
-            final boolean matchName = Files.getNameWithoutExtension(audioFile).toLowerCase().contains(e.getSearchString().toLowerCase());
-
-            if (matchName) {
-                addEntry(audioClip);
-            }
-        });
     }
 }

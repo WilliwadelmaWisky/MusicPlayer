@@ -12,6 +12,7 @@
 <?import com.williwadelmawisky.musicplayer.audiofx.PlaybackControlPanel?>
 <?import com.williwadelmawisky.musicplayer.audiofx.VolumeControlPanel?>
 
+<?import com.williwadelmawisky.musicplayer.audiofx.AudioClipFilterView?>
 <VBox fx:controller="com.williwadelmawisky.musicplayer.audiofx.MainWindowController"
       xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
 >
@@ -64,7 +65,8 @@
         <padding>
             <Insets topRightBottomLeft="10"/>
         </padding>
-        <AudioClipListView fx:id="_audioClipListView" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+        <AudioClipFilterView fx:id="_audioClipFilterView" onFilter="#onFilter_AudioClipFilterView"/>
+        <AudioClipListView fx:id="_audioClipListView" VBox.vgrow="ALWAYS" maxHeight="Infinity"/>
         <VBox spacing="10" styleClass="content-box">
             <padding>
                 <Insets topRightBottomLeft="10"/>

@@ -38,6 +38,7 @@ public class MainWindowController {
 
     @FXML private Menu _playbackMenu;
     @FXML private MenuItem _playMenuItem;
+    @FXML private AudioClipFilterView _audioClipFilterView;
     @FXML private AudioClipListView _audioClipListView;
     @FXML private ProgressControlPanel _progressControlPanel;
     @FXML private PlaybackControlPanel _playbackControlPanel;
@@ -58,6 +59,7 @@ public class MainWindowController {
         _playbackMenu.setDisable(_audioClipPlayer.AudioClipList.isEmpty());
         _playbackControlPanel.setDisable(_audioClipPlayer.AudioClipList.isEmpty());
 
+        _audioClipFilterView.setAudioClipPlayer(_audioClipPlayer);
         _audioClipListView.setAudioClipPlayer(_audioClipPlayer);
         _playbackControlPanel.setAudioClipPlayer(_audioClipPlayer);
         _volumeControlPanel.setAudioClipPlayer(_audioClipPlayer);
@@ -280,6 +282,15 @@ public class MainWindowController {
     private void onMuteVolumeButtonClicked(final ActionEvent e) {
         final double volume = 0;
         _audioClipPlayer.setVolume(volume);
+    }
+
+
+    /**
+     * @param e
+     */
+    @FXML
+    private void onFilter_AudioClipFilterView(final AudioClipFilterView.FilterEvent e) {
+        _audioClipListView.generateEntries(e.FilterList);
     }
 
 
