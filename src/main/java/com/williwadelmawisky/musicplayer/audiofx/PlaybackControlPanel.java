@@ -1,37 +1,37 @@
 package com.williwadelmawisky.musicplayer.audiofx;
 
-import com.williwadelmawisky.musicplayer.ResourceLoader;
 import com.williwadelmawisky.musicplayer.audio.AudioClip;
 import com.williwadelmawisky.musicplayer.audio.AudioClipPlayer;
 import com.williwadelmawisky.musicplayer.audio.ObservableValue;
 import com.williwadelmawisky.musicplayer.audio.SelectionMode;
 import com.williwadelmawisky.musicplayer.util.Arrays;
-import com.williwadelmawisky.musicplayer.util.event.EventArgs;
 import com.williwadelmawisky.musicplayer.util.event.EventArgs_SingleValue;
-import com.williwadelmawisky.musicplayer.utilfx.GraphicButton;
+
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+
+import java.util.Map;
 
 /**
  *
  */
 public class PlaybackControlPanel extends HBox {
 
-    private static final String PLAY_ICON_PATH = "img/play_icon.png";
-    private static final String PAUSE_ICON_PATH = "img/pause_icon.png";
+    private final Map<SelectionMode, String> SELECTION_MODE_SYMBOL_MAP = Map.ofEntries(
+            Map.entry(SelectionMode.ORDERED, "↦"),
+            Map.entry(SelectionMode.RANDOMIZED, "⇄"),
+            Map.entry(SelectionMode.REPEATED, "↻")
+    );
 
-    private final AudioPlaybackButton _playButton;
-    private final AudioPlaybackButton _previousButton;
-    private final AudioPlaybackButton _nextButton;
-    private final AudioPlaybackButton _stopButton;
+    private final Button _playButton;
+    private final Button _previousButton;
+    private final Button _nextButton;
+    private final Button _stopButton;
     private final Button _modeButton;
 
     private AudioClipPlayer _audioClipPlayer;
-    private SelectionMode _selectionMode;
 
 
     /**
@@ -40,11 +40,15 @@ public class PlaybackControlPanel extends HBox {
     public PlaybackControlPanel() {
         super();
 
-        _playButton = new AudioPlaybackButton(ResourceLoader.loadImage("img/play_icon.png"));
-        _stopButton = new AudioPlaybackButton(ResourceLoader.loadImage("img/pause_icon.png"));
-        _previousButton = new AudioPlaybackButton(ResourceLoader.loadImage("img/previous_icon.png"));
-        _nextButton = new AudioPlaybackButton(ResourceLoader.loadImage("img/next_icon.png"));
-        _modeButton = new Button("⏸");
+        _playButton = new Button("⏵");
+        _playButton.setMinWidth(35);
+        _playButton.setMaxWidth(35);
+        _stopButton = new Button("⏹");
+        _previousButton = new Button("⏮");
+        _nextButton = new Button("⏭");
+        _modeButton = new Button("→");
+        _modeButton.setMinWidth(35);
+        _modeButton.setMaxWidth(35);
 
         final Region region = new Region();
         region.setMinWidth(10);
@@ -71,8 +75,7 @@ public class PlaybackControlPanel extends HBox {
     public void setAudioClipPlayer(final AudioClipPlayer audioClipPlayer) {
         _audioClipPlayer = audioClipPlayer;
 
-        final boolean isPlaying = _audioClipPlayer.SelectionModel.hasValue() && _audioClipPlayer.SelectionModel.getValue().isPlaying();
-        updateImage(isPlaying);
+        updatePlaystate(_audioClipPlayer.SelectionModel.hasValue() && _audioClipPlayer.SelectionModel.getValue().isPlaying());
         updateSelectionMode(_audioClipPlayer.SelectionModel.SelectionModeProperty.getValue());
 
         _audioClipPlayer.OnPlay.addListener(this::onPlay_AudioClipPlayer);
@@ -85,7 +88,7 @@ public class PlaybackControlPanel extends HBox {
      *
      */
     public void clear() {
-        updateImage(false);
+        updatePlaystate(false);
 
         if (_audioClipPlayer == null)
             return;
@@ -98,35 +101,22 @@ public class PlaybackControlPanel extends HBox {
 
 
     /**
-     * @param image
-     */
-    private void updateImage(final Image image) {
-        _playButton.setImage(image);
-    }
-
-    /**
-     * @param imageResourcePath
-     */
-    private void updateImage(final String imageResourcePath) {
-        final Image image = ResourceLoader.loadImage(imageResourcePath);
-        updateImage(image);
-    }
-
-    /**
      * @param isPlaying
      */
-    private void updateImage(final boolean isPlaying) {
-        final String imageResourcePath = isPlaying ? PAUSE_ICON_PATH : PLAY_ICON_PATH;
-        updateImage(imageResourcePath);
+    private void updatePlaystate(final boolean isPlaying) {
+        final String textString = isPlaying ? "⏸" : "⏵";
+        _playButton.setText(textString);
     }
-
 
     /**
      * @param selectionMode
      */
     private void updateSelectionMode(final SelectionMode selectionMode) {
-        _selectionMode = selectionMode;
-        System.out.println(_selectionMode);
+        if (!SELECTION_MODE_SYMBOL_MAP.containsKey(selectionMode))
+            return;
+
+        final String textString = SELECTION_MODE_SYMBOL_MAP.get(selectionMode);
+        _modeButton.setText(textString);
     }
 
 
@@ -167,7 +157,7 @@ public class PlaybackControlPanel extends HBox {
      */
     private void onClicked_ModeButton(final ActionEvent e) {
         final SelectionMode[] selectionModes = SelectionMode.values();
-        final int index = Arrays.indexof(selectionModes, _selectionMode);
+        final int index = Arrays.indexof(selectionModes, _audioClipPlayer.SelectionModel.SelectionModeProperty.getValue());
         final SelectionMode selectionMode = selectionModes[(index + 1) % selectionModes.length];
         _audioClipPlayer.SelectionModel.SelectionModeProperty.setValue(selectionMode);
     }
@@ -178,7 +168,7 @@ public class PlaybackControlPanel extends HBox {
      * @param args
      */
     private void onPlay_AudioClipPlayer(final Object sender, final EventArgs_SingleValue<AudioClip> args) {
-        updateImage(true);
+        updatePlaystate(true);
     }
 
     /**
@@ -186,7 +176,7 @@ public class PlaybackControlPanel extends HBox {
      * @param args
      */
     private void onPause_AudioClipPlayer(final Object sender, final EventArgs_SingleValue<AudioClip> args) {
-        updateImage(false);
+        updatePlaystate(false);
     }
 
     /**
@@ -194,7 +184,7 @@ public class PlaybackControlPanel extends HBox {
      * @param args
      */
     private void onStop_AudioClipPlayer(final Object sender, final EventArgs_SingleValue<AudioClip> args) {
-        updateImage(false);
+        updatePlaystate(false);
     }
 
     /**
@@ -203,21 +193,5 @@ public class PlaybackControlPanel extends HBox {
      */
     private void onChanged_SelectionModeProperty(final Object sender, final ObservableValue.ChangeEventArgs<SelectionMode> args) {
         updateSelectionMode(args.Value);
-    }
-
-
-    /**
-     *
-     */
-    private static final class AudioPlaybackButton extends GraphicButton {
-
-        private static final double WIDTH = 15;
-
-        /**
-         * @param image
-         */
-        public AudioPlaybackButton(final Image image) {
-            super(image, WIDTH);
-        }
     }
 }

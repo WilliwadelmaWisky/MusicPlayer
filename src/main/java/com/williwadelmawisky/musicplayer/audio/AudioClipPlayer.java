@@ -94,6 +94,14 @@ public class AudioClipPlayer {
             return false;
 
         final AudioClip audioClip = SelectionModel.getValue();
+        return play(audioClip);
+    }
+
+    /**
+     * @param audioClip
+     * @return
+     */
+    private boolean play(final AudioClip audioClip) {
         if (!audioClip.play())
             return false;
 
@@ -109,7 +117,15 @@ public class AudioClipPlayer {
             return false;
 
         final AudioClip audioClip = SelectionModel.getValue();
-        if (audioClip.pause())
+        return pause(audioClip);
+    }
+
+    /**
+     * @param audioClip
+     * @return
+     */
+    private boolean pause(final AudioClip audioClip) {
+        if (!audioClip.pause())
             return false;
 
         OnPause.invoke(this, new EventArgs_SingleValue<>(audioClip));
@@ -124,10 +140,21 @@ public class AudioClipPlayer {
             return false;
 
         final AudioClip audioClip = SelectionModel.getValue();
-        if (audioClip.stop())
+        if (!stop(audioClip))
             return false;
 
         SelectionModel.clearSelection();
+        return true;
+    }
+
+    /**
+     * @param audioClip
+     * @return
+     */
+    private boolean stop(final AudioClip audioClip) {
+        if (!audioClip.stop())
+            return false;
+
         OnStop.invoke(this, new EventArgs_SingleValue<>(audioClip));
         return true;
     }
@@ -239,8 +266,7 @@ public class AudioClipPlayer {
      * @param args
      */
     private void onSelected_SelectionModel(final Object sender, final SelectionModel.SelectEventArgs<AudioClip> args) {
-        final AudioClip audioClip = args.Item;
-        audioClip.play();
+        play(args.Item);
     }
 
     /**
@@ -248,7 +274,6 @@ public class AudioClipPlayer {
      * @param args
      */
     private void onCleared_SelectionModel(final Object sender, final SelectionModel.ClearEventArgs<AudioClip> args) {
-        final AudioClip audioClip = args.Item;
-        audioClip.stop();
+        stop(args.Item);
     }
 }

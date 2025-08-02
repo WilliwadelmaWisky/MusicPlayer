@@ -131,7 +131,7 @@ public class SelectionModel<T> {
      */
     private void onRemoved_ObservableList(final Object sender, final ObservableList.RemoveEventArgs<T> args) {
         if (args.Item.equals(_selectedItem))
-            selectNext();
+            clearSelection();
     }
 
     /**
