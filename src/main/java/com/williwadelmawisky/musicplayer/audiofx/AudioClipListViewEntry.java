@@ -114,9 +114,7 @@ public class AudioClipListViewEntry extends HBox {
      * @param audioClip
      */
     private void updateView(final AudioClip audioClip) {
-        final File file = new File(audioClip.getAbsoluteFilePath());
-        final String name = Files.getNameWithoutExtension(file);
-        _nameLabel.setText(name);
+        _nameLabel.setText(AudioClip.nameof(audioClip));
 
         if (_audioClip.isReady()) {
             final String durationString = Durations.durationToString(_audioClip.getTotalDuration());

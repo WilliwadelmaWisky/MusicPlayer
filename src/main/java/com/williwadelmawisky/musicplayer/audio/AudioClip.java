@@ -3,10 +3,12 @@ package com.williwadelmawisky.musicplayer.audio;
 import java.io.File;
 
 import com.williwadelmawisky.musicplayer.ResourceLoader;
+import com.williwadelmawisky.musicplayer.util.Files;
 import com.williwadelmawisky.musicplayer.utilfx.Durations;
 import com.williwadelmawisky.musicplayer.util.event.EventArgs;
 import com.williwadelmawisky.musicplayer.util.event.EventHandler;
 import com.williwadelmawisky.musicplayer.util.event.EventArgs_SingleValue;
+
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
@@ -42,6 +44,16 @@ public class AudioClip {
 
 
     /**
+     * @param audioClip
+     * @return
+     */
+    public static String nameof(final AudioClip audioClip) {
+        final File file = new File(audioClip.getAbsoluteFilePath());
+        return Files.getNameWithoutExtension(file);
+    }
+
+
+    /**
      * @param file
      */
     public AudioClip(final File file) {
@@ -72,17 +84,17 @@ public class AudioClip {
     /**
      * @return
      */
+    String getAbsoluteFilePath() { return _absoluteFilePath; }
+
+    /**
+     * @return
+     */
     public boolean isReady() { return _isReady; }
 
     /**
      * @return
      */
     public boolean isPlaying() { return _status == Status.PLAYING; }
-
-    /**
-     * @return
-     */
-    public String getAbsoluteFilePath() { return _absoluteFilePath; }
 
     /**
      * @return
@@ -231,7 +243,7 @@ public class AudioClip {
     /**
      * @return
      */
-    public boolean jumpStart() {
+    public boolean jumpToStart() {
         if (!_isReady || _status == Status.STOPPED)
             return false;
 

@@ -2,6 +2,7 @@ package com.williwadelmawisky.musicplayer;
 
 import com.williwadelmawisky.musicplayer.audio.AudioClipPlayer;
 import com.williwadelmawisky.musicplayer.audiofx.MainWindow;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  *
  */
-public class Main extends Application {
+public class MainFX extends Application {
 
     private static final String MUSIC_DIRECTORY_PATH = Paths.get(System.getProperty("user.home"), "Music").toString();
     private static final String CONFIG_DIRECTORY_PATH = Paths.get(System.getProperty("user.home"), ".config", "WilliwadelmaWisky", "MusicPlayer").toString();
@@ -53,6 +54,6 @@ public class Main extends Application {
      * @param args
      */
     public static void main(final String[] args) {
-        Application.launch(Main.class, args);
+        Application.launch(MainFX.class, args);
     }
 }

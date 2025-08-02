@@ -248,6 +248,12 @@ public class MainWindowController {
      * @param e
      */
     @FXML
+    private void onSkipStartButtonClicked(final ActionEvent e) { _audioClipPlayer.jumpToStart(); }
+
+    /**
+     * @param e
+     */
+    @FXML
     private void onNextButtonClicked(final ActionEvent e) { _audioClipPlayer.SelectionModel.selectNext(); }
 
     /**

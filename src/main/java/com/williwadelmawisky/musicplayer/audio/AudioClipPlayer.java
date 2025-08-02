@@ -157,6 +157,17 @@ public class AudioClipPlayer {
         return audioClip.jumpBackward(amount);
     }
 
+    /**
+     * @return
+     */
+    public boolean jumpToStart() {
+        if (!SelectionModel.hasValue())
+            return false;
+
+        final AudioClip audioClip = SelectionModel.getValue();
+        return audioClip.jumpToStart();
+    }
+
 
     /**
      * @return

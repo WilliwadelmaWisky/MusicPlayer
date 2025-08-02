@@ -47,4 +47,37 @@ public abstract class Arrays {
 
         return false;
     }
+
+
+    /**
+     * @param array
+     * @param match
+     * @param <T>
+     * @return
+     */
+    public static <T> int indexFunc(final T[] array, final Predicate<? super T> match) {
+        for (int i = 0; i < array.length; i++) {
+            if (match.test(array[i])) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    /**
+     * @param array
+     * @param item
+     * @param <T>
+     * @return
+     */
+    public static <T> int indexof(final T[] array, final T item) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].equals(item)) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
 }

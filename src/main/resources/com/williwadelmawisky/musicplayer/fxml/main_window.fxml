@@ -11,8 +11,8 @@
 <?import com.williwadelmawisky.musicplayer.audiofx.ProgressControlPanel?>
 <?import com.williwadelmawisky.musicplayer.audiofx.PlaybackControlPanel?>
 <?import com.williwadelmawisky.musicplayer.audiofx.VolumeControlPanel?>
-
 <?import com.williwadelmawisky.musicplayer.audiofx.AudioClipFilterView?>
+
 <VBox fx:controller="com.williwadelmawisky.musicplayer.audiofx.MainWindowController"
       xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
 >
@@ -36,18 +36,12 @@
             <MenuItem text="Play" fx:id="_playMenuItem"/>
             <MenuItem text="Stop" onAction="#onStopButtonClicked"/>
             <SeparatorMenuItem/>
-            <MenuItem text="Skip Forward" onAction="#onSkipForwardButtonClicked"/>
-            <MenuItem text="Skip Backward" onAction="#onSkipBackwardButtonClicked"/>
+            <MenuItem text="Jump to Start" onAction="#onSkipStartButtonClicked"/>
+            <MenuItem text="Jump Forward" onAction="#onSkipForwardButtonClicked"/>
+            <MenuItem text="Jump Backward" onAction="#onSkipBackwardButtonClicked"/>
             <SeparatorMenuItem/>
             <MenuItem text="Select Next" onAction="#onNextButtonClicked"/>
             <MenuItem text="Select Previous" onAction="#onPreviousButtonClicked"/>
-            <SeparatorMenuItem/>
-            <MenuItem text="Shuffle Playlist"/>
-            <Menu text="Mode">
-                <CheckMenuItem text="Ordered"/>
-                <CheckMenuItem text="Randomized"/>
-                <CheckMenuItem text="Repeated"/>
-            </Menu>
         </Menu>
         <Menu text="Audio">
             <MenuItem text="Increase Volume" onAction="#onIncreaseVolumeButtonClicked"/>
