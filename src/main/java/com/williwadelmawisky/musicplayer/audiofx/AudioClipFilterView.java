@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -35,6 +36,7 @@ public class AudioClipFilterView extends HBox {
         HBox.setHgrow(region, Priority.ALWAYS);
         region.setMaxWidth(Double.POSITIVE_INFINITY);
         final SearchField searchField = new SearchField();
+        searchField.setAlignment(Pos.CENTER_RIGHT);
 
         getChildren().addAll(shuffleButton, region, searchField);
 

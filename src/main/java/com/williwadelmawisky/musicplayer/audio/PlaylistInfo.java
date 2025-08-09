@@ -116,7 +116,6 @@ public class PlaylistInfo implements Saveable {
     @Override
     public boolean deserialize(final String s) {
         JSON.fromJSON(s, this);
-        System.out.println(Name + ", " + TotalDurationString + ", " + String.join(":", FilePaths));
         return true;
     }
 }

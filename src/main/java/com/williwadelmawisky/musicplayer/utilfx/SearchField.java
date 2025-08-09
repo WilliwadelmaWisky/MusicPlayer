@@ -7,7 +7,6 @@ import javafx.event.EventType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 
 /**
  *
@@ -26,15 +25,12 @@ public class SearchField extends HBox {
 
         _textField = new TextField();
         _textField.setPromptText("Search...");
-        HBox.setHgrow(_textField, Priority.ALWAYS);
-        _textField.setMaxWidth(Double.POSITIVE_INFINITY);
-        this.getChildren().add(_textField);
-
-        final Button button = new Button("Search");
-        button.setOnAction(this::onClick);
-        this.getChildren().add(button);
+        final Button button = new Button("\uD83D\uDD0D");
 
         setSpacing(5);
+        getChildren().addAll(_textField, button);
+
+        button.setOnAction(this::onClick_SearchButton);
     }
 
 
@@ -52,7 +48,7 @@ public class SearchField extends HBox {
     /**
      * @param e
      */
-    private void onClick(ActionEvent e) {
+    private void onClick_SearchButton(ActionEvent e) {
         final SearchEvent searchEvent = new SearchEvent(Event.ANY, _textField.getText().trim());
         _searchEventHandler.handle(searchEvent);
     }

@@ -1,12 +1,10 @@
 package com.williwadelmawisky.musicplayer.audiofx;
 
-import com.williwadelmawisky.musicplayer.audio.AudioClip;
 import com.williwadelmawisky.musicplayer.audio.PlaylistInfo;
 import com.williwadelmawisky.musicplayer.audio.PlaylistInfoModel;
-import com.williwadelmawisky.musicplayer.util.Files;
 import com.williwadelmawisky.musicplayer.utilfx.SearchField;
+
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -25,7 +23,7 @@ public class PlaylistChooser extends VBox {
     private final SearchField _searchField;
     private final PlaylistListView _playlistListView;
 
-    private PlaylistInfoModel _playlistInfoModel;
+    private final PlaylistInfoModel _playlistInfoModel;
     private String _windowTitle;
 
 
@@ -35,10 +33,14 @@ public class PlaylistChooser extends VBox {
     public PlaylistChooser() {
         super();
 
+        _playlistInfoModel = new PlaylistInfoModel();
+
         _searchField = new SearchField();
+        _searchField.setAlignment(Pos.CENTER_RIGHT);
         _playlistListView = new PlaylistListView();
         VBox.setVgrow(_playlistListView, Priority.ALWAYS);
         _playlistListView.setMaxHeight(Double.POSITIVE_INFINITY);
+        _playlistListView.setPlaylistModel(_playlistInfoModel);
 
         final HBox buttonBox = new HBox();
         final Button cancelButton = new Button("Cancel");
@@ -62,21 +64,19 @@ public class PlaylistChooser extends VBox {
      */
     public void setTitle(final String title) { _windowTitle = title; }
 
-    /**
-     * @param playlistInfoModel
-     */
-    public void setPlaylistModel(final PlaylistInfoModel playlistInfoModel) {
-        _playlistInfoModel = playlistInfoModel;
-
-        _playlistListView.setPlaylistModel(_playlistInfoModel);
-    }
-
 
     /**
      * @return
      */
     public PlaylistInfo showOpenDialog() {
-        final ModalWindow modalWindow = new ModalWindow(new Stage(), _windowTitle, this);
+        final Stage stage = new Stage();
+        stage.setTitle(_windowTitle);
+        stage.setWidth(400);
+        stage.setHeight(500);
+        stage.setResizable(false);
+        stage.setOnCloseRequest(e -> _playlistInfoModel.SelectionModel.clearSelection());
+
+        final ModalWindow modalWindow = new ModalWindow(stage, this);
         modalWindow.showAndWait();
 
         if (!_playlistInfoModel.SelectionModel.hasValue())
@@ -89,15 +89,14 @@ public class PlaylistChooser extends VBox {
     /**
      * @param e
      */
-    @FXML
     private void onClick_OkButton(final ActionEvent e) {
-        this.getScene().getWindow().hide();
+        if (_playlistInfoModel.SelectionModel.hasValue())
+            this.getScene().getWindow().hide();
     }
 
     /**
      * @param e
      */
-    @FXML
     private void onClick_CancelButton(final ActionEvent e) {
         _playlistInfoModel.SelectionModel.clearSelection();
         this.getScene().getWindow().hide();

@@ -15,21 +15,11 @@ public class ModalWindow {
 
 
     /**
-     * @param title
-     * @param root
-     */
-    public ModalWindow(final String title, final Parent root) {
-        this(new Stage(), title, root);
-    }
-
-    /**
      * @param stage
-     * @param title
      * @param root
      */
-    public ModalWindow(final Stage stage, final String title, final Parent root) {
+    public ModalWindow(final Stage stage, final Parent root) {
         _stage = stage;
-        _stage.setTitle(title);
 
         final Scene scene = new Scene(root);
         scene.getStylesheets().add(ResourceLoader.loadCss("css/style.css"));

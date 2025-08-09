@@ -6,10 +6,13 @@ import com.williwadelmawisky.musicplayer.audio.SelectionModel;
 import com.williwadelmawisky.musicplayer.util.Lists;
 import com.williwadelmawisky.musicplayer.util.event.Event;
 
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
@@ -29,11 +32,18 @@ public class PlaylistListView extends VBox {
     public PlaylistListView() {
         super();
 
+        final HBox labelHBox = new HBox();
+        final Label nameLabel = new Label("Name");
+        HBox.setHgrow(nameLabel, Priority.ALWAYS);
+        nameLabel.setMaxWidth(Double.POSITIVE_INFINITY);
+        final Label durationLabel = new Label("Duration");
+        labelHBox.getChildren().addAll(nameLabel, durationLabel);
+
         _listView = new ListView<>();
         _listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-        setSpacing(10);
-        getChildren().add(_listView);
+        setSpacing(5);
+        getChildren().addAll(labelHBox, _listView);
 
         _listView.setOnMouseClicked(this::onClicked_ListView);
         _listView.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
@@ -88,15 +98,6 @@ public class PlaylistListView extends VBox {
     public void clearEntries() {
         _listView.getItems().forEach(PlaylistListViewEntry::onDestroy);
         _listView.getItems().clear();
-    }
-
-
-    /**
-     * @param sender
-     * @param args
-     */
-    private void onSorted_PlaylistInfoList(final Object sender, final Event args) {
-        generateEntries(_playlistInfoModel.PlaylistInfoList.filter(playlistInfo -> true));
     }
 
 

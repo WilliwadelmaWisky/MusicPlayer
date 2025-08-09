@@ -4,6 +4,7 @@ import com.williwadelmawisky.musicplayer.ResourceLoader;
 import com.williwadelmawisky.musicplayer.utilfx.SearchField;
 import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 /**
  *
@@ -34,7 +35,7 @@ public class PreferenceChooser extends VBox {
      */
     public void showDialog() {
 
-        final ModalWindow modalWindow = new ModalWindow(_dialogTitle, this);
+        final ModalWindow modalWindow = new ModalWindow(new Stage(), this);
         modalWindow.showAndWait();
 
 

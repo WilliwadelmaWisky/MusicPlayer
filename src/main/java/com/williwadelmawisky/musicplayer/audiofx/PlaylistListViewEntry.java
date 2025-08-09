@@ -19,6 +19,7 @@ import javafx.scene.layout.Priority;
 public class PlaylistListViewEntry extends HBox {
 
     private final Label _nameLabel;
+    private final Label _durationLabel;
     private final ContextMenu _contextMenu;
     private PlaylistInfo _playlistInfo;
 
@@ -29,19 +30,15 @@ public class PlaylistListViewEntry extends HBox {
     public PlaylistListViewEntry() {
         super();
 
-        final ImageView imageView = new ImageView();
-        imageView.setPreserveRatio(true);
-        imageView.setPickOnBounds(true);
-        imageView.setFitWidth(15);
-        imageView.setImage(ResourceLoader.loadImage("img/logo.png"));
-
+        final Label typeLabel = new Label("\uD83D\uDDC0");
         _nameLabel = new Label();
         HBox.setHgrow(_nameLabel, Priority.ALWAYS);
         _nameLabel.setMaxWidth(Double.POSITIVE_INFINITY);
+        _durationLabel = new Label();
 
-        setSpacing(5);
+        setSpacing(8);
         setAlignment(Pos.CENTER_LEFT);
-        getChildren().addAll(imageView, _nameLabel);
+        getChildren().addAll(typeLabel, _nameLabel, _durationLabel);
 
         _contextMenu = new ContextMenu();
         final MenuItem deleteMenuItem = new MenuItem("Delete");
@@ -65,6 +62,7 @@ public class PlaylistListViewEntry extends HBox {
     void onCreated(final PlaylistInfo playlistInfo) {
         _playlistInfo = playlistInfo;
         _nameLabel.setText(playlistInfo.name());
+        _durationLabel.setText(playlistInfo.totalDurationString());
     }
 
     /**

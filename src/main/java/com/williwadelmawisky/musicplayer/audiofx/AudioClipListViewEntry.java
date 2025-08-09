@@ -34,23 +34,15 @@ public class AudioClipListViewEntry extends HBox {
     public AudioClipListViewEntry() {
         super();
 
-        final ImageView imageView = new ImageView();
-        imageView.setPreserveRatio(true);
-        imageView.setPickOnBounds(true);
-        imageView.setFitWidth(15);
-        imageView.setImage(ResourceLoader.loadImage("img/logo.png"));
-
+        final Label typeLabel = new Label("♫");
         _nameLabel = new Label();
         HBox.setHgrow(_nameLabel, Priority.ALWAYS);
         _nameLabel.setMaxWidth(Double.POSITIVE_INFINITY);
-
         _durationLabel = new Label();
-        _durationLabel.setAlignment(Pos.CENTER_RIGHT);
-        _durationLabel.setMinWidth(50);
 
-        setSpacing(5);
+        setSpacing(8);
         setAlignment(Pos.CENTER_LEFT);
-        getChildren().addAll(imageView, _nameLabel, _durationLabel);
+        getChildren().addAll(typeLabel, _nameLabel, _durationLabel);
 
         _contextMenu = new ContextMenu();
         final MenuItem deleteMenuItem = new MenuItem("Delete");
