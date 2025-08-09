@@ -3,10 +3,9 @@ package com.williwadelmawisky.musicplayer.audiofx;
 import com.williwadelmawisky.musicplayer.ResourceLoader;
 import com.williwadelmawisky.musicplayer.audio.AudioClip;
 import com.williwadelmawisky.musicplayer.utilfx.Durations;
-import com.williwadelmawisky.musicplayer.util.Files;
-import com.williwadelmawisky.musicplayer.util.event.EventArgs;
+import com.williwadelmawisky.musicplayer.util.event.Event;
+
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.geometry.Pos;
@@ -15,8 +14,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-
-import java.io.File;
 
 /**
  *
@@ -42,24 +39,23 @@ public class AudioClipListViewEntry extends HBox {
         imageView.setPickOnBounds(true);
         imageView.setFitWidth(15);
         imageView.setImage(ResourceLoader.loadImage("img/logo.png"));
-        this.getChildren().add(imageView);
 
         _nameLabel = new Label();
         HBox.setHgrow(_nameLabel, Priority.ALWAYS);
         _nameLabel.setMaxWidth(Double.POSITIVE_INFINITY);
-        getChildren().add(_nameLabel);
 
         _durationLabel = new Label();
         _durationLabel.setAlignment(Pos.CENTER_RIGHT);
         _durationLabel.setMinWidth(50);
-        getChildren().add(_durationLabel);
+
+        setSpacing(5);
+        setAlignment(Pos.CENTER_LEFT);
+        getChildren().addAll(imageView, _nameLabel, _durationLabel);
 
         _contextMenu = new ContextMenu();
         final MenuItem deleteMenuItem = new MenuItem("Delete");
         _contextMenu.getItems().addAll(deleteMenuItem);
 
-        setSpacing(5);
-        setAlignment(Pos.CENTER_LEFT);
         setOnContextMenuRequested(this::onContextMenuRequested);
         deleteMenuItem.setOnAction(this::onDelete_ContextMenuItem);
     }
@@ -80,6 +76,7 @@ public class AudioClipListViewEntry extends HBox {
         _audioClip = audioClip;
 
         updateView(audioClip);
+
         _audioClip.OnReady.addListener(this::onReady_AudioClip);
     }
 
@@ -99,6 +96,7 @@ public class AudioClipListViewEntry extends HBox {
      */
     public AudioClip getAudioClip() { return _audioClip; }
 
+
     /**
      * @return
      */
@@ -115,11 +113,15 @@ public class AudioClipListViewEntry extends HBox {
      */
     private void updateView(final AudioClip audioClip) {
         _nameLabel.setText(AudioClip.nameof(audioClip));
+        updateDurationLabel();
+    }
 
-        if (_audioClip.isReady()) {
-            final String durationString = Durations.durationToString(_audioClip.getTotalDuration());
-            _durationLabel.setText(durationString);
-        }
+    /**
+     *
+     */
+    private void updateDurationLabel() {
+        final String durationString = _audioClip.isReady() ? Durations.durationToString(_audioClip.getTotalDuration()) : "";
+        _durationLabel.setText(durationString);
     }
 
 
@@ -152,16 +154,15 @@ public class AudioClipListViewEntry extends HBox {
      * @param sender
      * @param args
      */
-    private void onReady_AudioClip(final Object sender, final EventArgs args) {
-        final String durationString = Durations.durationToString(_audioClip.getTotalDuration());
-        _durationLabel.setText(durationString);
+    private void onReady_AudioClip(final Object sender, final Event args) {
+        updateDurationLabel();
     }
 
 
     /**
      *
      */
-    public static final class ContextMenuEvent extends Event {
+    public static final class ContextMenuEvent extends javafx.event.Event {
 
         public final AudioClipListViewEntry ListViewEntry;
 
@@ -169,7 +170,7 @@ public class AudioClipListViewEntry extends HBox {
          * @param eventType
          * @param listViewEntry
          */
-        public ContextMenuEvent(final EventType<? extends Event> eventType, final AudioClipListViewEntry listViewEntry) {
+        public ContextMenuEvent(final EventType<? extends javafx.event.Event> eventType, final AudioClipListViewEntry listViewEntry) {
             super(eventType);
             ListViewEntry = listViewEntry;
         }

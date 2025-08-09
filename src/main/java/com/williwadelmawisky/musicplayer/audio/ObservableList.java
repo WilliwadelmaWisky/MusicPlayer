@@ -1,7 +1,7 @@
 package com.williwadelmawisky.musicplayer.audio;
 
 import com.williwadelmawisky.musicplayer.util.Lists;
-import com.williwadelmawisky.musicplayer.util.event.EventArgs;
+import com.williwadelmawisky.musicplayer.util.event.Event;
 import com.williwadelmawisky.musicplayer.util.event.EventHandler;
 
 import java.util.*;
@@ -17,8 +17,8 @@ public class ObservableList<T> implements Iterable<T> {
     public final EventHandler<AddEventArgs<T>> OnItemAdded;
     public final EventHandler<RemoveEventArgs<T>> OnItemRemoved;
     public final EventHandler<ClearEventArgs<T>> OnCleared;
-    public final EventHandler<EventArgs> OnChanged;
-    public final EventHandler<EventArgs> OnSorted;
+    public final EventHandler<Event> OnChanged;
+    public final EventHandler<Event> OnSorted;
 
     private final List<T> _list;
 
@@ -84,7 +84,7 @@ public class ObservableList<T> implements Iterable<T> {
 
         _list.add(item);
         OnItemAdded.invoke(this, new AddEventArgs<>(item));
-        OnChanged.invoke(this, EventArgs.EMPTY);
+        OnChanged.invoke(this, Event.DEFAULT);
         return true;
     }
 
@@ -113,7 +113,7 @@ public class ObservableList<T> implements Iterable<T> {
             return false;
 
         OnItemRemoved.invoke(this, new RemoveEventArgs<>(item));
-        OnChanged.invoke(this, EventArgs.EMPTY);
+        OnChanged.invoke(this, Event.DEFAULT);
         return true;
     }
 
@@ -125,7 +125,7 @@ public class ObservableList<T> implements Iterable<T> {
         final List<T> items = new ArrayList<>(_list);
         _list.clear();
         OnCleared.invoke(this, new ClearEventArgs<>(items));
-        OnChanged.invoke(this, EventArgs.EMPTY);
+        OnChanged.invoke(this, Event.DEFAULT);
     }
 
 
@@ -134,8 +134,8 @@ public class ObservableList<T> implements Iterable<T> {
      */
     public void sort(final Comparator<? super T> comparator) {
         _list.sort(comparator);
-        OnSorted.invoke(this, EventArgs.EMPTY);
-        OnChanged.invoke(this, EventArgs.EMPTY);
+        OnSorted.invoke(this, Event.DEFAULT);
+        OnChanged.invoke(this, Event.DEFAULT);
     }
 
     /**
@@ -143,8 +143,8 @@ public class ObservableList<T> implements Iterable<T> {
      */
     public void shuffle() {
         Collections.shuffle(_list);
-        OnSorted.invoke(this, EventArgs.EMPTY);
-        OnChanged.invoke(this, EventArgs.EMPTY);
+        OnSorted.invoke(this, Event.DEFAULT);
+        OnChanged.invoke(this, Event.DEFAULT);
     }
 
 
@@ -183,7 +183,7 @@ public class ObservableList<T> implements Iterable<T> {
     /**
      * @param <T>
      */
-    public static class AddEventArgs<T> extends EventArgs {
+    public static class AddEventArgs<T> extends Event {
 
         public final T Item;
 
@@ -200,7 +200,7 @@ public class ObservableList<T> implements Iterable<T> {
     /**
      * @param <T>
      */
-    public static class RemoveEventArgs<T> extends EventArgs {
+    public static class RemoveEventArgs<T> extends Event {
 
         public final T Item;
 
@@ -217,7 +217,7 @@ public class ObservableList<T> implements Iterable<T> {
     /**
      * @param <T>
      */
-    public static class ClearEventArgs<T> extends EventArgs {
+    public static class ClearEventArgs<T> extends Event {
 
         public final List<T> Items;
 

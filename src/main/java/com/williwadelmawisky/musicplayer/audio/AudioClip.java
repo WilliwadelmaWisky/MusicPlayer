@@ -5,9 +5,9 @@ import java.io.File;
 import com.williwadelmawisky.musicplayer.ResourceLoader;
 import com.williwadelmawisky.musicplayer.util.Files;
 import com.williwadelmawisky.musicplayer.utilfx.Durations;
-import com.williwadelmawisky.musicplayer.util.event.EventArgs;
+import com.williwadelmawisky.musicplayer.util.event.Event;
 import com.williwadelmawisky.musicplayer.util.event.EventHandler;
-import com.williwadelmawisky.musicplayer.util.event.EventArgs_SingleValue;
+import com.williwadelmawisky.musicplayer.util.event.ChangeEvent;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -29,13 +29,12 @@ public class AudioClip {
         STOPPED
     }
 
-    public final EventHandler<EventArgs> OnReady;
-    public final EventHandler<EventArgs> OnFinish;
-    public final EventHandler<EventArgs> OnPlay;
-    public final EventHandler<EventArgs> OnPause;
-    public final EventHandler<EventArgs> OnStop;
-    public final EventHandler<EventArgs_SingleValue<Progress>> OnProgressChanged;
-    public final EventHandler<EventArgs_SingleValue<Double>> OnVolumeChanged;
+    public final EventHandler<Event> OnReady;
+    public final EventHandler<Event> OnFinish;
+    public final EventHandler<Event> OnPlay;
+    public final EventHandler<Event> OnPause;
+    public final EventHandler<Event> OnStop;
+    public final EventHandler<ChangeEvent<Progress>> OnProgressChanged;
 
     private final MediaPlayer _mediaPlayer;
     private final String _absoluteFilePath;
@@ -64,7 +63,6 @@ public class AudioClip {
         OnPlay = new EventHandler<>();
         OnPause = new EventHandler<>();
         OnStop = new EventHandler<>();
-        OnVolumeChanged = new EventHandler<>();
         OnProgressChanged = new EventHandler<>();
 
         final Media media = ResourceLoader.loadMedia(file.getPath());
@@ -106,11 +104,6 @@ public class AudioClip {
      */
     public Duration getTotalDuration() { return _mediaPlayer.getTotalDuration(); }
 
-    /**
-     * @return
-     */
-    public double getVolume() { return _mediaPlayer.getVolume(); }
-
 
     /**
      * @param volume
@@ -121,7 +114,6 @@ public class AudioClip {
             return;
 
        _mediaPlayer.setVolume(clampedVolume);
-        OnVolumeChanged.invoke(this, new EventArgs_SingleValue<>(clampedVolume));
     }
 
 
@@ -147,7 +139,7 @@ public class AudioClip {
 
         _mediaPlayer.play();
         _status = Status.PLAYING;
-        OnPlay.invoke(this, EventArgs.EMPTY);
+        OnPlay.invoke(this, Event.DEFAULT);
         return true;
     }
 
@@ -160,7 +152,7 @@ public class AudioClip {
 
         _mediaPlayer.pause();
         _status = Status.PAUSED;
-        OnPause.invoke(this, EventArgs.EMPTY);
+        OnPause.invoke(this, Event.DEFAULT);
         return true;
     }
 
@@ -173,7 +165,7 @@ public class AudioClip {
 
         _mediaPlayer.stop();
         _status = Status.STOPPED;
-        OnStop.invoke(this, EventArgs.EMPTY);
+        OnStop.invoke(this, Event.DEFAULT);
         return true;
     }
 
@@ -185,7 +177,7 @@ public class AudioClip {
     private void _seek(final double clampedNormalizedPlaybackPosition, final Duration clampedPlaybackPosition) {
         _mediaPlayer.seek(clampedPlaybackPosition);
         final Progress progress = new Progress(clampedNormalizedPlaybackPosition, clampedPlaybackPosition, _mediaPlayer.getTotalDuration());
-        OnProgressChanged.invoke(this, new EventArgs_SingleValue<>(progress));
+        OnProgressChanged.invoke(this, new ChangeEvent<>(progress));
     }
 
     /**
@@ -256,7 +248,7 @@ public class AudioClip {
      */
     private void onReady_MediaPlayer() {
         _isReady = true;
-        OnReady.invoke(this, EventArgs.EMPTY);
+        OnReady.invoke(this, Event.DEFAULT);
     }
 
     /**
@@ -265,7 +257,7 @@ public class AudioClip {
     private void onEndOfMedia_MediaPlayer() {
         _mediaPlayer.stop();
         _status = Status.STOPPED;
-        OnFinish.invoke(this, EventArgs.EMPTY);
+        OnFinish.invoke(this, Event.DEFAULT);
     }
 
     /**
@@ -276,6 +268,6 @@ public class AudioClip {
     private void onCurrentTimeChanged_MediaPlayer(final javafx.beans.value.ObservableValue<? extends Duration> observable, final Duration oldValue, final Duration newValue) {
         final double normalizedPlaybackPosition = newValue.toMillis() / _mediaPlayer.getTotalDuration().toMillis();
         final Progress progress = new Progress(normalizedPlaybackPosition, newValue, _mediaPlayer.getTotalDuration());
-        OnProgressChanged.invoke(this, new EventArgs_SingleValue<>(progress));
+        OnProgressChanged.invoke(this, new ChangeEvent<>(progress));
     }
 }

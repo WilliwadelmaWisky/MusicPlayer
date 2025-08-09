@@ -1,8 +1,8 @@
 package com.williwadelmawisky.musicplayer.audio;
 
-import com.williwadelmawisky.musicplayer.util.event.EventArgs;
+import com.williwadelmawisky.musicplayer.util.event.Event;
 import com.williwadelmawisky.musicplayer.util.event.EventHandler;
-import com.williwadelmawisky.musicplayer.util.event.EventArgs_SingleValue;
+import com.williwadelmawisky.musicplayer.util.event.ChangeEvent;
 import com.williwadelmawisky.musicplayer.utilfx.Durations;
 import javafx.util.Duration;
 
@@ -14,9 +14,9 @@ import java.util.List;
  */
 public class AudioClipPlayer {
 
-    public final EventHandler<EventArgs_SingleValue<AudioClip>> OnPlay;
-    public final EventHandler<EventArgs_SingleValue<AudioClip>> OnPause;
-    public final EventHandler<EventArgs_SingleValue<AudioClip>> OnStop;
+    public final EventHandler<ChangeEvent<AudioClip>> OnPlay;
+    public final EventHandler<ChangeEvent<AudioClip>> OnPause;
+    public final EventHandler<ChangeEvent<AudioClip>> OnStop;
 
     public final ObservableList<AudioClip> AudioClipList;
     public final SelectionModel<AudioClip> SelectionModel;
@@ -55,6 +55,30 @@ public class AudioClipPlayer {
 
         AudioClipList.forEach(audioClip -> audioClip.setVolume(clampedVolume));
         VolumeProperty.setValue(clampedVolume);
+    }
+
+    /**
+     * @param amount
+     */
+    public void increaseVolume(final double amount) {
+        final double volume = Math.floor((VolumeProperty.getValue() * 100.0 / amount) + 1) * amount / 100.0;
+        setVolume(volume);
+    }
+
+    /**
+     * @param amount
+     */
+    public void decreaseVolume(final double amount) {
+        final double volume = Math.ceil((VolumeProperty.getValue() * 100.0 / amount) - 1) * amount / 100.0;
+        setVolume(volume);
+    }
+
+    /**
+     *
+     */
+    public void muteVolume() {
+        final double volume = 0;
+        setVolume(volume);
     }
 
 
@@ -105,7 +129,7 @@ public class AudioClipPlayer {
         if (!audioClip.play())
             return false;
 
-        OnPlay.invoke(this, new EventArgs_SingleValue<>(audioClip));
+        OnPlay.invoke(this, new ChangeEvent<>(audioClip));
         return true;
     }
 
@@ -128,7 +152,7 @@ public class AudioClipPlayer {
         if (!audioClip.pause())
             return false;
 
-        OnPause.invoke(this, new EventArgs_SingleValue<>(audioClip));
+        OnPause.invoke(this, new ChangeEvent<>(audioClip));
         return true;
     }
 
@@ -155,7 +179,7 @@ public class AudioClipPlayer {
         if (!audioClip.stop())
             return false;
 
-        OnStop.invoke(this, new EventArgs_SingleValue<>(audioClip));
+        OnStop.invoke(this, new ChangeEvent<>(audioClip));
         return true;
     }
 
@@ -210,7 +234,7 @@ public class AudioClipPlayer {
      * @param sender
      * @param args
      */
-    private void onReady_AudioClip(final Object sender, final EventArgs args) {
+    private void onReady_AudioClip(final Object sender, final Event args) {
         final Duration totalDuration = calculateTotalDuration();
         TotalDurationProperty.setValue(totalDuration);
     }
@@ -219,7 +243,7 @@ public class AudioClipPlayer {
      * @param sender
      * @param args
      */
-    private void onFinished_AudioClip(final Object sender, final EventArgs args) {
+    private void onFinished_AudioClip(final Object sender, final Event args) {
         SelectionModel.selectNext();
     }
 

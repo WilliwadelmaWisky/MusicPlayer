@@ -6,9 +6,10 @@ import java.util.List;
 /**
  * @param <T>
  */
-public class EventHandler<T extends EventArgs> {
+public class EventHandler<T extends Event> {
 
-    private final List<Event<T>> _listenerList;
+    private final List<EventListener<T>> _listenerList;
+
 
     /**
      *
@@ -17,19 +18,35 @@ public class EventHandler<T extends EventArgs> {
         _listenerList = new ArrayList<>();
     }
 
+
     /**
      * @param sender
      * @param args
+     * @throws NullEventListenerException
      */
-    public void invoke(final Object sender, final T args) { _listenerList.forEach(listener -> listener.invoke(sender, args)); }
+    public void invoke(final Object sender, final T args) throws NullEventListenerException {
+        _listenerList.forEach(listener -> {
+            if (listener == null)
+                throw new NullEventListenerException("event-handler contains null listener");
+
+            listener.invoke(sender, args);
+        });
+    }
 
     /**
-     * @param listener
+     *
      */
-    public void addListener(final Event<T> listener) { _listenerList.add(listener); }
+    public void clear() {
+        _listenerList.clear();
+    }
 
     /**
-     * @param listener
+     * @param eventListener
      */
-    public void removeListener(final Event<T> listener) { _listenerList.remove(listener); }
+    public void addListener(final EventListener<T> eventListener) { _listenerList.add(eventListener); }
+
+    /**
+     * @param eventListener
+     */
+    public void removeListener(final EventListener<T> eventListener) { _listenerList.remove(eventListener); }
 }

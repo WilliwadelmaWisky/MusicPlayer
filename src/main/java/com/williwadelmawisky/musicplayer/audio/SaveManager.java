@@ -11,19 +11,6 @@ public class SaveManager {
 
     /**
      * @param saveable
-     * @param filePath
-     * @return
-     */
-    public boolean save(final Saveable saveable, final String filePath) {
-        if (saveable == null)
-            return false;
-
-        final String data = saveable.serialize();
-        return Files.write(filePath, data);
-    }
-
-    /**
-     * @param saveable
      * @param file
      * @return
      */
@@ -35,19 +22,16 @@ public class SaveManager {
         return Files.write(file, data);
     }
 
-
     /**
      * @param saveable
      * @param filePath
      * @return
      */
-    public boolean load(final Saveable saveable, final String filePath) {
-        if (saveable == null)
-            return false;
-
-        final String data = Files.read(filePath);
-        return saveable.deserialize(data);
+    public boolean save(final Saveable saveable, final String filePath) {
+        final File file = new File(filePath);
+        return save(saveable, file);
     }
+
 
     /**
      * @param saveable
@@ -60,5 +44,15 @@ public class SaveManager {
 
         final String data = Files.read(file);
         return saveable.deserialize(data);
+    }
+
+    /**
+     * @param saveable
+     * @param filePath
+     * @return
+     */
+    public boolean load(final Saveable saveable, final String filePath) {
+        final File file = new File(filePath);
+        return load(saveable, file);
     }
 }

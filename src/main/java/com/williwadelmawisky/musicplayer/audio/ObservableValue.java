@@ -1,6 +1,6 @@
 package com.williwadelmawisky.musicplayer.audio;
 
-import com.williwadelmawisky.musicplayer.util.event.EventArgs;
+import com.williwadelmawisky.musicplayer.util.event.ChangeEvent;
 import com.williwadelmawisky.musicplayer.util.event.EventHandler;
 
 /**
@@ -8,7 +8,7 @@ import com.williwadelmawisky.musicplayer.util.event.EventHandler;
  */
 public class ObservableValue<T> {
 
-    public final EventHandler<ChangeEventArgs<T>> OnChanged;
+    public final EventHandler<ChangeEvent<T>> OnChanged;
 
     private T _value;
 
@@ -44,22 +44,6 @@ public class ObservableValue<T> {
      */
     public void setValue(final T value) {
         _value = value;
-        OnChanged.invoke(this, new ChangeEventArgs<>(value));
-    }
-
-
-    /**
-     * @param <T>
-     */
-    public static final class ChangeEventArgs<T> extends EventArgs {
-
-        public final T Value;
-
-        /**
-         * @param value
-         */
-        public ChangeEventArgs(final T value) {
-            Value = value;
-        }
+        OnChanged.invoke(this, new ChangeEvent<>(value));
     }
 }

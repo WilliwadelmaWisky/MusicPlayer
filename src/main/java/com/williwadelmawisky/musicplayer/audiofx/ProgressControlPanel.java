@@ -3,7 +3,7 @@ package com.williwadelmawisky.musicplayer.audiofx;
 import com.williwadelmawisky.musicplayer.audio.AudioClip;
 import com.williwadelmawisky.musicplayer.audio.Progress;
 import com.williwadelmawisky.musicplayer.utilfx.Durations;
-import com.williwadelmawisky.musicplayer.util.event.EventArgs_SingleValue;
+import com.williwadelmawisky.musicplayer.util.event.ChangeEvent;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -125,7 +125,7 @@ public class ProgressControlPanel extends HBox {
      * @param sender
      * @param args
      */
-    private void onProgressChanged_AudioClip(final Object sender, final EventArgs_SingleValue<Progress> args) {
+    private void onProgressChanged_AudioClip(final Object sender, final ChangeEvent<Progress> args) {
         if (Math.abs(_slider.getValue() - args.Value.NormalizedPlaybackPosition) <= 1e-6)
             return;
 

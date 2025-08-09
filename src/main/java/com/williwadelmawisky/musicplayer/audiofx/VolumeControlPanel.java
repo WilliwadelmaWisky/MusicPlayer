@@ -2,6 +2,7 @@ package com.williwadelmawisky.musicplayer.audiofx;
 
 import com.williwadelmawisky.musicplayer.audio.AudioClipPlayer;
 import com.williwadelmawisky.musicplayer.audio.ObservableValue;
+import com.williwadelmawisky.musicplayer.util.event.ChangeEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -127,12 +128,12 @@ public class VolumeControlPanel extends HBox {
 
     /**
      * @param sender
-     * @param args
+     * @param e
      */
-    private void onChanged_VolumeProperty(final Object sender, final ObservableValue.ChangeEventArgs<Double> args) {
-        if (Math.abs(_slider.getValue() - args.Value) <= 1e-6)
+    private void onChanged_VolumeProperty(final Object sender, final ChangeEvent<Double> e) {
+        if (Math.abs(_slider.getValue() - e.Value) <= 1e-6)
             return;
 
-        updateView(args.Value);
+        updateView(e.Value);
     }
 }

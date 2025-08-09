@@ -35,6 +35,11 @@ public class PlaylistInfo implements Saveable {
     /**
      * @return
      */
+    public boolean isEmpty() { return FilePaths.length == 0; }
+
+    /**
+     * @return
+     */
     public int length() { return FilePaths.length; }
 
     /**

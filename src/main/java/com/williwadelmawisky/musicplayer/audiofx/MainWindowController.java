@@ -2,9 +2,9 @@ package com.williwadelmawisky.musicplayer.audiofx;
 
 import com.williwadelmawisky.musicplayer.audio.*;
 import com.williwadelmawisky.musicplayer.utilfx.Durations;
-import com.williwadelmawisky.musicplayer.util.event.EventArgs;
+import com.williwadelmawisky.musicplayer.util.event.Event;
 import com.williwadelmawisky.musicplayer.audio.SelectionModel;
-import com.williwadelmawisky.musicplayer.util.event.EventArgs_SingleValue;
+import com.williwadelmawisky.musicplayer.util.event.ChangeEvent;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -31,10 +31,8 @@ public class MainWindowController {
     private static final File PREFERENCES_SAVE_DIRECTORY = Paths.get(CONFIG_DIRECTORY.getAbsolutePath(), "preferences").toFile();
     private static final File AUDIODATA_SAVE_DIRECTORY = Paths.get(CONFIG_DIRECTORY.getAbsolutePath(), "audiodata").toFile();
 
-    private static final Duration SKIP_FORWARD_AMOUNT = Duration.seconds(10);
-    private static final Duration SKIP_BACKWARD_AMOUNT = Duration.seconds(10);
-    private static final byte INCREASE_VOLUME_AMOUNT = 5;
-    private static final byte DECRAESE_VOLUME_AMOUNT = 5;
+    private static final Duration SKIP_TIME_AMOUNT = Duration.seconds(10);
+    private static final byte CHANGE_VOLUME_AMOUNT = 5;
 
     @FXML private Menu _playbackMenu;
     @FXML private MenuItem _playMenuItem;
@@ -175,7 +173,7 @@ public class MainWindowController {
         playlistChooser.setTitle("Open a playlist");
 
         final PlaylistInfo playlistInfo = playlistChooser.showOpenDialog();
-        if (playlistInfo == null)
+        if (playlistInfo == null || playlistInfo.isEmpty())
             return;
 
         _audioClipPlayer.load(playlistInfo);
@@ -236,13 +234,13 @@ public class MainWindowController {
      * @param e
      */
     @FXML
-    private void onSkipForwardButtonClicked(final ActionEvent e) { _audioClipPlayer.jumpForward(SKIP_FORWARD_AMOUNT); }
+    private void onSkipForwardButtonClicked(final ActionEvent e) { _audioClipPlayer.jumpForward(SKIP_TIME_AMOUNT); }
 
     /**
      * @param e
      */
     @FXML
-    private void onSkipBackwardButtonClicked(final ActionEvent e) { _audioClipPlayer.jumpBackward(SKIP_BACKWARD_AMOUNT); }
+    private void onSkipBackwardButtonClicked(final ActionEvent e) { _audioClipPlayer.jumpBackward(SKIP_TIME_AMOUNT); }
 
     /**
      * @param e
@@ -267,44 +265,33 @@ public class MainWindowController {
      * @param e
      */
     @FXML
-    private void onIncreaseVolumeButtonClicked(final ActionEvent e) {
-        final double volume = ((int)(_audioClipPlayer.VolumeProperty.getValue() * 100.0 / INCREASE_VOLUME_AMOUNT) + 1) * INCREASE_VOLUME_AMOUNT / 100.0;
-        _audioClipPlayer.setVolume(volume);
-    }
+    private void onIncreaseVolumeButtonClicked(final ActionEvent e) { _audioClipPlayer.increaseVolume(CHANGE_VOLUME_AMOUNT); }
 
     /**
      * @param e
      */
     @FXML
-    private void onDecreaseVolumeButtonClicked(final ActionEvent e) {
-        final double volume = ((int)(_audioClipPlayer.VolumeProperty.getValue() * 100.0 / DECRAESE_VOLUME_AMOUNT) - 1) * DECRAESE_VOLUME_AMOUNT / 100.0;
-        _audioClipPlayer.setVolume(volume);
-    }
+    private void onDecreaseVolumeButtonClicked(final ActionEvent e) { _audioClipPlayer.decreaseVolume(CHANGE_VOLUME_AMOUNT); }
 
     /**
      * @param e
      */
     @FXML
-    private void onMuteVolumeButtonClicked(final ActionEvent e) {
-        final double volume = 0;
-        _audioClipPlayer.setVolume(volume);
-    }
+    private void onMuteVolumeButtonClicked(final ActionEvent e) { _audioClipPlayer.muteVolume(); }
 
 
     /**
      * @param e
      */
     @FXML
-    private void onFilter_AudioClipFilterView(final AudioClipFilterView.FilterEvent e) {
-        _audioClipListView.generateEntries(e.FilterList);
-    }
+    private void onFilter_AudioClipFilterView(final AudioClipFilterView.FilterEvent e) { _audioClipListView.generateEntries(e.FilterList); }
 
 
     /**
      * @param sender
      * @param args
      */
-    private void onPlay_AudioClipPlayer(final Object sender, final EventArgs_SingleValue<AudioClip> args) {
+    private void onPlay_AudioClipPlayer(final Object sender, final ChangeEvent<AudioClip> args) {
         _playMenuItem.setText("Pause");
         _playMenuItem.setOnAction(e -> _audioClipPlayer.pause());
         _playMenuItem.setDisable(false);
@@ -314,7 +301,7 @@ public class MainWindowController {
      * @param sender
      * @param args
      */
-    private void onPause_AudioClipPlayer(final Object sender, final EventArgs_SingleValue<AudioClip> args) {
+    private void onPause_AudioClipPlayer(final Object sender, final ChangeEvent<AudioClip> args) {
         _playMenuItem.setText("Play");
         _playMenuItem.setOnAction(e -> _audioClipPlayer.play());
         _playMenuItem.setDisable(false);
@@ -324,7 +311,7 @@ public class MainWindowController {
      * @param sender
      * @param args
      */
-    private void onStop_AudioClipPlayer(final Object sender, final EventArgs_SingleValue<AudioClip> args) {
+    private void onStop_AudioClipPlayer(final Object sender, final ChangeEvent<AudioClip> args) {
         _playMenuItem.setText("Play");
         _playMenuItem.setOnAction(e -> {});
         _playMenuItem.setDisable(true);
@@ -332,18 +319,18 @@ public class MainWindowController {
 
     /**
      * @param sender
-     * @param args
+     * @param e
      */
-    private void onChanged_AudioClipList(final Object sender, final EventArgs args) {
+    private void onChanged_AudioClipList(final Object sender, final Event e) {
         _playbackMenu.setDisable(_audioClipPlayer.AudioClipList.isEmpty());
     }
 
     /**
      * @param sender
-     * @param args
+     * @param e
      */
-    private void onChanged_TotalDuration(final Object sender, final ObservableValue.ChangeEventArgs<Duration> args) {
-        updatePlaybackMenuText(args.Value);
+    private void onChanged_TotalDuration(final Object sender, final ChangeEvent<Duration> e) {
+        updatePlaybackMenuText(e.Value);
     }
 
     /**
@@ -359,7 +346,7 @@ public class MainWindowController {
      * @param sender
      * @param args
      */
-    private void onCleared_SelectionModel(final Object sender, final EventArgs args) {
+    private void onCleared_SelectionModel(final Object sender, final Event args) {
         _progressControlPanel.clear();
         _playbackControlPanel.setDisable(true);
     }

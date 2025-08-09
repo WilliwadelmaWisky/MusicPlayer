@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class PlaylistChooser extends VBox {
 
-    private static final File PLAYLIST_SAVE_DIRECTORY = Paths.get(System.getProperty("user.home"), ".config", "WilliwadelmaWisky", "MusicPlayer", "playlists").toFile();
+    private static final File PLAYLIST_SAVE_DIRECTORY = Paths.get(System.getProperty("user.home"), ".config", "WilliwadelmaWisky", "MusicPlayer").toFile();
     private static final String[] ALLOWED_EXTENSIONS = new String[] { ".json" };
 
     @FXML private PlaylistListView _playlistListView;
@@ -33,7 +33,7 @@ public class PlaylistChooser extends VBox {
      */
     public PlaylistChooser() {
         super();
-        ResourceLoader.loadFxml("fxml/playlist_chooser.fxml");
+        ResourceLoader.loadFxml("fxml/playlist_chooser.fxml", this);
     }
 
     /**

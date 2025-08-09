@@ -5,7 +5,7 @@ import com.williwadelmawisky.musicplayer.audio.AudioClipPlayer;
 import com.williwadelmawisky.musicplayer.util.Lists;
 import com.williwadelmawisky.musicplayer.audio.ObservableList;
 import com.williwadelmawisky.musicplayer.audio.SelectionModel;
-import com.williwadelmawisky.musicplayer.util.event.EventArgs;
+import com.williwadelmawisky.musicplayer.util.event.Event;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -56,7 +56,7 @@ public class AudioClipListView extends VBox {
         _listView.setOnDragOver(this::onDragOver_ListView);
         _listView.setOnDragDropped(this::onDragDrop_ListView);
         _listView.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
-            if (e.isSecondaryButtonDown())
+            if (!e.isPrimaryButtonDown())
                 e.consume();
         });
     }
@@ -164,7 +164,7 @@ public class AudioClipListView extends VBox {
      * @param sender
      * @param args
      */
-    private void onSorted_AudioClipList(final Object sender, final EventArgs args) {
+    private void onSorted_AudioClipList(final Object sender, final Event args) {
         clearEntries();
         _audioClipPlayer.AudioClipList.forEach(this::addEntry);
 
@@ -192,7 +192,7 @@ public class AudioClipListView extends VBox {
      * @param sender
      * @param args
      */
-    private void onCleared_SelectionModel(final Object sender, final EventArgs args) {
+    private void onCleared_SelectionModel(final Object sender, final Event args) {
         _listView.getSelectionModel().clearSelection();
     }
 

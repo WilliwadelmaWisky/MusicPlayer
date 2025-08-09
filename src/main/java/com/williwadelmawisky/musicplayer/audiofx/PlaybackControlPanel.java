@@ -2,10 +2,9 @@ package com.williwadelmawisky.musicplayer.audiofx;
 
 import com.williwadelmawisky.musicplayer.audio.AudioClip;
 import com.williwadelmawisky.musicplayer.audio.AudioClipPlayer;
-import com.williwadelmawisky.musicplayer.audio.ObservableValue;
 import com.williwadelmawisky.musicplayer.audio.SelectionMode;
 import com.williwadelmawisky.musicplayer.util.Arrays;
-import com.williwadelmawisky.musicplayer.util.event.EventArgs_SingleValue;
+import com.williwadelmawisky.musicplayer.util.event.ChangeEvent;
 
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
@@ -167,7 +166,7 @@ public class PlaybackControlPanel extends HBox {
      * @param sender
      * @param args
      */
-    private void onPlay_AudioClipPlayer(final Object sender, final EventArgs_SingleValue<AudioClip> args) {
+    private void onPlay_AudioClipPlayer(final Object sender, final ChangeEvent<AudioClip> args) {
         updatePlaystate(true);
     }
 
@@ -175,7 +174,7 @@ public class PlaybackControlPanel extends HBox {
      * @param sender
      * @param args
      */
-    private void onPause_AudioClipPlayer(final Object sender, final EventArgs_SingleValue<AudioClip> args) {
+    private void onPause_AudioClipPlayer(final Object sender, final ChangeEvent<AudioClip> args) {
         updatePlaystate(false);
     }
 
@@ -183,15 +182,15 @@ public class PlaybackControlPanel extends HBox {
      * @param sender
      * @param args
      */
-    private void onStop_AudioClipPlayer(final Object sender, final EventArgs_SingleValue<AudioClip> args) {
+    private void onStop_AudioClipPlayer(final Object sender, final ChangeEvent<AudioClip> args) {
         updatePlaystate(false);
     }
 
     /**
      * @param sender
-     * @param args
+     * @param e
      */
-    private void onChanged_SelectionModeProperty(final Object sender, final ObservableValue.ChangeEventArgs<SelectionMode> args) {
-        updateSelectionMode(args.Value);
+    private void onChanged_SelectionModeProperty(final Object sender, final ChangeEvent<SelectionMode> e) {
+        updateSelectionMode(e.Value);
     }
 }

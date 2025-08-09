@@ -1,6 +1,6 @@
 package com.williwadelmawisky.musicplayer.audio;
 
-import com.williwadelmawisky.musicplayer.util.event.EventArgs;
+import com.williwadelmawisky.musicplayer.util.event.Event;
 import com.williwadelmawisky.musicplayer.util.event.EventHandler;
 
 import java.util.Random;
@@ -146,7 +146,7 @@ public class SelectionModel<T> {
      * @param sender
      * @param args
      */
-    private void onSorted_ObservableList(final Object sender, final EventArgs args) {
+    private void onSorted_ObservableList(final Object sender, final Event args) {
         if (_selectedIndex ==  -1)
             return;
 
@@ -163,7 +163,7 @@ public class SelectionModel<T> {
     /**
      * @param <T>
      */
-    public static class SelectEventArgs<T> extends EventArgs {
+    public static class SelectEventArgs<T> extends Event {
 
         public final T Item;
 
@@ -178,7 +178,7 @@ public class SelectionModel<T> {
     /**
      * @param <T>
      */
-    public static class ClearEventArgs<T> extends EventArgs {
+    public static class ClearEventArgs<T> extends Event {
 
         public final T Item;
 

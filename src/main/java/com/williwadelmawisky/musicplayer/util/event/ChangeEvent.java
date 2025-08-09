@@ -3,7 +3,7 @@ package com.williwadelmawisky.musicplayer.util.event;
 /**
  * @param <T>
  */
-public class EventArgs_SingleValue<T> extends EventArgs {
+public class ChangeEvent<T> extends Event {
 
     public final T Value;
 
@@ -11,7 +11,7 @@ public class EventArgs_SingleValue<T> extends EventArgs {
     /**
      * @param value
      */
-    public EventArgs_SingleValue(final T value) {
+    public ChangeEvent(final T value) {
         Value = value;
     }
 }
