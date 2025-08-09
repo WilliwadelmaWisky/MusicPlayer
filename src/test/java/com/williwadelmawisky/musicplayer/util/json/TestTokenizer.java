@@ -15,7 +15,7 @@ public class TestTokenizer {
      */
     @Test
     public void testNext() {
-        final Tokenizer tokenizer = new Tokenizer("{ Name: Yes, Age: 35, Friends: [ Maybe, No ]}");
+        final Tokenizer tokenizer = new Tokenizer("{ \"Name\": \"Yes\", \"Age\": 35, \"Friends\": [ \"Maybe\", \"No\" ]}");
         assertEquals("{", tokenizer.next().Value);
         assertEquals("Name", tokenizer.next().Value);
         assertEquals(":", tokenizer.next().Value);

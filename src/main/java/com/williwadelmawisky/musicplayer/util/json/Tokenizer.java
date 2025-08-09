@@ -72,8 +72,8 @@ public class Tokenizer {
                     throw new InvalidSyntaxException("no closing quote found");
             }
 
-            _index++;
             final String value = TargetString.substring(startIndex, _index);
+            _index++;
             return new Token(value);
         }
 
