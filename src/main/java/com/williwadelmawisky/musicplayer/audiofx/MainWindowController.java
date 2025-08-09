@@ -1,6 +1,7 @@
 package com.williwadelmawisky.musicplayer.audiofx;
 
 import com.williwadelmawisky.musicplayer.audio.*;
+import com.williwadelmawisky.musicplayer.util.Files;
 import com.williwadelmawisky.musicplayer.utilfx.Durations;
 import com.williwadelmawisky.musicplayer.util.event.Event;
 import com.williwadelmawisky.musicplayer.audio.SelectionModel;
@@ -43,6 +44,7 @@ public class MainWindowController {
     @FXML private VolumeControlPanel _volumeControlPanel;
 
     private AudioClipPlayer _audioClipPlayer;
+    private PlaylistInfoModel _playlistModel;
     private SaveManager _saveManager;
     private String _name;
 
@@ -52,6 +54,7 @@ public class MainWindowController {
      */
     void onCreated(final AudioClipPlayer audioClipPlayer) {
         _audioClipPlayer = audioClipPlayer;
+        _playlistModel = new PlaylistInfoModel();
         _saveManager = new SaveManager();
 
         _playbackMenu.setDisable(_audioClipPlayer.AudioClipList.isEmpty());
@@ -98,7 +101,7 @@ public class MainWindowController {
             return;
         }
 
-        final File saveFile = Paths.get(CONFIG_DIRECTORY.getAbsolutePath(), _name + ".json").toFile();
+        final File saveFile = Paths.get(CONFIG_DIRECTORY.getAbsolutePath(), _name + ".playlist.json").toFile();
         savePlaylist(saveFile);
     }
 
@@ -120,7 +123,7 @@ public class MainWindowController {
         if (playlistName.isEmpty())
             return;
 
-        final File saveFile = Paths.get(CONFIG_DIRECTORY.getAbsolutePath(), playlistName + ".json").toFile();
+        final File saveFile = Paths.get(CONFIG_DIRECTORY.getAbsolutePath(), playlistName + ".playlist.json").toFile();
         savePlaylist(saveFile);
     }
 
@@ -171,6 +174,7 @@ public class MainWindowController {
     private void onOpenPlaylistButtonClicked(final ActionEvent e) {
         final PlaylistChooser playlistChooser = new PlaylistChooser();
         playlistChooser.setTitle("Open a playlist");
+        playlistChooser.setPlaylistModel(_playlistModel);
 
         final PlaylistInfo playlistInfo = playlistChooser.showOpenDialog();
         if (playlistInfo == null || playlistInfo.isEmpty())
@@ -375,7 +379,7 @@ public class MainWindowController {
      * @return
      */
     private boolean savePlaylist(final File file) {
-        final PlaylistInfo playlistInfo = new PlaylistInfo(_audioClipPlayer.AudioClipList);
+        final PlaylistInfo playlistInfo = new PlaylistInfo(Files.getNameWithoutExtension(file), _audioClipPlayer.AudioClipList);
         return _saveManager.save(playlistInfo, file);
     }
 

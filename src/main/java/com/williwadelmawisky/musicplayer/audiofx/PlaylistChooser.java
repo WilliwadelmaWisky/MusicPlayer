@@ -1,17 +1,20 @@
 package com.williwadelmawisky.musicplayer.audiofx;
 
-import com.williwadelmawisky.musicplayer.ResourceLoader;
+import com.williwadelmawisky.musicplayer.audio.AudioClip;
 import com.williwadelmawisky.musicplayer.audio.PlaylistInfo;
-import com.williwadelmawisky.musicplayer.audio.SaveManager;
+import com.williwadelmawisky.musicplayer.audio.PlaylistInfoModel;
 import com.williwadelmawisky.musicplayer.util.Files;
+import com.williwadelmawisky.musicplayer.utilfx.SearchField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,12 +22,10 @@ import java.util.List;
  */
 public class PlaylistChooser extends VBox {
 
-    private static final File PLAYLIST_SAVE_DIRECTORY = Paths.get(System.getProperty("user.home"), ".config", "WilliwadelmaWisky", "MusicPlayer").toFile();
-    private static final String[] ALLOWED_EXTENSIONS = new String[] { ".json" };
+    private final SearchField _searchField;
+    private final PlaylistListView _playlistListView;
 
-    @FXML private PlaylistListView _playlistListView;
-
-    private File _selectedPlaylistFile;
+    private PlaylistInfoModel _playlistInfoModel;
     private String _windowTitle;
 
 
@@ -33,15 +34,26 @@ public class PlaylistChooser extends VBox {
      */
     public PlaylistChooser() {
         super();
-        ResourceLoader.loadFxml("fxml/playlist_chooser.fxml", this);
-    }
 
-    /**
-     * @param title
-     */
-    public PlaylistChooser(final String title) {
-        this();
-        setTitle(title);
+        _searchField = new SearchField();
+        _playlistListView = new PlaylistListView();
+        VBox.setVgrow(_playlistListView, Priority.ALWAYS);
+        _playlistListView.setMaxHeight(Double.POSITIVE_INFINITY);
+
+        final HBox buttonBox = new HBox();
+        final Button cancelButton = new Button("Cancel");
+        final Button okButton = new Button("Select");
+        buttonBox.setSpacing(5);
+        buttonBox.setAlignment(Pos.CENTER_RIGHT);
+        buttonBox.getChildren().addAll(cancelButton, okButton);
+
+        setSpacing(10);
+        setPadding(new Insets(10));
+        getChildren().addAll(_searchField, _playlistListView, buttonBox);
+
+        _searchField.setOnSearch(this::onSearch_SearchField);
+        okButton.setOnAction(this::onClick_OkButton);
+        cancelButton.setOnAction(this::onClick_CancelButton);
     }
 
 
@@ -51,25 +63,26 @@ public class PlaylistChooser extends VBox {
     public void setTitle(final String title) { _windowTitle = title; }
 
     /**
+     * @param playlistInfoModel
+     */
+    public void setPlaylistModel(final PlaylistInfoModel playlistInfoModel) {
+        _playlistInfoModel = playlistInfoModel;
+
+        _playlistListView.setPlaylistModel(_playlistInfoModel);
+    }
+
+
+    /**
      * @return
      */
     public PlaylistInfo showOpenDialog() {
-        final List<File> playlistFileList = new ArrayList<>();
-        Files.listFiles(PLAYLIST_SAVE_DIRECTORY, ALLOWED_EXTENSIONS, false, playlistFileList::add);
-        _playlistListView.setData(playlistFileList);
-
         final ModalWindow modalWindow = new ModalWindow(new Stage(), _windowTitle, this);
         modalWindow.showAndWait();
 
-        if (_selectedPlaylistFile == null)
+        if (!_playlistInfoModel.SelectionModel.hasValue())
             return null;
 
-        final PlaylistInfo playlistInfo = new PlaylistInfo();
-        final SaveManager saveManager = new SaveManager();
-        if (saveManager.load(playlistInfo, _selectedPlaylistFile))
-            return playlistInfo;
-
-        return null;
+        return _playlistInfoModel.SelectionModel.getValue();
     }
 
 
@@ -77,12 +90,7 @@ public class PlaylistChooser extends VBox {
      * @param e
      */
     @FXML
-    private void onOpenButtonClicked(final ActionEvent e) {
-        final PlaylistListViewEntry playlistView = _playlistListView.getSelected();
-        if (playlistView == null)
-            return;
-
-        _selectedPlaylistFile = playlistView.getFile();
+    private void onClick_OkButton(final ActionEvent e) {
         this.getScene().getWindow().hide();
     }
 
@@ -90,8 +98,17 @@ public class PlaylistChooser extends VBox {
      * @param e
      */
     @FXML
-    private void onCancelButtonClicked(final ActionEvent e) {
-        _selectedPlaylistFile = null;
+    private void onClick_CancelButton(final ActionEvent e) {
+        _playlistInfoModel.SelectionModel.clearSelection();
         this.getScene().getWindow().hide();
+    }
+
+
+    /**
+     * @param e
+     */
+    private void onSearch_SearchField(final SearchField.SearchEvent e) {
+        final List<PlaylistInfo> searchList = _playlistInfoModel.PlaylistInfoList.filter(playlistInfo -> playlistInfo.name().toLowerCase().contains(e.getSearchString().toLowerCase()));
+        _playlistListView.generateEntries(searchList);
     }
 }

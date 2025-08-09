@@ -11,6 +11,7 @@ public class AudioClipInfo implements Saveable {
     @SerializeField private String FilePath;
     @SerializeField private String Name;
     @SerializeField private String Artist;
+    @SerializeField private int TotalDuration;
 
 
     /**

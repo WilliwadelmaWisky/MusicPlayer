@@ -1,17 +1,17 @@
 package com.williwadelmawisky.musicplayer.audiofx;
 
 import com.williwadelmawisky.musicplayer.ResourceLoader;
-import com.williwadelmawisky.musicplayer.util.Files;
+import com.williwadelmawisky.musicplayer.audio.PlaylistInfo;
+
+import javafx.event.Event;
+import javafx.event.EventType;
 import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-
-import java.io.File;
 
 /**
  *
@@ -19,7 +19,8 @@ import java.io.File;
 public class PlaylistListViewEntry extends HBox {
 
     private final Label _nameLabel;
-    private File _playlistFile;
+    private final ContextMenu _contextMenu;
+    private PlaylistInfo _playlistInfo;
 
 
     /**
@@ -33,7 +34,6 @@ public class PlaylistListViewEntry extends HBox {
         imageView.setPickOnBounds(true);
         imageView.setFitWidth(15);
         imageView.setImage(ResourceLoader.loadImage("img/logo.png"));
-        this.getChildren().add(imageView);
 
         _nameLabel = new Label();
         HBox.setHgrow(_nameLabel, Priority.ALWAYS);
@@ -41,52 +41,73 @@ public class PlaylistListViewEntry extends HBox {
 
         setSpacing(5);
         setAlignment(Pos.CENTER_LEFT);
+        getChildren().addAll(imageView, _nameLabel);
+
+        _contextMenu = new ContextMenu();
+        final MenuItem deleteMenuItem = new MenuItem("Delete");
+        _contextMenu.getItems().addAll(deleteMenuItem);
+
         setOnContextMenuRequested(this::onContextMenuRequested);
     }
 
     /**
-     * @param playlistFile
+     * @param playlistInfo
      */
-    public PlaylistListViewEntry(final File playlistFile) {
+    public PlaylistListViewEntry(final PlaylistInfo playlistInfo) {
         this();
-        setFile(playlistFile);
+        onCreated(playlistInfo);
+    }
+
+
+    /**
+     * @param playlistInfo
+     */
+    void onCreated(final PlaylistInfo playlistInfo) {
+        _playlistInfo = playlistInfo;
+        _nameLabel.setText(playlistInfo.name());
+    }
+
+    /**
+     *
+     */
+    void onDestroy() {
+
     }
 
 
     /**
      * @return
      */
-    public File getFile() { return _playlistFile; }
+    public PlaylistInfo getPlaylistInfo() { return _playlistInfo; }
+
 
     /**
-     * @param file
+     * @param e
      */
-    public void setFile(final File file) {
-        _playlistFile = file;
-        _nameLabel.setText(Files.getNameWithoutExtension(file));
+    private void onContextMenuRequested(final javafx.scene.input.ContextMenuEvent e) {
+        if (_contextMenu.isShowing())
+            _contextMenu.hide();
+
+        final double x = e.getScreenX() - e.getX() + 20;
+        final double y = e.getScreenY() - e.getY() + this.getHeight();
+        _contextMenu.show(this, x, y);
     }
 
 
     /**
      *
      */
-    public void destroy() {
+    public static final class ContextMenuEvent extends javafx.event.Event {
 
-    }
+        public final PlaylistListViewEntry ListViewEntry;
 
-
-    /**
-     * @param e
-     */
-    private void onContextMenuRequested(final ContextMenuEvent e) {
-        final MenuItem editMenuItem = new MenuItem("Edit");
-        editMenuItem.setOnAction(actionEvent -> System.out.println("Edit"));
-
-        final MenuItem deleteMenuItem = new MenuItem("Delete");
-        deleteMenuItem.setOnAction(actionEvent -> System.out.println("Delete"));
-
-        final ContextMenu contextMenu = new ContextMenu();
-        contextMenu.getItems().addAll(editMenuItem, deleteMenuItem);
-        contextMenu.show(this, 0, 0);
+        /**
+         * @param eventType
+         * @param listViewEntry
+         */
+        public ContextMenuEvent(final EventType<? extends Event> eventType, final PlaylistListViewEntry listViewEntry) {
+            super(eventType);
+            ListViewEntry = listViewEntry;
+        }
     }
 }
