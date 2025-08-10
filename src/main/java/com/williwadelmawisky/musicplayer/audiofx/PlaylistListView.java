@@ -1,14 +1,13 @@
 package com.williwadelmawisky.musicplayer.audiofx;
 
-import com.williwadelmawisky.musicplayer.audio.PlaylistInfo;
-import com.williwadelmawisky.musicplayer.audio.PlaylistInfoModel;
-import com.williwadelmawisky.musicplayer.audio.SelectionModel;
+import com.williwadelmawisky.musicplayer.audio.*;
 import com.williwadelmawisky.musicplayer.util.Lists;
 import com.williwadelmawisky.musicplayer.util.event.Event;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -16,6 +15,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -56,9 +56,12 @@ public class PlaylistListView extends VBox {
     /**
      * @param playlistInfoModel
      */
-    public void setPlaylistModel(final PlaylistInfoModel playlistInfoModel) {
+    void onCreated(final PlaylistInfoModel playlistInfoModel) {
         _playlistInfoModel = playlistInfoModel;
+
         generateEntries(_playlistInfoModel.PlaylistInfoList.filter(playlistInfo -> true));
+
+        _playlistInfoModel.PlaylistInfoList.OnItemRemoved.addListener(this::onRemoved_PlaylistInfoList);
     }
 
 
@@ -67,6 +70,8 @@ public class PlaylistListView extends VBox {
      */
     public void addEntry(final PlaylistInfo playlistInfo) {
         final PlaylistListViewEntry playlistListViewEntry = new PlaylistListViewEntry(playlistInfo);
+        playlistListViewEntry.setOnRename(this::onRename_ListViewEntry);
+        playlistListViewEntry.setOnDelete(this::onDelete_ListViewEntry);
         _listView.getItems().add(playlistListViewEntry);
     }
 
@@ -105,20 +110,12 @@ public class PlaylistListView extends VBox {
      * @param sender
      * @param args
      */
-    private void onSelected_SelectionModel(final Object sender, final SelectionModel.SelectEventArgs<PlaylistInfo> args) {
+    private void onRemoved_PlaylistInfoList(final Object sender, final ObservableList.RemoveEventArgs<PlaylistInfo> args) {
         int index = Lists.indexFunc(_listView.getItems(), playlistListViewEntry -> args.Item.equals(playlistListViewEntry.getPlaylistInfo()));
         if (index == -1)
             return;
 
-        _listView.getSelectionModel().clearAndSelect(index);
-    }
-
-    /**
-     * @param sender
-     * @param args
-     */
-    private void onCleared_SelectionModel(final Object sender, final Event args) {
-        _listView.getSelectionModel().clearSelection();
+        removeEntry(index);
     }
 
 
@@ -141,7 +138,28 @@ public class PlaylistListView extends VBox {
     /**
      * @param e
      */
+    private void onRename_ListViewEntry(final PlaylistListViewEntry.ContextMenuEvent e) {
+        final String oldName = e.ListViewEntry.getPlaylistInfo().name();
+        final TextInputDialog textInputDialog = new TextInputDialog(oldName);
+        textInputDialog.setTitle("Rename the playlist");
+        textInputDialog.setHeaderText(null);
+        textInputDialog.setGraphic(null);
+
+        final Optional<String> result = textInputDialog.showAndWait();
+        if (result.isEmpty())
+            return;
+
+        final String newName = result.get().trim();
+        if (newName.isEmpty() || oldName.equals(newName))
+            return;
+
+        _playlistInfoModel.rename(e.ListViewEntry.getPlaylistInfo(), newName);
+    }
+
+    /**
+     * @param e
+     */
     private void onDelete_ListViewEntry(final PlaylistListViewEntry.ContextMenuEvent e) {
-        _playlistInfoModel.PlaylistInfoList.remove(e.ListViewEntry.getPlaylistInfo());
+        _playlistInfoModel.delete(e.ListViewEntry.getPlaylistInfo());
     }
 }

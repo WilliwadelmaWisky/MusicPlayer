@@ -111,6 +111,7 @@ public class AudioClipListView extends VBox {
      */
     private void addEntry(final AudioClip audioClip) {
         final AudioClipListViewEntry audioClipListViewEntry = new AudioClipListViewEntry(audioClip);
+        audioClipListViewEntry.setOnEdit(this::onEdit_ListViewEntry);
         audioClipListViewEntry.setOnDelete(this::onDelete_ListViewEntry);
         _listView.getItems().add(audioClipListViewEntry);
     }
@@ -233,6 +234,13 @@ public class AudioClipListView extends VBox {
         });
     }
 
+
+    /**
+     * @param e
+     */
+    private void onEdit_ListViewEntry(final AudioClipListViewEntry.ContextMenuEvent e) {
+        System.out.println("Edit: " + e.ListViewEntry.getAudioClip());
+    }
 
     /**
      * @param e

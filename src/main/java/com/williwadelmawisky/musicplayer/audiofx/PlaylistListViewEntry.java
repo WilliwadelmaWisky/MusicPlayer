@@ -1,15 +1,15 @@
 package com.williwadelmawisky.musicplayer.audiofx;
 
-import com.williwadelmawisky.musicplayer.ResourceLoader;
 import com.williwadelmawisky.musicplayer.audio.PlaylistInfo;
 
+import javafx.event.ActionEvent;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 
@@ -21,7 +21,10 @@ public class PlaylistListViewEntry extends HBox {
     private final Label _nameLabel;
     private final Label _durationLabel;
     private final ContextMenu _contextMenu;
+
     private PlaylistInfo _playlistInfo;
+    private EventHandler<ContextMenuEvent> _onRename;
+    private EventHandler<ContextMenuEvent> _onDelete;
 
 
     /**
@@ -41,10 +44,13 @@ public class PlaylistListViewEntry extends HBox {
         getChildren().addAll(typeLabel, _nameLabel, _durationLabel);
 
         _contextMenu = new ContextMenu();
+        final MenuItem renameMenuItem = new MenuItem("Rename");
         final MenuItem deleteMenuItem = new MenuItem("Delete");
-        _contextMenu.getItems().addAll(deleteMenuItem);
+        _contextMenu.getItems().addAll(renameMenuItem, deleteMenuItem);
 
         setOnContextMenuRequested(this::onContextMenuRequested);
+        renameMenuItem.setOnAction(this::onRename_ContextMenuItem);
+        deleteMenuItem.setOnAction(this::onDelete_ContextMenuItem);
     }
 
     /**
@@ -80,6 +86,28 @@ public class PlaylistListViewEntry extends HBox {
 
 
     /**
+     * @return
+     */
+    public EventHandler<ContextMenuEvent> getOnRename() { return _onRename; }
+
+    /**
+     * @return
+     */
+    public EventHandler<ContextMenuEvent> getOnDelete() { return _onDelete; }
+
+
+    /**
+     * @param onRename
+     */
+    public void setOnRename(final EventHandler<ContextMenuEvent> onRename) { _onRename = onRename; }
+
+    /**
+     * @param onDelete
+     */
+    public void setOnDelete(final EventHandler<ContextMenuEvent> onDelete) { _onDelete = onDelete; }
+
+
+    /**
      * @param e
      */
     private void onContextMenuRequested(final javafx.scene.input.ContextMenuEvent e) {
@@ -89,6 +117,29 @@ public class PlaylistListViewEntry extends HBox {
         final double x = e.getScreenX() - e.getX() + 20;
         final double y = e.getScreenY() - e.getY() + this.getHeight();
         _contextMenu.show(this, x, y);
+    }
+
+
+    /**
+     * @param e
+     */
+    private void onRename_ContextMenuItem(final ActionEvent e) {
+        if (_onRename == null)
+            return;
+
+        final ContextMenuEvent contextMenuEvent = new ContextMenuEvent(e.getEventType(), this);
+        _onRename.handle(contextMenuEvent);
+    }
+
+    /**
+     * @param e
+     */
+    private void onDelete_ContextMenuItem(final ActionEvent e) {
+        if (_onDelete == null)
+            return;
+
+        final ContextMenuEvent contextMenuEvent = new ContextMenuEvent(e.getEventType(), this);
+        _onDelete.handle(contextMenuEvent);
     }
 
 

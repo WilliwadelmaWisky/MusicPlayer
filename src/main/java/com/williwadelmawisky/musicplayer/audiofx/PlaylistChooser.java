@@ -40,7 +40,7 @@ public class PlaylistChooser extends VBox {
         _playlistListView = new PlaylistListView();
         VBox.setVgrow(_playlistListView, Priority.ALWAYS);
         _playlistListView.setMaxHeight(Double.POSITIVE_INFINITY);
-        _playlistListView.setPlaylistModel(_playlistInfoModel);
+        _playlistListView.onCreated(_playlistInfoModel);
 
         final HBox buttonBox = new HBox();
         final Button cancelButton = new Button("Cancel");

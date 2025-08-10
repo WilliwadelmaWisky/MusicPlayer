@@ -80,6 +80,12 @@ public class PlaylistInfo implements Saveable {
 
 
     /**
+     * @param name
+     */
+    void setName(final String name) { Name = name; }
+
+
+    /**
      * @param action
      */
     public void forEach(final Consumer<String> action) {

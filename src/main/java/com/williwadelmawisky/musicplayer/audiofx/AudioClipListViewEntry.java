@@ -1,6 +1,5 @@
 package com.williwadelmawisky.musicplayer.audiofx;
 
-import com.williwadelmawisky.musicplayer.ResourceLoader;
 import com.williwadelmawisky.musicplayer.audio.AudioClip;
 import com.williwadelmawisky.musicplayer.utilfx.Durations;
 import com.williwadelmawisky.musicplayer.util.event.Event;
@@ -12,7 +11,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
 /**
@@ -25,6 +23,7 @@ public class AudioClipListViewEntry extends HBox {
     private final ContextMenu _contextMenu;
 
     private AudioClip _audioClip;
+    private EventHandler<ContextMenuEvent> _onEdit;
     private EventHandler<ContextMenuEvent> _onDelete;
 
 
@@ -45,10 +44,12 @@ public class AudioClipListViewEntry extends HBox {
         getChildren().addAll(typeLabel, _nameLabel, _durationLabel);
 
         _contextMenu = new ContextMenu();
+        final MenuItem editMenuItem = new MenuItem("Edit");
         final MenuItem deleteMenuItem = new MenuItem("Delete");
         _contextMenu.getItems().addAll(deleteMenuItem);
 
         setOnContextMenuRequested(this::onContextMenuRequested);
+        editMenuItem.setOnAction(this::onEdit_ContextMenuItem);
         deleteMenuItem.setOnAction(this::onDelete_ContextMenuItem);
     }
 
@@ -92,7 +93,18 @@ public class AudioClipListViewEntry extends HBox {
     /**
      * @return
      */
+    public EventHandler<ContextMenuEvent> getOnEdit() { return _onEdit; }
+
+    /**
+     * @return
+     */
     public EventHandler<ContextMenuEvent> getOnDelete() { return _onDelete; }
+
+
+    /**
+     * @param onEdit
+     */
+    public void setOnEdit(final EventHandler<ContextMenuEvent> onEdit) { _onEdit = onEdit; }
 
     /**
      * @param onDelete
@@ -129,6 +141,17 @@ public class AudioClipListViewEntry extends HBox {
         _contextMenu.show(this, x, y);
     }
 
+
+    /**
+     * @param e
+     */
+    private void onEdit_ContextMenuItem(final ActionEvent e) {
+        if (_onEdit == null)
+            return;
+
+        final ContextMenuEvent contextMenuEvent = new ContextMenuEvent(e.getEventType(), this);
+        _onEdit.handle(contextMenuEvent);
+    }
 
     /**
      * @param e
