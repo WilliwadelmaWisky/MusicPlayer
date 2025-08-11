@@ -153,7 +153,8 @@ public class PlaylistListView extends VBox {
         if (newName.isEmpty() || oldName.equals(newName))
             return;
 
-        _playlistInfoModel.rename(e.ListViewEntry.getPlaylistInfo(), newName);
+        if (_playlistInfoModel.rename(e.ListViewEntry.getPlaylistInfo(), newName))
+            e.ListViewEntry.updateNameLabel();
     }
 
     /**

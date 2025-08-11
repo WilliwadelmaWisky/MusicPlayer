@@ -6,7 +6,7 @@ import com.williwadelmawisky.musicplayer.util.json.SerializeField;
 /**
  *
  */
-public class AudioFileInfo implements Saveable {
+public class AudioClipInfo implements Saveable {
 
     @SerializeField private String FilePath;
     @SerializeField private String Name;
@@ -17,7 +17,7 @@ public class AudioFileInfo implements Saveable {
     /**
      *
      */
-    public AudioFileInfo() {
+    public AudioClipInfo() {
         FilePath = "";
         Name = "";
         Artists = new String[0];
@@ -27,7 +27,7 @@ public class AudioFileInfo implements Saveable {
     /**
      * @param filePath
      */
-    public AudioFileInfo(final String filePath) {
+    public AudioClipInfo(final String filePath) {
 
     }
 

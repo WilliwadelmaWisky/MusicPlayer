@@ -67,8 +67,9 @@ public class PlaylistListViewEntry extends HBox {
      */
     void onCreated(final PlaylistInfo playlistInfo) {
         _playlistInfo = playlistInfo;
-        _nameLabel.setText(playlistInfo.name());
-        _durationLabel.setText(playlistInfo.totalDurationString());
+
+        updateNameLabel();
+        _durationLabel.setText(_playlistInfo.totalDurationString());
     }
 
     /**
@@ -76,6 +77,14 @@ public class PlaylistListViewEntry extends HBox {
      */
     void onDestroy() {
 
+    }
+
+
+    /**
+     *
+     */
+    void updateNameLabel() {
+        _nameLabel.setText(_playlistInfo.name());
     }
 
 
